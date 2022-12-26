@@ -1,0 +1,8 @@
+services:
+  database:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: kittycatcat
+      POSTGRES_USER: cat
+      POSTGRES_DB: caats

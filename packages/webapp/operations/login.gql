@@ -1,0 +1,10 @@
+mutation Login($code: String!) {
+  authGoogle(code: $code) {
+    accessToken
+    user {
+      name
+      isSuperuser
+      picture
+    }
+  }
+}

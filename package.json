@@ -1,0 +1,14 @@
+{
+  "name": "@caats/repo",
+  "version": "0.0.1-dev",
+  "description": "Cats as a timetable service",
+  "repository": "https://github.com/kpostekk/caats",
+  "author": "Krystian Postek",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+}

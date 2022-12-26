@@ -1,0 +1,17 @@
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  isSuperuser: Boolean!
+  picture: String
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: User!
+}
+
+type Mutation {
+  authGoogle(code: String!): LoginResponse!
+  logout: Boolean!
+}

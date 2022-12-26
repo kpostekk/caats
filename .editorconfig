@@ -1,0 +1,14 @@
+root = true
+
+[*]
+end_of_line = lf
+
+[*.json]
+indent_size = 2
+indent_style = space
+insert_final_newline = false
+
+[*.{js,jsx,ts,tsx,gql}]
+indent_size = 2
+indent_style = space
+insert_final_newline = true

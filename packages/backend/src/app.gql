@@ -1,0 +1,9 @@
+type App {
+  version: String!
+  node: String
+  platform: String
+}
+
+type Query {
+  app: App
+}
