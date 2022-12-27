@@ -39,6 +39,9 @@ export type LoginResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   authGoogle: LoginResponse;
+  finishTask: Scalars['Boolean'];
+  logout: Scalars['Boolean'];
+  updateTaskState: Scalars['Boolean'];
 };
 
 
@@ -46,10 +49,43 @@ export type MutationAuthGoogleArgs = {
   code: Scalars['String'];
 };
 
+
+export type MutationFinishTaskArgs = {
+  id: Scalars['ID'];
+  result: TaskResult;
+};
+
+
+export type MutationUpdateTaskStateArgs = {
+  id: Scalars['ID'];
+  state: TaskState;
+};
+
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
+  getTasks: Array<Task>;
 };
+
+export type Task = {
+  __typename?: 'Task';
+  date: Scalars['String'];
+  hash?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+};
+
+export type TaskResult = {
+  hash: Scalars['String'];
+  result: Array<Scalars['String']>;
+};
+
+export enum TaskState {
+  Failed = 'FAILED',
+  Finished = 'FINISHED',
+  Pending = 'PENDING',
+  Running = 'RUNNING',
+  Skipped = 'SKIPPED'
+}
 
 export type User = {
   __typename?: 'User';

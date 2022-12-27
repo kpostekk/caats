@@ -1,0 +1,5 @@
+node_modules/
+compose.yml
+Dockerfile
+dist/
+.env

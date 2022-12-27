@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { SupervisorModule } from './supervisor/supervisor.module'
 import Joi from 'joi'
+import { ServeStaticModule } from '@nestjs/serve-static'
 
 @Module({
   imports: [
@@ -28,6 +29,9 @@ import Joi from 'joi'
       },
       queryDepth: 4,
       graphiql: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), '..', 'webapp', 'dist'),
     }),
     PrismaModule,
     UsersModule,

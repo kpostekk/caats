@@ -6,3 +6,13 @@ services:
       POSTGRES_PASSWORD: kittycatcat
       POSTGRES_USER: cat
       POSTGRES_DB: caats
+  caats:
+    image: kpostekk/caats
+    restart: always
+    environment:
+      DATABASE_URL: postgres://cat:kittycatcat@database/caats
+      SECRET_KEY: supersecretkey
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
