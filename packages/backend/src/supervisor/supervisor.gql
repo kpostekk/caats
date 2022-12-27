@@ -1,0 +1,27 @@
+type Task {
+  id: ID!
+  date: String!
+  hash: String
+}
+
+enum TaskState {
+  PENDING
+  RUNNING
+  FINISHED
+  SKIPPED
+  FAILED
+}
+
+input TaskResult {
+  result: [String!]!
+  hash: String!
+}
+
+type Query {
+  getTasks: [Task!]!
+}
+
+type Mutation {
+  updateTaskState(id: ID!, state: TaskState!): Boolean!
+  finishTask(id: ID!, result: TaskResult!): Boolean!
+}

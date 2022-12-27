@@ -1,0 +1,23 @@
+query getTasks {
+	getTasks {
+		id
+		date
+		hash
+	}
+}
+
+mutation updateTaskState($id: ID!) {
+	updateTaskState(id: $id, state: RUNNING)
+}
+
+mutation skipTask($id: ID!) {
+	updateTaskState(id: $id, state: SKIPPED)
+}
+
+mutation failTask($id: ID!) {
+	updateTaskState(id: $id, state: FAILED)
+}
+
+mutation finishTask($id: ID!, $results: TaskResult!) {
+	finishTask(id: $id, result: $results)
+}

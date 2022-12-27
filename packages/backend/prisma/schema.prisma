@@ -15,7 +15,7 @@ model User {
     /// User selected name
     name        String?
     /// Users profile picture
-    picture      String?
+    picture     String?
     /// Superuser should be able to access all data and modify data accessors
     isSuperuser Boolean       @default(false)
     sessions    UserSession[]
@@ -27,4 +27,37 @@ model UserSession {
     userId      String   @db.Uuid
     userAgent   String?
     createdAt   DateTime @default(now())
+}
+
+enum TaskStatus {
+    PENDING
+    RUNNING
+    SUCCESS
+    SKIPPED
+    FAILED
+    OUTDATED
+    CANCELLED
+}
+
+model Task {
+    id          Int          @id @default(autoincrement())
+    createdAt   DateTime     @default(now())
+    finishedAt  DateTime?
+    targetDate  DateTime
+    initialHash String?
+    finalHash   String?
+    status      TaskStatus
+    results     TaskResult[]
+
+    @@index([createdAt(sort: Desc), targetDate(sort: Asc)])
+}
+
+model TaskResult {
+    id        Int      @id @default(autoincrement())
+    task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    taskId    Int
+    createdAt DateTime @default(now())
+    value     String
+
+    @@index([taskId(sort: Desc), createdAt(sort: Desc)])
 }
