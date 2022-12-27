@@ -7,7 +7,7 @@ COPY . /build
 RUN yarn install
 
 ENV SKIPCODEGEN=true
-ARG GOOGLE_CLIENT_ID
+ARG VITE_GOOGLE_CLIENT_ID
 
 RUN yarn workspace @caats/web build
 RUN yarn workspace @caats/nest prisma generate
