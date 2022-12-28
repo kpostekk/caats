@@ -9,6 +9,8 @@ services:
   caats:
     image: kpostekk/caats
     restart: always
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
       SECRET_KEY: supersecretkey
