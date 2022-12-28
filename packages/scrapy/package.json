@@ -2,6 +2,7 @@
   "name": "@caats/scrapy",
   "version": "0.1.0-dev",
   "main": "dist/index.js",
+  "author": "Krystian Postek <krystian@postek.eu> Rafał Opiłowski",
   "license": "MIT",
   "scripts": {
     "codegen": "graphql-codegen --config codegen.yml"

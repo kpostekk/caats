@@ -18,12 +18,12 @@ RUN yarn install --production
 
 FROM node:19-slim
 
-WORKDIR /app
+WORKDIR /caats
 
-COPY --from=build /build /app
+COPY --from=build /build /caats
 
 EXPOSE 3000
 
-WORKDIR /app/packages/backend
+WORKDIR /caats/packages/nest
 
 CMD ["node", "dist/main.js"]
