@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import codegen from 'vite-plugin-graphql-codegen'
 
+if (!process.env.VITE_GOOGLE_CLIENTID) throw new Error('Missing CLIENTID')
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
