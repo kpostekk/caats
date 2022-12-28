@@ -24,6 +24,7 @@ import { typeDefs as scalarTypeDefs } from 'graphql-scalars'
     }),
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
+      subscription: true,
       typePaths: ['./**/*.gql'],
       definitions: {
         path: join(process.cwd(), 'src/_autogen/gql.ts'),
@@ -40,6 +41,7 @@ import { typeDefs as scalarTypeDefs } from 'graphql-scalars'
     UsersModule,
     AuthModule,
     SupervisorModule,
+    BrowserModule,
   ],
   providers: [AppResolver],
 })

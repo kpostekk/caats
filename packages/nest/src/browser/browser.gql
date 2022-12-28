@@ -1,0 +1,8 @@
+type SearchResponse {
+  object: JSON!
+  createdAt: DateTime!
+}
+
+type Query {
+  search(text: String!): [SearchResponse!]!
+}
