@@ -1,11 +1,17 @@
-import { Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
+import { ParserService } from './parser/parser.service'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(SupervisorService.name)
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly parser: ParserService
+  ) {}
 
   async onModuleInit() {
     await this.createTasks()
@@ -31,6 +37,7 @@ export class SupervisorService implements OnModuleInit {
       where: { id },
     })
 
+    const start = DateTime.now()
     await this.prisma.$transaction([
       // invalidate outdated tasks
       this.prisma.task.updateMany({
@@ -44,7 +51,11 @@ export class SupervisorService implements OnModuleInit {
       }),
       // store task results
       this.prisma.taskResult.createMany({
-        data: result.map((r) => ({ taskId: id, value: r })),
+        data: result.map((r) => ({
+          taskId: id,
+          html: r,
+          object: this.parser.htmlToObject(r),
+        })),
       }),
       // mark task as success
       this.prisma.task.update({
@@ -52,10 +63,19 @@ export class SupervisorService implements OnModuleInit {
         data: { status: 'SUCCESS' },
       }),
     ])
+    const end = DateTime.now()
+
+    this.logger.debug(
+      `Task ${id} parsed ${result.length} elements in ${end
+        .diff(start)
+        .toISO()}. Parse speed: ${(
+        result.length / end.diff(start).as('seconds')
+      ).toFixed(2)} results per second.`
+    )
   }
 
   async createTasks() {
-    const [cancelled, failed, deleted] = await this.prisma.$transaction([
+    const [cancelled, failed] = await this.prisma.$transaction([
       this.prisma.task.updateMany({
         where: { status: 'PENDING' },
         data: { status: 'CANCELLED' },
@@ -64,20 +84,14 @@ export class SupervisorService implements OnModuleInit {
         where: { status: 'RUNNING' },
         data: { status: 'FAILED' },
       }),
-      this.prisma.task.deleteMany({
-        where: { status: { not: 'SUCCESS' } },
-      }),
+      // this.prisma.task.deleteMany({
+      //   where: { status: { not: 'SUCCESS' } },
+      // }),
     ])
-
-    console.log({
-      cancelled,
-      failed,
-      deleted,
-    })
 
     const initialDate = DateTime.now().startOf('day')
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 120; i++) {
       const iterDate = initialDate.plus({ days: i }).toJSDate()
 
       const lastTask = await this.prisma.task.findFirst({
@@ -94,5 +108,25 @@ export class SupervisorService implements OnModuleInit {
         },
       })
     }
+  }
+
+  getTaskQueue() {
+    return this.prisma.task.findMany({
+      where: { OR: [{ status: 'PENDING' }, { status: 'RUNNING' }] },
+      orderBy: { targetDate: 'asc' },
+    })
+  }
+
+  getHistoricalTasks() {
+    return this.prisma.task.findMany({
+      where: {
+        OR: [
+          { status: 'OUTDATED' },
+          { status: 'SUCCESS' },
+          { status: 'SKIPPED' },
+        ],
+      },
+      orderBy: { targetDate: 'desc' },
+    })
   }
 }

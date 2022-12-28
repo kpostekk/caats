@@ -12,6 +12,11 @@ enum TaskState {
   FAILED
 }
 
+enum TaskCollection {
+  QUEUE
+  HISTORICAL
+}
+
 input TaskResult {
   result: [String!]!
   hash: String!
@@ -19,6 +24,7 @@ input TaskResult {
 
 type Query {
   getTasks: [Task!]!
+  getTaskCollection(collection: TaskCollection!): [JSON!]!
 }
 
 type Mutation {

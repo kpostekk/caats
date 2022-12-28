@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config'
 import { SupervisorModule } from './supervisor/supervisor.module'
 import Joi from 'joi'
 import { ServeStaticModule } from '@nestjs/serve-static'
+import { BrowserModule } from './browser/browser.module'
+import { typeDefs as scalarTypeDefs } from 'graphql-scalars'
 
 @Module({
   imports: [
@@ -27,11 +29,12 @@ import { ServeStaticModule } from '@nestjs/serve-static'
         path: join(process.cwd(), 'src/_autogen/gql.ts'),
         emitTypenameField: true,
       },
+      typeDefs: [...scalarTypeDefs],
       queryDepth: 4,
       graphiql: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), '..', 'webapp', 'dist'),
+      rootPath: join(process.cwd(), '..', 'app', 'dist'),
     }),
     PrismaModule,
     UsersModule,

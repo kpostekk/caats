@@ -5,10 +5,12 @@ datasource db {
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["extendedWhereUnique", "fullTextSearch", "fullTextIndex", "metrics"]
 }
 
 /// Model that represents a user of the system.
 model User {
+    /// Internal user id
     id          String        @id @default(uuid()) @db.Uuid
     /// Mail provided by Google
     email       String        @unique
@@ -57,7 +59,9 @@ model TaskResult {
     task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId    Int
     createdAt DateTime @default(now())
-    value     String
+    html      String
+    object    Json
 
     @@index([taskId(sort: Desc), createdAt(sort: Desc)])
+    @@index([object], type: Gin)
 }
