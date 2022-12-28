@@ -54,8 +54,12 @@ export class Stealer {
     console.log({ targetDate: this.targetDate, dateHash })
 
     if (dateHash === this.lastResultHash) {
-      console.warn('No changes detected. Skipping...')
+      console.warn('No changes detected. Skipping... (∪.∪ )...zzz')
       return null
+    } else if (this.lastResultHash) {
+      console.log('Changes detected. Updating... Σ(っ °Д °;)っ')
+    } else {
+      console.log('No hash provided. Updating... (๑•̀ㅂ•́)و✧')
     }
 
     const ids = Array.from(new Set(pageBody.match(/\d+;z/g)))
@@ -72,6 +76,7 @@ export class Stealer {
       ])
       result.push(...details)
     }
+    console.log('\nDone.')
 
     return { result, hash: dateHash }
   }
@@ -155,12 +160,13 @@ export class Stealer {
     const rawBody = details.split('|')[7]
     const cleanBody = parse(rawBody).removeWhitespace().toString()
 
-    console.log(
-      'Progress:',
-      ++this.progress,
-      '/',
-      this.targetSize,
-      `(${((this.progress / this.targetSize) * 100).toFixed(2)}%)`
+    process.stdout.clearLine(0)
+    process.stdout.cursorTo(0)
+    process.stdout.write(
+      `Progress: ${++this.progress}/${this.targetSize} (${(
+        (this.progress / this.targetSize) *
+        100
+      ).toFixed(2)}%)`
     )
 
     return cleanBody
