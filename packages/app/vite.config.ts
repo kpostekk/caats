@@ -37,4 +37,20 @@ export default defineConfig({
       '/graphql': 'http://localhost:3000',
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: [
+            'react',
+            'react-dom',
+            '@tanstack/react-query',
+            'react-router-dom',
+            'react-use',
+          ],
+          graphql: ['graphql-request', 'graphql'],
+        },
+      },
+    },
+  },
 })
