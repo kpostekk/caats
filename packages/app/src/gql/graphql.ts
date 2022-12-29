@@ -12,67 +12,13 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  AccountNumber: any;
-  BigInt: any;
-  Byte: any;
-  CountryCode: any;
-  Cuid: any;
-  Currency: any;
-  DID: any;
-  Date: any;
+  /** ISO String of Date and Time. */
   DateTime: any;
-  Duration: any;
   EmailAddress: any;
-  GUID: any;
-  HSL: any;
-  HSLA: any;
-  HexColorCode: any;
-  Hexadecimal: any;
-  IBAN: any;
-  IP: any;
-  IPv4: any;
-  IPv6: any;
-  ISBN: any;
-  ISO8601Duration: any;
   JSON: any;
-  JSONObject: any;
   JWT: any;
-  Latitude: any;
-  LocalDate: any;
-  LocalEndTime: any;
-  LocalTime: any;
-  Locale: any;
-  Long: any;
-  Longitude: any;
-  MAC: any;
-  NegativeFloat: any;
-  NegativeInt: any;
-  NonEmptyString: any;
-  NonNegativeFloat: any;
-  NonNegativeInt: any;
-  NonPositiveFloat: any;
-  NonPositiveInt: any;
-  ObjectID: any;
-  PhoneNumber: any;
-  Port: any;
-  PositiveFloat: any;
   PositiveInt: any;
-  PostalCode: any;
-  RGB: any;
-  RGBA: any;
-  RoutingNumber: any;
-  SafeInt: any;
-  SemVer: any;
-  Time: any;
-  TimeZone: any;
-  Timestamp: any;
   URL: any;
-  USCurrency: any;
-  UUID: any;
-  UnsignedFloat: any;
-  UnsignedInt: any;
-  UtcOffset: any;
-  Void: any;
 };
 
 export type App = {
@@ -87,19 +33,21 @@ export type GroupInput = {
 };
 
 export type HostInput = {
-  hosts: Scalars['String'];
+  host: Scalars['String'];
 };
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
-  accessToken: Scalars['String'];
+  accessToken: Scalars['JWT'];
   user: User;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
   finishTask: Scalars['Boolean'];
+  /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   updateTaskState: Scalars['Boolean'];
 };
@@ -124,8 +72,11 @@ export type MutationUpdateTaskStateArgs = {
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
+  /** Returns all schedule events for the given groups. */
   getScheduleGroups: Array<ScheduleEvent>;
+  /** Returns all schedule events for the given host. */
   getScheduleHosts: Array<ScheduleEvent>;
+  /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
   getScheduleUser: Array<ScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
   getTasks: Array<Task>;
@@ -135,17 +86,20 @@ export type Query = {
 export type QueryGetScheduleGroupsArgs = {
   groups: GroupInput;
   sinceUntil?: InputMaybe<SinceUntil>;
+  skipTake?: InputMaybe<SkipTake>;
 };
 
 
 export type QueryGetScheduleHostsArgs = {
   host: HostInput;
   sinceUntil?: InputMaybe<SinceUntil>;
+  skipTake?: InputMaybe<SkipTake>;
 };
 
 
 export type QueryGetScheduleUserArgs = {
   sinceUntil?: InputMaybe<SinceUntil>;
+  skipTake?: InputMaybe<SkipTake>;
 };
 
 
@@ -153,21 +107,37 @@ export type QueryGetTaskCollectionArgs = {
   collection: TaskCollection;
 };
 
+/** Represents a schedule event. */
 export type ScheduleEvent = {
   __typename?: 'ScheduleEvent';
+  /** The short code of the subject. */
   code: Scalars['String'];
   endsAt: Scalars['DateTime'];
+  /** Groups that are attending this event. */
   groups: Array<Scalars['String']>;
+  /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
+  /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
   startsAt: Scalars['DateTime'];
+  /** The full name of the subject. */
   subject: Scalars['String'];
+  /** The type of the event. */
   type: Scalars['String'];
 };
 
+/** Represents a time range. */
 export type SinceUntil = {
-  since?: InputMaybe<Scalars['Date']>;
-  until?: InputMaybe<Scalars['Date']>;
+  since?: InputMaybe<Scalars['DateTime']>;
+  until?: InputMaybe<Scalars['DateTime']>;
+};
+
+/** Represents a skip and take. Useful for pagination. */
+export type SkipTake = {
+  /** The number of items to skip. */
+  skip?: InputMaybe<Scalars['Int']>;
+  /** The number of items to take. */
+  take?: InputMaybe<Scalars['Int']>;
 };
 
 export type Task = {
@@ -188,26 +158,41 @@ export type TaskResult = {
 };
 
 export enum TaskState {
+  /** The task has been cancelled by the user or system. */
+  Cancelled = 'CANCELLED',
+  /** The task could not be finalized. */
   Failed = 'FAILED',
-  Finished = 'FINISHED',
+  /** Data from this task were already processed by a newer task. */
+  Outdated = 'OUTDATED',
+  /** The task is waiting to be executed. */
   Pending = 'PENDING',
+  /** The task is currently being executed by at least one scraper. */
   Running = 'RUNNING',
-  Skipped = 'SKIPPED'
+  /** The task has been processed successfully but data source hasn't changed. */
+  Skipped = 'SKIPPED',
+  /** The task has been processed successfully and represents the latest version of the data. */
+  Success = 'SUCCESS'
 }
 
+/** A CaaTS user. */
 export type User = {
   __typename?: 'User';
-  email: Scalars['String'];
+  /** Email address of the user provided by Google. */
+  email: Scalars['EmailAddress'];
+  /** Internal ID of the user. */
   id: Scalars['ID'];
+  /** Whether the user is a superuser. Superusers can manage instances and scrapers. */
   isSuperuser: Scalars['Boolean'];
+  /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
-  picture?: Maybe<Scalars['String']>;
+  /** Picture of the user provided by Google. Can be changed by the user. */
+  picture?: Maybe<Scalars['URL']>;
 };
 
 export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string, platform?: string | null, node?: string | null } | null };
+export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
 
 export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -219,9 +204,9 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'User', name: string, isSuperuser: boolean, picture?: string | null } } };
+export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', name: string, isSuperuser: boolean, picture?: any | null } } };
 
 
-export const AppDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"App"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"app"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"node"}}]}}]}}]} as unknown as DocumentNode<AppQuery, AppQueryVariables>;
+export const AppDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"App"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"app"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"version"}}]}}]}}]} as unknown as DocumentNode<AppQuery, AppQueryVariables>;
 export const AllNextEventsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllNextEvents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getScheduleUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startsAt"}},{"kind":"Field","name":{"kind":"Name","value":"endsAt"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"room"}}]}}]}}]} as unknown as DocumentNode<AllNextEventsQuery, AllNextEventsQueryVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authGoogle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"isSuperuser"}},{"kind":"Field","name":{"kind":"Name","value":"picture"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;

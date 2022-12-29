@@ -1,4 +1,4 @@
-import { HiMenu } from 'react-icons/hi'
+import { HiAdjustments, HiLogout, HiMenu, HiViewGrid } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
 import { useAuthStore } from './states/auth'
 
@@ -15,10 +15,15 @@ export function App() {
             </button>
             <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
               <li>
-                <Link to="/app">Kokpit</Link>
+                <Link to="/app">
+                  <HiViewGrid /> Kokpit
+                </Link>
               </li>
               <li>
-                <Link to="/app/settings">Ustawienia</Link>
+                <Link to="/app/settings">
+                  <HiAdjustments />
+                  Ustawienia
+                </Link>
               </li>
             </ul>
           </div>
@@ -33,7 +38,9 @@ export function App() {
             </button>
             <ul className="dropdown-content menu bg-base-100 w-52 p-2 shadow-xl">
               <li>
-                <Link to="/logout">Wyloguj się</Link>
+                <Link to="/logout">
+                  <HiLogout /> Wyloguj się
+                </Link>
               </li>
             </ul>
           </div>

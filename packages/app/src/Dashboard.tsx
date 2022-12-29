@@ -4,6 +4,7 @@ import { gqlClient } from './gql-client'
 import { GraphQLClient } from 'graphql-request'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
+import { HiCalendar, HiClipboardList, HiUserGroup } from 'react-icons/hi'
 
 function Greeting() {
   const [userName] = useAuthStore(({ auth }) => [
@@ -13,24 +14,31 @@ function Greeting() {
 
   const [name] = userName.split(' ')
 
-  if (now.hour > 1 && now.hour < 6) return <>Idź spać {name} ಠ_ಠ</>
+  if (now.hour > 1 && now.hour < 6)
+    return (
+      <>
+        Idź spać {name} <span className="whitespace-nowrap">{'ಠ_ಠ'}</span>
+      </>
+    )
   if (now.hour >= 6 && now.hour < 12)
     return (
       <>
-        Dzień dobry {name} {'(✿◡‿◡)'}
+        Dzień dobry {name} <span className="whitespace-nowrap">{'(✿◡‿◡)'}</span>
       </>
     )
-  if (now.hour >= 12 && now.hour < 18) return <>Hejka {name} （＾∀＾●）ﾉｼ</>
+  if (now.hour >= 12 && now.hour < 18) return <>Hejka {name} <span className="whitespace-nowrap">（＾∀＾●）ﾉｼ</span></>
   if (now.hour >= 18 && now.hour < 22)
     return (
       <>
-        Dobry wieczór {name} {'(◕‿◕✿)'}
+        Dobry wieczór {name}{' '}
+        <span className="whitespace-nowrap">{'(◕‿◕✿)'}</span>
       </>
     )
   if (now.hour >= 22 || now.hour <= 1)
     return (
       <>
-        Dobranoc {name} {'(。・∀・)ノ'}
+        Dobranoc {name}{' '}
+        <span className="whitespace-nowrap">{'(。・∀・)ノ'}</span>
       </>
     )
 
@@ -78,13 +86,13 @@ export function Dashboard() {
         <div className="card-body">
           <div className="card-title">Ustawienia</div>
           <Link className="btn btn-outline" to="/app/settings/groups">
-            Konfiguruj grupy
+            <HiUserGroup className="mr-2" /> Konfiguruj grupy
           </Link>
           <Link className="btn btn-outline" to="/app/ics">
-            Zarządzaj linkami .ICS
+            <HiCalendar className="mr-2" /> Zarządzaj linkami .ICS
           </Link>
           <Link className="btn btn-outline" to="/app/su/history">
-            Historia scrapowania
+            <HiClipboardList className="mr-2" /> Historia scrapowania
           </Link>
         </div>
       </div>
