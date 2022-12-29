@@ -3,3 +3,6 @@ compose.yml
 Dockerfile
 dist/
 .env
+README.md
+PRIVACY.md
+TOS.md
