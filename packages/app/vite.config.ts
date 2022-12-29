@@ -34,7 +34,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/graphql': 'http://localhost:3000',
+      '/graphql': 'http://127.0.0.1:3000',
     },
   },
   build: {
