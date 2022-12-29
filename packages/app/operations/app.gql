@@ -1,7 +1,5 @@
 query App {
 	app {
 		version
-		platform
-		node
 	}
 }
