@@ -10,7 +10,7 @@ export default defineConfig({
       codegen({
         config: {
           overwrite: true,
-          schema: 'http://localhost:3000/graphql',
+          schema: '../nest/src/**/*.gql',
           documents: ['src/**/*.tsx', 'operations/*.gql'],
           //emitLegacyCommonJSImports: false,
           generates: {
