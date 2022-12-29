@@ -5,7 +5,9 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import './index.css'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './rourter'
+import { Settings } from 'luxon'
 
+Settings.defaultLocale = navigator.language
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

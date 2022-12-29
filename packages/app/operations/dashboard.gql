@@ -1,0 +1,10 @@
+query AllNextEvents {
+  getScheduleUser {
+    startsAt
+    endsAt
+    subject
+    code
+    type
+    room
+  }
+}

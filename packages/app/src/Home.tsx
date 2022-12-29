@@ -1,67 +1,19 @@
-import { useState } from 'react'
 import { gqlClient } from './gql-client'
-import { useAppQuery, useLoginMutation } from './gql/react-query'
-import { useGoogleLogin } from '@react-oauth/google'
+import { useAppQuery } from './gql/react-query'
 import {
   FaArrowDown,
   FaBookOpen,
   FaDiscord,
   FaGhost,
   FaGithub,
-  FaGoogle,
-  FaSpinner,
 } from 'react-icons/fa'
-import { useMedia } from 'react-use'
-import { useAuthStore } from './states/auth'
-
-function useLoginState() {
-  const [loginState, setLoginState] = useState<
-    'not-logged' | 'logged-in' | 'failure' | 'logging-in'
-  >('not-logged')
-
-  return {
-    loginState,
-    success: () => setLoginState('logged-in'),
-    failure: () => setLoginState('failure'),
-    loggingIn: () => setLoginState('logging-in'),
-  }
-}
+import { LoginGoogle } from './components/LoginGoogle/LoginGoogle'
 
 export function Home() {
   const appQuery = useAppQuery(gqlClient)
 
-  const darkMode = useMedia('(prefers-color-scheme: dark)')
-  const loginState = useLoginState()
-
-  const updateAuth = useAuthStore(({ update }) => update)
-  const loginMutation = useLoginMutation(gqlClient, {
-    onSuccess: (response) => {
-      updateAuth(response.authGoogle)
-      loginState.success()
-    },
-    onError: () => loginState.failure(),
-  })
-
-  const googleLogin = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess(result) {
-      loginMutation.mutate({
-        code: result.code,
-      })
-    },
-    onNonOAuthError() {
-      loginState.failure()
-    },
-    onError() {
-      loginState.failure()
-    },
-  })
-
   return (
-    <div
-      data-theme={darkMode ? 'black' : 'lofi'}
-      className="min-h-screen w-full"
-    >
+    <div className="min-h-screen w-full">
       <div className="grid h-screen w-full place-content-center place-items-center gap-4 sm:grid-cols-1 md:grid-cols-2 md:p-24 lg:p-64">
         <div>
           <h1 className="text-6xl font-extrabold">CaaTS</h1>
@@ -75,28 +27,7 @@ export function Home() {
           )}
         </div>
         <div className="flex flex-col gap-2">
-          <button
-            disabled={loginState.loginState === 'logging-in'}
-            className={[
-              'btn',
-              loginState.loginState === 'not-logged' && 'btn-primary',
-              loginState.loginState === 'failure' && 'btn-error',
-              loginState.loginState === 'logged-in' && 'btn-success',
-            ].join(' ')}
-            onClick={() => {
-              loginState.loggingIn()
-              googleLogin()
-            }}
-          >
-            <div className="mr-2">
-              {loginState.loginState === 'logging-in' ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                <FaGoogle />
-              )}
-            </div>
-            Zaloguj się
-          </button>
+          <LoginGoogle />
           <a href="#about" className="btn btn-secondary">
             <FaArrowDown className="mr-2" />
             Dowiedz się więcej
@@ -148,8 +79,11 @@ export function Home() {
             </p>
           </div>
         </div>
-        <p className="py-4 text-center italic opacity-20">
-          Made with too much coffee by Krystian Postek
+        <p className="pt-2 text-center italic opacity-20">
+          Crafted by Krystian Postek
+        </p>
+        <p className="py-2 text-center italic opacity-20">
+          Thanks to <i>Yumii</i> for scraper performance improvements
         </p>
       </footer>
     </div>

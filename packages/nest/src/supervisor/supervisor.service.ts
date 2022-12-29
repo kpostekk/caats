@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { TaskStatus } from '@prisma/client'
+import { Prisma, TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
 
@@ -53,7 +53,6 @@ export class SupervisorService implements OnModuleInit {
       this.prisma.taskResult.createMany({
         data: result.map((r) => ({
           taskId: id,
-          html: r,
           object: this.parser.htmlToObject(r),
         })),
       }),
@@ -72,6 +71,64 @@ export class SupervisorService implements OnModuleInit {
         result.length / end.diff(start).as('seconds')
       ).toFixed(2)} results per second.`
     )
+
+    // create events from results
+    const eventsCandidates = await this.prisma.taskResult.findMany({
+      where: {
+        taskId: id,
+        OR: [
+          {
+            object: {
+              path: ['ctl06_TypZajecLabel', 'value'],
+              equals: 'Wykład',
+            },
+          },
+          {
+            object: {
+              path: ['ctl06_TypZajecLabel', 'value'],
+              equals: 'Ćwiczenia',
+            },
+          },
+        ],
+      },
+    })
+
+    await this.prisma.timetableEvent.createMany({
+      data: eventsCandidates.map((c) => {
+        const {
+          ctl06_DataZajecLabel: date,
+          ctl06_GodzRozpLabel: timeStart,
+          ctl06_GodzZakonLabel: timeEnd,
+          ctl06_DydaktycyLabel: hostsString,
+          ctl06_SalaLabel: room,
+          ctl06_TypZajecLabel: type,
+          ctl06_KodPrzedmiotuLabel: code,
+          ctl06_NazwaPrzedmiotyLabel: name,
+          ctl06_GrupyLabel: groupsString,
+        } = c.object as Record<string, { value?: string; humanKey: string }>
+
+        const startsAt = DateTime.fromFormat(
+          `${date.value} ${timeStart.value}`,
+          'dd.MM.yyyy HH:mm:ss'
+        ).toJSDate()
+        const endsAt = DateTime.fromFormat(
+          `${date.value} ${timeEnd.value}`,
+          'dd.MM.yyyy HH:mm:ss'
+        ).toJSDate()
+
+        return {
+          code: code.value,
+          name: name.value,
+          room: room?.value,
+          groups: groupsString?.value.split(', '),
+          hosts: hostsString?.value.split(', '),
+          type: type.value,
+          startsAt,
+          endsAt,
+          sourceId: c.id,
+        }
+      }),
+    })
   }
 
   async createTasks() {
@@ -84,9 +141,9 @@ export class SupervisorService implements OnModuleInit {
         where: { status: 'RUNNING' },
         data: { status: 'FAILED' },
       }),
-      // this.prisma.task.deleteMany({
-      //   where: { status: { not: 'SUCCESS' } },
-      // }),
+      this.prisma.task.deleteMany({
+        where: { NOT: { status: 'SUCCESS' } },
+      }),
     ])
 
     const initialDate = DateTime.now().startOf('day')

@@ -1,8 +1,32 @@
-type SearchResponse {
-  object: JSON!
-  createdAt: DateTime!
+scalar Date
+scalar DateTime
+
+input SinceUntil {
+  since: Date
+  until: Date
+}
+
+input GroupInput {
+  groups: [String!]!
+}
+
+input HostInput {
+  hosts: String!
+}
+
+type ScheduleEvent {
+  startsAt: DateTime!
+  endsAt: DateTime!
+  subject: String!
+  code: String!
+  type: String!
+  room: String
+  hosts: [String!]!
+  groups: [String!]!
 }
 
 type Query {
-  search(text: String!): [SearchResponse!]!
+  getScheduleUser(sinceUntil: SinceUntil): [ScheduleEvent!]!
+  getScheduleGroups(groups: GroupInput!, sinceUntil: SinceUntil): [ScheduleEvent!]!
+  getScheduleHosts(host: HostInput!, sinceUntil: SinceUntil): [ScheduleEvent!]!
 }

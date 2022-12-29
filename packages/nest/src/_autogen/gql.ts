@@ -21,6 +21,19 @@ export enum TaskCollection {
     HISTORICAL = "HISTORICAL"
 }
 
+export interface SinceUntil {
+    since?: Nullable<Date>;
+    until?: Nullable<Date>;
+}
+
+export interface GroupInput {
+    groups: string[];
+}
+
+export interface HostInput {
+    hosts: string;
+}
+
 export interface TaskResult {
     result: string[];
     hash: string;
@@ -36,7 +49,9 @@ export interface App {
 export interface IQuery {
     __typename?: 'IQuery';
     app(): Nullable<App> | Promise<Nullable<App>>;
-    search(text: string): SearchResponse[] | Promise<SearchResponse[]>;
+    getScheduleUser(sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getScheduleGroups(groups: GroupInput, sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getScheduleHosts(host: HostInput, sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
     getTasks(): Task[] | Promise<Task[]>;
     getTaskCollection(collection: TaskCollection): JSON[] | Promise<JSON[]>;
 }
@@ -62,13 +77,18 @@ export interface IMutation {
     logout(): boolean | Promise<boolean>;
     updateTaskState(id: string, state: TaskState): boolean | Promise<boolean>;
     finishTask(id: string, result: TaskResult): boolean | Promise<boolean>;
-    killPope(): boolean | Promise<boolean>;
 }
 
-export interface SearchResponse {
-    __typename?: 'SearchResponse';
-    object: JSON;
-    createdAt: DateTime;
+export interface ScheduleEvent {
+    __typename?: 'ScheduleEvent';
+    startsAt: DateTime;
+    endsAt: DateTime;
+    subject: string;
+    code: string;
+    type: string;
+    room?: Nullable<string>;
+    hosts: string[];
+    groups: string[];
 }
 
 export interface Task {
@@ -78,13 +98,8 @@ export interface Task {
     hash?: Nullable<string>;
 }
 
-export interface ISubscription {
-    __typename?: 'ISubscription';
-    isPopeDead(): Nullable<boolean> | Promise<Nullable<boolean>>;
-}
-
-export type Time = any;
 export type DateTime = any;
+export type Time = any;
 export type Timestamp = any;
 export type TimeZone = any;
 export type UtcOffset = any;

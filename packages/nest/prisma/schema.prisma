@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["extendedWhereUnique", "fullTextSearch", "fullTextIndex", "metrics"]
 }
 
@@ -20,6 +20,7 @@ model User {
     picture     String?
     /// Superuser should be able to access all data and modify data accessors
     isSuperuser Boolean       @default(false)
+    groups      String[]
     sessions    UserSession[]
 }
 
@@ -55,13 +56,28 @@ model Task {
 }
 
 model TaskResult {
-    id        Int      @id @default(autoincrement())
-    task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    id        Int        @id @default(autoincrement())
+    task      Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId    Int
-    createdAt DateTime @default(now())
-    html      String
+    createdAt DateTime   @default(now())
     object    Json
+    usedBy    TimetableEvent?
 
     @@index([taskId(sort: Desc), createdAt(sort: Desc)])
     @@index([object], type: Gin)
+}
+
+model TimetableEvent {
+    id        Int             @id @default(autoincrement())
+    createdAt DateTime        @default(now())
+    startsAt  DateTime
+    endsAt    DateTime
+    source    TaskResult      @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+    sourceId  Int             @unique
+    name      String
+    code      String
+    type      String
+    room      String?
+    groups    String[]
+    hosts     String[]
 }

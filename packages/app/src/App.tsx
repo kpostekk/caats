@@ -1,23 +1,46 @@
 import { HiMenu } from 'react-icons/hi'
+import { Link, Outlet } from 'react-router-dom'
 import { useAuthStore } from './states/auth'
 
 export function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
 
   return (
-    <div className="navbar">
-      <div className="navbar-start">
-        <button className="btn btn-ghost">
-          <HiMenu />
-        </button>
+    <div>
+      <div className="navbar mb-2">
+        <div className="navbar-start">
+          <div className="dropdown dropdown-hover">
+            <button className="btn btn-ghost">
+              <HiMenu />
+            </button>
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
+              <li>
+                <Link to="/app">Kokpit</Link>
+              </li>
+              <li>
+                <Link to="/app/settings">Ustawienia</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="navbar-center">
+          <h1 className="select-none text-3xl font-bold">CaaTS</h1>
+        </div>
+        <div className="navbar-end">
+          <div className="dropdown dropdown-end dropdown-hover">
+            <button className="btn btn-ghost aspect-square p-1">
+              <img src={picture ?? undefined} />
+            </button>
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
+              <li>
+                <Link to="/logout">Wyloguj się</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div className="navbar-center">
-        <h1 className="text-3xl font-bold ">CaaTS</h1>
-      </div>
-      <div className="navbar-end">
-        <button className="btn btn-ghost aspect-square p-1">
-          <img src={picture ?? undefined} />
-        </button>
+      <div className="p-4">
+        <Outlet />
       </div>
     </div>
   )

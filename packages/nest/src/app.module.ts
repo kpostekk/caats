@@ -12,6 +12,7 @@ import Joi from 'joi'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { BrowserModule } from './browser/browser.module'
 import { typeDefs as scalarTypeDefs } from 'graphql-scalars'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [

@@ -11,6 +11,6 @@ async function bootstrap() {
     new FastifyAdapter()
   )
   app.enableCors()
-  await app.listen(3000, '0.0.0.0')
+  await app.listen(3000)
 }
 bootstrap()
