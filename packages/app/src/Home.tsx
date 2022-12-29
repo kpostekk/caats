@@ -16,14 +16,14 @@ export function Home() {
     <div className="min-h-screen w-full">
       <div className="grid h-screen w-full place-content-center place-items-center gap-4 sm:grid-cols-1 md:grid-cols-2 md:p-24 lg:p-64">
         <div>
-          <h1 className="text-6xl font-extrabold">CaaTS</h1>
+          <h1 className="select-none text-6xl font-extrabold">CaaTS</h1>
           <p className="my-2 text-xl font-semibold">
             Cats as a Timetable Service
           </p>
           {appQuery.data ? (
             <p className="my-2 opacity-80">v{appQuery.data.app?.version}</p>
           ) : (
-            <div className="bg-secondary h-2 w-1/3 animate-pulse rounded" />
+            <div className="bg-base-300 h-2 w-1/3 animate-pulse rounded" />
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -38,7 +38,7 @@ export function Home() {
         </div>
       </div>
       <footer className="border-t-secondary border-t px-6 pt-12">
-        <div className="flex w-full flex-wrap justify-center gap-12">
+        <div className="flex w-full select-none flex-wrap justify-center gap-12">
           <div className="prose prose-p:my-1">
             <p>
               <a href="https://github.com/kpostekk/caats">
@@ -68,12 +68,21 @@ export function Home() {
             </p>
           </div>
         </div>
-        <p className="pt-2 text-center italic opacity-20">
-          Crafted by Krystian Postek
-        </p>
-        <p className="py-2 text-center italic opacity-20">
-          Thanks to <i>Yumii</i> for scraper performance improvements
-        </p>
+        <div className="text-base-300 mx-auto max-w-xl pb-4 pt-8 text-sm">
+          <p className="pt-2">
+            Coded and designed by{' '}
+            <a className="link" href="https://github.com/aleksandra-indulska">
+              Krystian Postek
+            </a>
+          </p>
+          <p className="py-2">
+            Thanks to{' '}
+            <a className="link" href="https://github.com/aleksandra-indulska">
+              Aleksandra Indulska
+            </a>{' '}
+            for scraper performance improvements
+          </p>
+        </div>
       </footer>
     </div>
   )
