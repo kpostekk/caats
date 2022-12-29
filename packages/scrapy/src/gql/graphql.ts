@@ -12,6 +12,67 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AccountNumber: any;
+  BigInt: any;
+  Byte: any;
+  CountryCode: any;
+  Cuid: any;
+  Currency: any;
+  DID: any;
+  Date: any;
+  DateTime: any;
+  Duration: any;
+  EmailAddress: any;
+  GUID: any;
+  HSL: any;
+  HSLA: any;
+  HexColorCode: any;
+  Hexadecimal: any;
+  IBAN: any;
+  IP: any;
+  IPv4: any;
+  IPv6: any;
+  ISBN: any;
+  ISO8601Duration: any;
+  JSON: any;
+  JSONObject: any;
+  JWT: any;
+  Latitude: any;
+  LocalDate: any;
+  LocalEndTime: any;
+  LocalTime: any;
+  Locale: any;
+  Long: any;
+  Longitude: any;
+  MAC: any;
+  NegativeFloat: any;
+  NegativeInt: any;
+  NonEmptyString: any;
+  NonNegativeFloat: any;
+  NonNegativeInt: any;
+  NonPositiveFloat: any;
+  NonPositiveInt: any;
+  ObjectID: any;
+  PhoneNumber: any;
+  Port: any;
+  PositiveFloat: any;
+  PositiveInt: any;
+  PostalCode: any;
+  RGB: any;
+  RGBA: any;
+  RoutingNumber: any;
+  SafeInt: any;
+  SemVer: any;
+  Time: any;
+  TimeZone: any;
+  Timestamp: any;
+  URL: any;
+  USCurrency: any;
+  UUID: any;
+  UnsignedFloat: any;
+  UnsignedInt: any;
+  UtcOffset: any;
+  Void: any;
 };
 
 export type App = {
@@ -19,6 +80,14 @@ export type App = {
   node?: Maybe<Scalars['String']>;
   platform?: Maybe<Scalars['String']>;
   version: Scalars['String'];
+};
+
+export type GroupInput = {
+  groups: Array<Scalars['String']>;
+};
+
+export type HostInput = {
+  hosts: Scalars['String'];
 };
 
 export type LoginResponse = {
@@ -55,7 +124,50 @@ export type MutationUpdateTaskStateArgs = {
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
+  getScheduleGroups: Array<ScheduleEvent>;
+  getScheduleHosts: Array<ScheduleEvent>;
+  getScheduleUser: Array<ScheduleEvent>;
+  getTaskCollection: Array<Scalars['JSON']>;
   getTasks: Array<Task>;
+};
+
+
+export type QueryGetScheduleGroupsArgs = {
+  groups: GroupInput;
+  sinceUntil?: InputMaybe<SinceUntil>;
+};
+
+
+export type QueryGetScheduleHostsArgs = {
+  host: HostInput;
+  sinceUntil?: InputMaybe<SinceUntil>;
+};
+
+
+export type QueryGetScheduleUserArgs = {
+  sinceUntil?: InputMaybe<SinceUntil>;
+};
+
+
+export type QueryGetTaskCollectionArgs = {
+  collection: TaskCollection;
+};
+
+export type ScheduleEvent = {
+  __typename?: 'ScheduleEvent';
+  code: Scalars['String'];
+  endsAt: Scalars['DateTime'];
+  groups: Array<Scalars['String']>;
+  hosts: Array<Scalars['String']>;
+  room?: Maybe<Scalars['String']>;
+  startsAt: Scalars['DateTime'];
+  subject: Scalars['String'];
+  type: Scalars['String'];
+};
+
+export type SinceUntil = {
+  since?: InputMaybe<Scalars['Date']>;
+  until?: InputMaybe<Scalars['Date']>;
 };
 
 export type Task = {
@@ -64,6 +176,11 @@ export type Task = {
   hash?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
 };
+
+export enum TaskCollection {
+  Historical = 'HISTORICAL',
+  Queue = 'QUEUE'
+}
 
 export type TaskResult = {
   hash: Scalars['String'];
@@ -86,6 +203,11 @@ export type User = {
   name: Scalars['String'];
   picture?: Maybe<Scalars['String']>;
 };
+
+export type GetAppVersionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAppVersionQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
 
 export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -122,6 +244,7 @@ export type FinishTaskMutationVariables = Exact<{
 export type FinishTaskMutation = { __typename?: 'Mutation', finishTask: boolean };
 
 
+export const GetAppVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAppVersion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"app"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"version"}}]}}]}}]} as unknown as DocumentNode<GetAppVersionQuery, GetAppVersionQueryVariables>;
 export const GetTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}}]}}]} as unknown as DocumentNode<GetTasksQuery, GetTasksQueryVariables>;
 export const UpdateTaskStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTaskState"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTaskState"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"state"},"value":{"kind":"EnumValue","value":"RUNNING"}}]}]}}]} as unknown as DocumentNode<UpdateTaskStateMutation, UpdateTaskStateMutationVariables>;
 export const SkipTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"skipTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTaskState"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"state"},"value":{"kind":"EnumValue","value":"SKIPPED"}}]}]}}]} as unknown as DocumentNode<SkipTaskMutation, SkipTaskMutationVariables>;

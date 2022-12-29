@@ -1,3 +1,9 @@
+query getAppVersion {
+  app {
+    version
+  }
+}
+
 query getTasks {
 	getTasks {
 		id
