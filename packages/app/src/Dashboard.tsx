@@ -43,31 +43,37 @@ export function Dashboard() {
   const events = useAllNextEventsQuery(authGqlClient)
 
   return (
-    <div className="mx-auto grid max-w-5xl md:grid-cols-3 gap-4">
-      {events.data ? (
+    <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
         <div className="card card-bordered md:col-span-2">
           <div className="card-body prose">
-            <div className="card-title">
+            <h2>
               <Greeting />
-            </div>
-            <h4>Najbliższe zajęcia</h4>
-            <ul>
-              {events.data.getScheduleUser.slice(0, 4).map((ev, i) => (
-                <li key={i}>
-                  {DateTime.fromISO(ev.startsAt).toFormat('HH:mm, EEEE')}
-                  {' - '}
-                  {ev.code}
-                </li>
-              ))}
-            </ul>
-            <Link className="btn btn-outline self-start" to="/app/calendar">
-              Przejdź do planu zajęć
-            </Link>
+            </h2>
           </div>
         </div>
-      ) : (
-        <div className="card bg-base-300 col-span-2 h-20 animate-pulse" />
-      )}
+        {events.data ? (
+          events.data.getScheduleUser.slice(0, 4).map((ev, i) => (
+            <div className="card card-bordered" key={i}>
+              <div className="card-body">
+                <h3 className="text-xl font-bold">{ev.code}</h3>
+                <h4>
+                  {DateTime.fromISO(ev.startsAt).toFormat(
+                    'HH:mm, EEEE dd MMMM'
+                  )}
+                </h4>
+              </div>
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="card bg-base-200 h-32 animate-pulse" />
+            <div className="card bg-base-200 h-32 animate-pulse" />
+            <div className="card bg-base-200 h-32 animate-pulse" />
+            <div className="card bg-base-200 h-32 animate-pulse" />
+          </>
+        )}
+      </div>
       <div className="card card-bordered">
         <div className="card-body">
           <div className="card-title">Ustawienia</div>

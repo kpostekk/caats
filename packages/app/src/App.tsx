@@ -7,7 +7,7 @@ export function App() {
 
   return (
     <div>
-      <div className="navbar mb-2">
+      <div className="navbar border-b-base-200 bg-base-100/75 sticky top-0 z-50 mb-2 border-b backdrop-blur-sm">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
             <button className="btn btn-ghost">
