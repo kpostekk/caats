@@ -43,9 +43,9 @@ export function Dashboard() {
   const events = useAllNextEventsQuery(authGqlClient)
 
   return (
-    <div className="mx-auto grid max-w-5xl grid-cols-3 gap-4">
+    <div className="mx-auto grid max-w-5xl md:grid-cols-3 gap-4">
       {events.data ? (
-        <div className="card card-bordered col-span-2">
+        <div className="card card-bordered md:col-span-2">
           <div className="card-body prose">
             <div className="card-title">
               <Greeting />
