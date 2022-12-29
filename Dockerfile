@@ -2,11 +2,18 @@ FROM node:19 AS build
 
 WORKDIR /build
 
-COPY . /build
+COPY package.json /build/package.json
+COPY yarn.lock /build/yarn.lock
+
+FROM build AS app-build
+
+COPY ./packages/app/package.json /build/packages/app/package.json
+COPY ./packages/nest/package.json /build/packages/nest/package.json
 
 RUN yarn install
 
-FROM build AS app-build
+COPY ./packages/app /build/packages/app
+COPY ./packages/nest /build/packages/nest
 
 ENV SKIPCODEGEN=true
 ARG GOOGLE_CLIENT_ID
@@ -30,8 +37,13 @@ WORKDIR /caats/packages/nest
 
 CMD ["node", "dist/main.js"]
 
-
 FROM build AS scraper-build
+
+COPY ./packages/scrapy/package.json /build/packages/scrapy/package.json
+
+RUN yarn install
+
+COPY ./packages/scrapy /build/packages/scrapy
 
 RUN yarn workspace @caats/scrapy tsc
 
