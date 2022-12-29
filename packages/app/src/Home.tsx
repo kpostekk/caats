@@ -28,24 +28,13 @@ export function Home() {
         </div>
         <div className="flex flex-col gap-2">
           <LoginGoogle />
-          <a href="#about" className="btn btn-secondary">
+          <a
+            href="https://github.com/kpostekk/caats/blob/main/README.md"
+            className="btn btn-outline"
+          >
             <FaArrowDown className="mr-2" />
             Dowiedz się więcej
           </a>
-        </div>
-      </div>
-      <div id={'about'} className="p-16 md:px-24 lg:px-32">
-        <h1>FAQ</h1>
-        <div className="lg:gird-cols-6 grid grid-cols-2 gap-6 md:grid-cols-4">
-          <div className="prose">
-            <h2>Dlaczego?</h2>
-            <p>Dlaczego nie można srać do paczkomatu?</p>
-            <p>No pytam się</p>
-          </div>
-          <div className="prose">
-            <h2>Jak to działa?</h2>
-            <p>Dobrze</p>
-          </div>
         </div>
       </div>
       <footer className="border-t-secondary border-t px-6 pt-12">
@@ -58,13 +47,13 @@ export function Home() {
               </a>
             </p>
             <p>
-              <a href="https://github.com/kpostekk/caats/PRIVACY.md">
+              <a href="https://github.com/kpostekk/caats/blob/main/PRIVACY.md">
                 <FaGhost className="mr-2 inline-block" />
                 polityka prywatności
               </a>
             </p>
             <p>
-              <a href="https://github.com/kpostekk/caats/TOS.md">
+              <a href="https://github.com/kpostekk/caats/blob/main/TOS.md">
                 <FaBookOpen className="mr-2 inline-block" />
                 warunki użytkowania
               </a>
