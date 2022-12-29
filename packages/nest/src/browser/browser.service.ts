@@ -11,15 +11,6 @@ export class BrowserService {
       where: { id },
     })
 
-    console.log({
-      startsAt: {
-        gte: sinceUntil?.since && new Date(sinceUntil.since),
-      },
-      endsAt: {
-        lte: sinceUntil?.until && new Date(sinceUntil.until),
-      },
-    })
-
     return this.prisma.timetableEvent.findMany({
       where: {
         OR: [
