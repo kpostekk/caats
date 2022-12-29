@@ -1,0 +1,4 @@
+schema: 'packages/nest/src/**/*.gql'
+documents: 
+  - 'packages/app/**/*.gql'
+  
