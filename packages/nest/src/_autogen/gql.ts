@@ -11,9 +11,11 @@
 export enum TaskState {
     PENDING = "PENDING",
     RUNNING = "RUNNING",
-    FINISHED = "FINISHED",
+    SUCCESS = "SUCCESS",
     SKIPPED = "SKIPPED",
-    FAILED = "FAILED"
+    FAILED = "FAILED",
+    OUTDATED = "OUTDATED",
+    CANCELLED = "CANCELLED"
 }
 
 export enum TaskCollection {
@@ -22,8 +24,13 @@ export enum TaskCollection {
 }
 
 export interface SinceUntil {
-    since?: Nullable<Date>;
-    until?: Nullable<Date>;
+    since?: Nullable<DateTime>;
+    until?: Nullable<DateTime>;
+}
+
+export interface SkipTake {
+    skip?: Nullable<number>;
+    take?: Nullable<number>;
 }
 
 export interface GroupInput {
@@ -31,7 +38,7 @@ export interface GroupInput {
 }
 
 export interface HostInput {
-    hosts: string;
+    host: string;
 }
 
 export interface TaskResult {
@@ -49,9 +56,9 @@ export interface App {
 export interface IQuery {
     __typename?: 'IQuery';
     app(): Nullable<App> | Promise<Nullable<App>>;
-    getScheduleUser(sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
-    getScheduleGroups(groups: GroupInput, sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
-    getScheduleHosts(host: HostInput, sinceUntil?: Nullable<SinceUntil>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getScheduleUser(sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getScheduleGroups(groups: GroupInput, sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getScheduleHosts(host: HostInput, sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
     getTasks(): Task[] | Promise<Task[]>;
     getTaskCollection(collection: TaskCollection): JSON[] | Promise<JSON[]>;
 }
@@ -59,15 +66,15 @@ export interface IQuery {
 export interface User {
     __typename?: 'User';
     id: string;
-    email: string;
+    email: EmailAddress;
     name: string;
     isSuperuser: boolean;
-    picture?: Nullable<string>;
+    picture?: Nullable<URL>;
 }
 
 export interface LoginResponse {
     __typename?: 'LoginResponse';
-    accessToken: string;
+    accessToken: JWT;
     user: User;
 }
 
@@ -98,7 +105,12 @@ export interface Task {
     hash?: Nullable<string>;
 }
 
+export type JWT = any;
+export type URL = any;
+export type EmailAddress = any;
 export type DateTime = any;
+export type PositiveInt = any;
+export type JSON = any;
 export type Time = any;
 export type Timestamp = any;
 export type TimeZone = any;
@@ -108,7 +120,6 @@ export type ISO8601Duration = any;
 export type LocalDate = any;
 export type LocalTime = any;
 export type LocalEndTime = any;
-export type EmailAddress = any;
 export type NegativeFloat = any;
 export type NegativeInt = any;
 export type NonEmptyString = any;
@@ -118,11 +129,9 @@ export type NonPositiveFloat = any;
 export type NonPositiveInt = any;
 export type PhoneNumber = any;
 export type PositiveFloat = any;
-export type PositiveInt = any;
 export type PostalCode = any;
 export type UnsignedFloat = any;
 export type UnsignedInt = any;
-export type URL = any;
 export type BigInt = any;
 export type Long = any;
 export type Byte = any;
@@ -136,7 +145,6 @@ export type IP = any;
 export type IPv4 = any;
 export type IPv6 = any;
 export type ISBN = any;
-export type JWT = any;
 export type Latitude = any;
 export type Longitude = any;
 export type MAC = any;
@@ -146,7 +154,6 @@ export type RGBA = any;
 export type SafeInt = any;
 export type USCurrency = any;
 export type Currency = any;
-export type JSON = any;
 export type JSONObject = any;
 export type IBAN = any;
 export type ObjectID = any;

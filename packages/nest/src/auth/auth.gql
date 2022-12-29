@@ -1,17 +1,29 @@
+scalar JWT
+scalar URL
+scalar EmailAddress
+
+"A CaaTS user."
 type User {
+  "Internal ID of the user."
   id: ID!
-  email: String!
+  "Email address of the user provided by Google."
+  email: EmailAddress!
+  "Full name of the user provided by Google. Can be changed by the user."
   name: String!
+  "Whether the user is a superuser. Superusers can manage instances and scrapers."
   isSuperuser: Boolean!
-  picture: String
+  "Picture of the user provided by Google. Can be changed by the user."
+  picture: URL
 }
 
 type LoginResponse {
-  accessToken: String!
+  accessToken: JWT!
   user: User!
 }
 
 type Mutation {
+  "Exchanges code from Google OAuth2 for a JWT and user."
   authGoogle(code: String!): LoginResponse!
+  "Invalidates the JWT. Requires authentication."
   logout: Boolean!
 }

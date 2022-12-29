@@ -1,3 +1,5 @@
+scalar JSON
+
 type Task {
   id: ID!
   date: String!
@@ -5,11 +7,20 @@ type Task {
 }
 
 enum TaskState {
+  "The task is waiting to be executed."
   PENDING
+  "The task is currently being executed by at least one scraper."
   RUNNING
-  FINISHED
+  "The task has been processed successfully and represents the latest version of the data."
+  SUCCESS
+  "The task has been processed successfully but data source hasn't changed."
   SKIPPED
+  "The task could not be finalized."
   FAILED
+  "Data from this task were already processed by a newer task."
+  OUTDATED
+  "The task has been cancelled by the user or system."
+  CANCELLED
 }
 
 enum TaskCollection {
