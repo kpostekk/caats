@@ -28,10 +28,10 @@ export function App() {
         </div>
         <div className="navbar-end">
           <div className="dropdown dropdown-end dropdown-hover">
-            <button className="btn btn-ghost aspect-square p-1">
+            <button className="btn btn-ghost btn-square aspect-square p-1">
               <img src={picture ?? undefined} />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 w-52 p-2 shadow-xl">
               <li>
                 <Link to="/logout">Wyloguj się</Link>
               </li>
