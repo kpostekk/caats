@@ -6,8 +6,12 @@ services:
       POSTGRES_PASSWORD: kittycatcat
       POSTGRES_USER: cat
       POSTGRES_DB: caats
-  caats:
+  app:
     image: kpostekk/caats
+    build:
+      target: application
+      dockerfile: Dockerfile
+      context: .
     restart: always
     env_file:
       - .env
@@ -18,3 +22,13 @@ services:
       - 3000:3000
     depends_on:
       - database
+  scrapy:
+    image: kpostekk/caats-scrapy
+    build:
+      target: scraper
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    depends_on:
+      - app
+    command: node dist/index.js --api http://app:3000/graphql
