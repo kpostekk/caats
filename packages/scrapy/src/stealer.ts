@@ -160,8 +160,13 @@ export class Stealer {
     const rawBody = details.split('|')[7]
     const cleanBody = parse(rawBody).removeWhitespace().toString()
 
-    process.stdout.clearLine(0)
-    process.stdout.cursorTo(0)
+    try {
+      process.stdout.clearLine(0)
+      process.stdout.cursorTo(0)
+    } catch (e) {
+      process.stdout.write('\n')
+    }
+
     process.stdout.write(
       `Progress: ${++this.progress}/${this.targetSize} (${(
         (this.progress / this.targetSize) *
