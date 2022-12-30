@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** ISO String of Date and Time. */
   DateTime: any;
   EmailAddress: any;
   JSON: any;
@@ -44,12 +43,19 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
+  setGroups: Scalars['Boolean'];
   updateTaskState: Scalars['Boolean'];
+};
+
+
+export type MutationAddGroupArgs = {
+  group: Scalars['String'];
 };
 
 
@@ -61,6 +67,11 @@ export type MutationAuthGoogleArgs = {
 export type MutationFinishTaskArgs = {
   id: Scalars['ID'];
   result: TaskResult;
+};
+
+
+export type MutationSetGroupsArgs = {
+  groups: Array<Scalars['String']>;
 };
 
 
@@ -80,6 +91,7 @@ export type Query = {
   getScheduleUser: Array<ScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
   getTasks: Array<Task>;
+  me: User;
 };
 
 
@@ -135,9 +147,9 @@ export type SinceUntil = {
 /** Represents a skip and take. Useful for pagination. */
 export type SkipTake = {
   /** The number of items to skip. */
-  skip?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['PositiveInt']>;
   /** The number of items to take. */
-  take?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['PositiveInt']>;
 };
 
 export type Task = {
@@ -179,6 +191,7 @@ export type User = {
   __typename?: 'User';
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
   id: Scalars['ID'];
   /** Whether the user is a superuser. Superusers can manage instances and scrapers. */
@@ -206,7 +219,21 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', name: string, isSuperuser: boolean, picture?: any | null } } };
 
+export type SetGroupsMutationVariables = Exact<{
+  groups: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type SetGroupsMutation = { __typename?: 'Mutation', setGroups: boolean };
+
+export type GetCurrentGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
+
 
 export const AppDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"App"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"app"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"version"}}]}}]}}]} as unknown as DocumentNode<AppQuery, AppQueryVariables>;
 export const AllNextEventsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllNextEvents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getScheduleUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startsAt"}},{"kind":"Field","name":{"kind":"Name","value":"endsAt"}},{"kind":"Field","name":{"kind":"Name","value":"subject"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"room"}}]}}]}}]} as unknown as DocumentNode<AllNextEventsQuery, AllNextEventsQueryVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authGoogle"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"isSuperuser"}},{"kind":"Field","name":{"kind":"Name","value":"picture"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const SetGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetGroups"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"groups"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setGroups"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"groups"},"value":{"kind":"Variable","name":{"kind":"Name","value":"groups"}}}]}]}}]} as unknown as DocumentNode<SetGroupsMutation, SetGroupsMutationVariables>;
+export const GetCurrentGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCurrentGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"groups"}}]}}]}}]} as unknown as DocumentNode<GetCurrentGroupsQuery, GetCurrentGroupsQueryVariables>;

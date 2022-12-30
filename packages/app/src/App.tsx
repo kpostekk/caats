@@ -1,4 +1,4 @@
-import { HiAdjustments, HiLogout, HiMenu, HiViewGrid } from 'react-icons/hi'
+import { HiAdjustments, HiLogout, HiMenu, HiTemplate, HiViewGrid } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
 import { useAuthStore } from './states/auth'
 
@@ -16,7 +16,7 @@ export function App() {
             <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
               <li>
                 <Link to="/app">
-                  <HiViewGrid /> Kokpit
+                  <HiTemplate /> Kokpit
                 </Link>
               </li>
               <li>

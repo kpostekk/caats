@@ -1,0 +1,9 @@
+mutation SetGroups($groups: [String!]!) {
+  setGroups(groups: $groups)
+}
+
+query GetCurrentGroups {
+  me {
+    groups
+  }
+}

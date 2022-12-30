@@ -18,7 +18,7 @@ export function Settings() {
             Konto
           </Link> */}
         </div>
-        <div className="col-span-2 card card-bordered p-4">
+        <div className="card card-bordered col-span-2 p-4">
           <Outlet />
         </div>
       </div>

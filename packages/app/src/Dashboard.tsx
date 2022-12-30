@@ -4,7 +4,12 @@ import { gqlClient } from './gql-client'
 import { GraphQLClient } from 'graphql-request'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
-import { HiCalendar, HiClipboardList, HiUserGroup } from 'react-icons/hi'
+import {
+  HiCalendar,
+  HiClipboardList,
+  HiCubeTransparent,
+  HiUserGroup,
+} from 'react-icons/hi'
 
 function Greeting() {
   const [userName] = useAuthStore(({ auth }) => [
@@ -26,7 +31,12 @@ function Greeting() {
         Dzień dobry {name} <span className="whitespace-nowrap">{'(✿◡‿◡)'}</span>
       </>
     )
-  if (now.hour >= 12 && now.hour < 18) return <>Hejka {name} <span className="whitespace-nowrap">（＾∀＾●）ﾉｼ</span></>
+  if (now.hour >= 12 && now.hour < 18)
+    return (
+      <>
+        Hejka {name} <span className="whitespace-nowrap">（＾∀＾●）ﾉｼ</span>
+      </>
+    )
   if (now.hour >= 18 && now.hour < 22)
     return (
       <>
@@ -84,7 +94,9 @@ export function Dashboard() {
       </div>
       <div className="card card-bordered">
         <div className="card-body">
-          <div className="card-title">Ustawienia</div>
+          <a className="btn btn-outline" href="/graphiql">
+            <HiCubeTransparent className="mr-2" /> GraphiQL
+          </a>
           <Link className="btn btn-outline" to="/app/settings/groups">
             <HiUserGroup className="mr-2" /> Konfiguruj grupy
           </Link>
@@ -94,6 +106,15 @@ export function Dashboard() {
           <Link className="btn btn-outline" to="/app/su/history">
             <HiClipboardList className="mr-2" /> Historia scrapowania
           </Link>
+          <button
+            className="btn btn-outline hover:btn-warning group"
+            onClick={() => navigator.clipboard.writeText(token)}
+          >
+            <span className="hidden group-hover:block">
+              {'N I E B E Z P I E C Z N E'}
+            </span>
+            <span className="group-hover:hidden">Kopiuj token do schowka</span>
+          </button>
         </div>
       </div>
     </div>

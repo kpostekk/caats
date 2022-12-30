@@ -16,6 +16,7 @@ const documents = {
     "query App {\n  app {\n    version\n  }\n}": types.AppDocument,
     "query AllNextEvents {\n  getScheduleUser {\n    startsAt\n    endsAt\n    subject\n    code\n    type\n    room\n  }\n}": types.AllNextEventsDocument,
     "mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}": types.LoginDocument,
+    "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}": types.SetGroupsDocument,
 };
 
 /**
@@ -30,6 +31,10 @@ export function graphql(source: "query AllNextEvents {\n  getScheduleUser {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}"): (typeof documents)["mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}"): (typeof documents)["mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}"];
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
