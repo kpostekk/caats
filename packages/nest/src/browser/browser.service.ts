@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { SinceUntil } from '../_autogen/gql'
+import { SinceUntil, SkipTake } from '../_autogen/gql'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class BrowserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByUser(id: string, sinceUntil?: SinceUntil) {
+  async findByUser(id: string, sinceUntil?: SinceUntil, skipTake?: SkipTake) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id },
     })
@@ -32,10 +32,15 @@ export class BrowserService {
           lte: sinceUntil?.until && new Date(sinceUntil.until),
         },
       },
+      ...skipTake,
     })
   }
 
-  async findByGroups(groups: string[], sinceUntil?: SinceUntil) {
+  async findByGroups(
+    groups: string[],
+    sinceUntil?: SinceUntil,
+    skipTake?: SkipTake
+  ) {
     return this.prisma.timetableEvent.findMany({
       where: {
         groups: {
@@ -48,16 +53,18 @@ export class BrowserService {
           lte: sinceUntil?.until,
         },
       },
+      ...skipTake,
     })
   }
 
-  async findByHost(host: string) {
+  async findByHost(host: string, skipTake?: SkipTake) {
     return this.prisma.timetableEvent.findMany({
       where: {
         hosts: {
           has: host,
         },
       },
+      ...skipTake,
     })
   }
 }
