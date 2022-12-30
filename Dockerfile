@@ -5,6 +5,7 @@ WORKDIR /build
 COPY package.json /build/package.json
 COPY yarn.lock /build/yarn.lock
 
+# -- Application section --
 FROM build AS app-build
 
 COPY ./packages/app/package.json /build/packages/app/package.json
@@ -37,6 +38,7 @@ WORKDIR /caats/packages/nest
 
 CMD ["node", "dist/main.js"]
 
+# -- Scraper section --
 FROM build AS scraper-build
 
 COPY ./packages/scrapy/package.json /build/packages/scrapy/package.json
