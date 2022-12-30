@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite'
+import { readFile } from 'fs/promises'
 import react from '@vitejs/plugin-react-swc'
 import codegen from 'vite-plugin-graphql-codegen'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    APP_VERSION: JSON.stringify(
+      JSON.parse(await readFile('./package.json').then((f) => f.toString()))
+        .version as string
+    ),
+  },
   plugins: [
     react(),
     !process.env.SKIPCODEGEN &&

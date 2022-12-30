@@ -21,7 +21,9 @@ export function Home() {
             Cats as a Timetable Service
           </p>
           {appQuery.data ? (
-            <p className="my-2 opacity-80">v{appQuery.data.app?.version}</p>
+            <p className="text-base-300 my-2">
+              nest: v{appQuery.data.app?.version}, app: v{APP_VERSION}
+            </p>
           ) : (
             <div className="bg-base-300 h-2 w-1/3 animate-pulse rounded" />
           )}
