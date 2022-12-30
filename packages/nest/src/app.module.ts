@@ -12,7 +12,6 @@ import Joi from 'joi'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { BrowserModule } from './browser/browser.module'
 import { resolvers, typeDefs } from 'graphql-scalars'
-import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
@@ -25,10 +24,9 @@ import { JwtModule } from '@nestjs/jwt'
     }),
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
-      subscription: true,
-      typePaths: ['./**/*.gql'],
+      typePaths: ['./**/*.{gql,graphql}'],
       definitions: {
-        path: join(process.cwd(), 'src/_autogen/gql.ts'),
+        path: join(__dirname, '_autogen/gql.ts'),
         emitTypenameField: true,
       },
       queryDepth: 4,
@@ -37,7 +35,7 @@ import { JwtModule } from '@nestjs/jwt'
       resolvers,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), '..', 'app', 'dist'),
+      rootPath: join(__dirname, '..', '..', 'app', 'dist'),
     }),
     PrismaModule,
     UsersModule,

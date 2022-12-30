@@ -61,6 +61,7 @@ export interface IQuery {
     getScheduleHosts(host: HostInput, sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
     getTasks(): Task[] | Promise<Task[]>;
     getTaskCollection(collection: TaskCollection): JSON[] | Promise<JSON[]>;
+    me(): User | Promise<User>;
 }
 
 export interface User {
@@ -70,6 +71,7 @@ export interface User {
     name: string;
     isSuperuser: boolean;
     picture?: Nullable<URL>;
+    groups: string[];
 }
 
 export interface LoginResponse {
@@ -84,6 +86,8 @@ export interface IMutation {
     logout(): boolean | Promise<boolean>;
     updateTaskState(id: string, state: TaskState): boolean | Promise<boolean>;
     finishTask(id: string, result: TaskResult): boolean | Promise<boolean>;
+    addGroup(group: string): string[] | Promise<string[]>;
+    setGroups(groups: string[]): boolean | Promise<boolean>;
 }
 
 export interface ScheduleEvent {

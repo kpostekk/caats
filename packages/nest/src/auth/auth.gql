@@ -14,6 +14,7 @@ type User {
   isSuperuser: Boolean!
   "Picture of the user provided by Google. Can be changed by the user."
   picture: URL
+  groups: [String!]!
 }
 
 type LoginResponse {

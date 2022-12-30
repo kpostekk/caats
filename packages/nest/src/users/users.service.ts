@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { User } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
@@ -31,5 +32,12 @@ export class UsersService {
 
   getUser(id: string) {
     return this.prisma.user.findUnique({ where: { id } })
+  }
+
+  updateUser(id: string, partial: Partial<User>) {
+    return this.prisma.user.update({
+      where: { id },
+      data: partial,
+    })
   }
 }

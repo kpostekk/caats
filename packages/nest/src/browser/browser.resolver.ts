@@ -4,6 +4,7 @@ import { User } from '@prisma/client'
 import { GroupInput, SinceUntil, SkipTake } from '../_autogen/gql'
 import { AuthGuard } from '../auth/auth.guard'
 import { BrowserService } from './browser.service'
+import {} from '../_autogen/gql'
 
 @Resolver()
 export class BrowserResolver {
@@ -21,8 +22,16 @@ export class BrowserResolver {
   }
 
   @Query()
-  async getScheduleGroups(@Args('input') input: GroupInput) {
-    const result = await this.browser.findByGroups(input.groups)
+  async getScheduleGroups(
+    @Args('groups') groups: GroupInput,
+    @Args('sinceUntil') sinceUntil?: SinceUntil,
+    @Args('skipTake') skipTake?: SkipTake
+  ) {
+    const result = await this.browser.findByGroups(
+      groups.groups,
+      sinceUntil,
+      skipTake
+    )
     return result.map((r) => ({ ...r, subject: r.name }))
   }
 }
