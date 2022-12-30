@@ -11,7 +11,7 @@ import { SupervisorModule } from './supervisor/supervisor.module'
 import Joi from 'joi'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { BrowserModule } from './browser/browser.module'
-import { typeDefs as scalarTypeDefs } from 'graphql-scalars'
+import { resolvers, typeDefs } from 'graphql-scalars'
 import { JwtModule } from '@nestjs/jwt'
 
 @Module({
@@ -31,9 +31,10 @@ import { JwtModule } from '@nestjs/jwt'
         path: join(process.cwd(), 'src/_autogen/gql.ts'),
         emitTypenameField: true,
       },
-      typeDefs: [...scalarTypeDefs],
       queryDepth: 4,
       graphiql: true,
+      typeDefs,
+      resolvers,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), '..', 'app', 'dist'),

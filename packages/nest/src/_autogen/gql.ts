@@ -29,8 +29,8 @@ export interface SinceUntil {
 }
 
 export interface SkipTake {
-    skip?: Nullable<number>;
-    take?: Nullable<number>;
+    skip?: Nullable<PositiveInt>;
+    take?: Nullable<PositiveInt>;
 }
 
 export interface GroupInput {
