@@ -1,6 +1,6 @@
 {
   "name": "@caats/repo",
-  "version": "0.0.1-dev",
+  "version": "0.1.0-alpha.0",
   "description": "Cats as a timetable service",
   "repository": "https://github.com/kpostekk/caats",
   "author": "Krystian Postek",
