@@ -13,8 +13,7 @@
   "overrides": [
     {
       "files": [
-        "./*.cjs",
-        "./vite.config.ts"
+        "./*.config.{cjs,ts}"
       ],
       "env": {
         "node": true,
