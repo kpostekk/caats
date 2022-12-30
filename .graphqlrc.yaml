@@ -1,4 +1,3 @@
-schema: 'packages/nest/src/**/*.gql'
+schema: 'packages/nest/src/**/*.{gql,graphql}'
 documents: 
-  - 'packages/app/**/*.gql'
-  
+  - 'packages/app/**/*.{gql,graphql}'
