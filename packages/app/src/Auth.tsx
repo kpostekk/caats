@@ -8,7 +8,6 @@ export function Auth() {
   const isLoggedIn = useMemo(() => !!auth?.accessToken, [auth?.accessToken])
   const navigate = useNavigate()
 
-
   useEffect(() => {
     if (!isLoggedIn) navigate('/login')
   }, [isLoggedIn, navigate])

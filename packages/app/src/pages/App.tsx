@@ -1,6 +1,6 @@
 import { HiAdjustments, HiLogout, HiMenu, HiTemplate, HiViewGrid } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
-import { useAuthStore } from './states/auth'
+import { useAuthStore } from '../states/auth'
 
 export function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)

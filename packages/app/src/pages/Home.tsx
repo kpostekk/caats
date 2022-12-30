@@ -1,5 +1,4 @@
-import { gqlClient } from './gql-client'
-import { useAppQuery } from './gql/react-query'
+import { useAppQuery } from '../gql/react-query'
 import {
   FaArrowDown,
   FaBookOpen,
@@ -7,10 +6,12 @@ import {
   FaGhost,
   FaGithub,
 } from 'react-icons/fa'
-import { LoginGoogle } from './components/LoginGoogle/LoginGoogle'
+import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
+import { useGqlClient } from '../components/useGqlClient/useGqlClient'
 
 export function Home() {
-  const appQuery = useAppQuery(gqlClient)
+  const client = useGqlClient()
+  const appQuery = useAppQuery(client)
 
   return (
     <div className="min-h-screen w-full">

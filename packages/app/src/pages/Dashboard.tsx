@@ -1,6 +1,5 @@
-import { useAuthStore } from './states/auth'
-import { useAllNextEventsQuery } from './gql/react-query'
-import { gqlClient } from './gql-client'
+import { useAuthStore } from '../states/auth'
+import { useAllNextEventsQuery } from '../gql/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
@@ -10,6 +9,7 @@ import {
   HiCubeTransparent,
   HiUserGroup,
 } from 'react-icons/hi'
+import { useGqlClient } from '../components/useGqlClient/useGqlClient'
 
 function Greeting() {
   const [userName] = useAuthStore(({ auth }) => [
@@ -56,9 +56,9 @@ function Greeting() {
 }
 
 export function Dashboard() {
-  const [token] = useAuthStore(({ auth }) => [auth?.accessToken])
-  const authGqlClient = gqlClient.setHeader('Authorization', `Bearer ${token}`)
-  const events = useAllNextEventsQuery(authGqlClient)
+  const token = useAuthStore(({ auth }) => auth?.accessToken)
+  const client = useGqlClient()
+  const events = useAllNextEventsQuery(client)
 
   return (
     <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">

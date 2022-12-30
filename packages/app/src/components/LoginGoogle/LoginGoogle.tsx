@@ -2,9 +2,9 @@ import { useGoogleLogin } from '@react-oauth/google'
 import { useState } from 'react'
 import { FaGoogle, FaSpinner } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
-import { gqlClient } from '../../gql-client'
 import { useLoginMutation } from '../../gql/react-query'
 import { useAuthStore } from '../../states/auth'
+import { useGqlClient } from '../useGqlClient/useGqlClient'
 
 function useThreeState() {
   const [state, setState] = useState<boolean | null>(null)
@@ -17,12 +17,13 @@ function useThreeState() {
 }
 
 export function LoginGoogle() {
+  const client = useGqlClient()
   const navigate = useNavigate()
   const [loggingIn, setLoggingIn] = useState(false)
   const loginState = useThreeState()
   const updateAuth = useAuthStore(({ update }) => update)
   const isLoggedInAlready = useAuthStore(({ auth }) => !!auth)
-  const loginMutation = useLoginMutation(gqlClient, {
+  const loginMutation = useLoginMutation(client, {
     onSuccess: (response) => {
       updateAuth(response.authGoogle)
       loginState.success()

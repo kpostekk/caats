@@ -1,4 +1,4 @@
-import { LoginGoogle } from './components/LoginGoogle/LoginGoogle'
+import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 
 export function Login() {
   return (

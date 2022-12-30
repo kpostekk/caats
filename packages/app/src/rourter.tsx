@@ -1,14 +1,14 @@
 import { HiBeaker, HiQuestionMarkCircle } from 'react-icons/hi'
 import { createBrowserRouter } from 'react-router-dom'
-import { NotFoundGlobal } from './404'
-import { App } from './App'
+import { NotFoundGlobal } from './pages/404'
 import { Auth } from './Auth'
 import { InputList } from './components/InputList/InputList'
-import { Dashboard } from './Dashboard'
-import { Home } from './Home'
-import { Login } from './Login'
+import { Dashboard } from './pages/Dashboard'
 import { SettingsGroups } from './pages/Settings/Groups'
 import { Settings } from './pages/Settings/Settings'
+import { Home } from './pages/Home'
+import { Login } from './pages/Login'
+import { App } from './pages/App'
 
 export const router = createBrowserRouter([
   {
