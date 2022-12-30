@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "author": "Krystian Postek <krystian@postek.eu>",
+  "contributors": [
+    "Rafał Opiłowski",
+    "Aleksandra Indulska"
+  ],
   "license": "MIT",
   "scripts": {
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "scrapy": "node dist/index.js"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.1",

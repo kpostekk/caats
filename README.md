@@ -6,14 +6,16 @@
 
 ## Dlaczego?
 
-|                                      | CaaTS                                                            | Altapi                                            | Plan Zajęć PJATK            |
-| ------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------- | --------------------------- |
-| Średni czas oczekiwania na zapytania | 12ms                                                             | 112ms                                             | 1481ms                      |
-| Wygodna aplikacja webowa             | ✅                                                                | 🤔                                                | ❌                           |
-| Logowanie i synchronizacja           | ✅                                                                | ❌                                                 | ✅                           |
-| Wsparcie dla ICS                     | ✅                                                                | ✅                                                 | ⚠️częściowe i niepełne dane |
-| Wykorzystane technologie             | NestJS, Fastify, Mercurius, Prisma, Postgres, React, TailwindCSS | NestJS, Express, Mongoose, MongoDB, React, NextUI | ASP.NET 4.0, TelerikUI      |
-| Dostęp do API                        | GraphQL                                                          | OpenAPIv3 REST                                    | ❌                           |
+|                                      | CaaTS                                                            | Altapi                                            | Plan Zajęć PJATK                         |
+| ------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------- |
+| Średni czas oczekiwania na zapytania | 12ms                                                             | 112ms                                             | 1481ms                                   |
+| Wygodna aplikacja webowa             | ✅                                                                | 🤔                                                | ❌                                        |
+| Logowanie i synchronizacja           | ✅                                                                | ❌                                                 | ✅                                        |
+| Wsparcie dla ICS                     | ✅                                                                | ✅                                                 | ⚠️częściowe i niepełne dane              |
+| Wykorzystane technologie             | NestJS, Fastify, Mercurius, Prisma, Postgres, React, TailwindCSS | NestJS, Express, Mongoose, MongoDB, React, NextUI | ASP.NET 4.0, SQL Server 2008, TelerikUI* |
+| Dostęp do API                        | GraphQL                                                          | OpenAPIv3 REST                                    | ❌                                        |
+
+> *zaobserwowany stack technologiczny, może się różnić w rzeczywistości
 
 ### Zmiany w stosunku do Altapi
 

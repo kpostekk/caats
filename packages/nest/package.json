@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "author": "Krystian Postek <krystian@postek.eu>",
+  "contributors": [
+    "Aleksandra Indulska"
+  ],
   "private": true,
   "license": "MIT",
   "scripts": {
