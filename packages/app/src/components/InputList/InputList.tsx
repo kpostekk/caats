@@ -15,6 +15,10 @@ export function InputList(props: InputListProps) {
     set(props.initialItems)
   }, [props.initialItems])
 
+  useEffect(() => {
+    props.onUpdate?.(items)
+  }, [items])
+
   return (
     <div className="my-2 space-y-2">
       <ul className="space-y-2">

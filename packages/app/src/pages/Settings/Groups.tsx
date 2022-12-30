@@ -7,6 +7,7 @@ import {
   useSetGroupsMutation,
   useGetCurrentGroupsQuery,
 } from '../../gql/react-query'
+import { useDebounce } from 'react-use'
 
 export function SettingsGroups() {
   const client = useGqlClient()
@@ -20,19 +21,21 @@ export function SettingsGroups() {
   )
   const mutateGroups = useSetGroupsMutation(client)
 
+  useDebounce(
+    () => {
+      mutateGroups.mutate({ groups })
+    },
+    120,
+    [groups]
+  )
+
   return (
     <div className="prose">
-      <MutationResponse mutation={mutateGroups} />
+      {/* <MutationResponse mutation={mutateGroups} /> */}
       <h3>Zmień grupy</h3>
       {groups ? (
         <>
           <InputList initialItems={groups} onUpdate={setGroups} />
-          <button
-            className="btn"
-            onClick={() => mutateGroups.mutate({ groups })}
-          >
-            Zapisz
-          </button>
         </>
       ) : (
         <>
