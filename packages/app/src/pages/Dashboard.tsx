@@ -1,6 +1,5 @@
 import { useAuthStore } from '../states/auth'
 import { useAllNextEventsQuery } from '../gql/react-query'
-import { GraphQLClient } from 'graphql-request'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
 import {
