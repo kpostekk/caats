@@ -84,7 +84,7 @@ export class BrowserService {
       FROM (SELECT DISTINCT unnest(groups) as "group" FROM "TimetableEvent") as UnnestedGroups
       WHERE string_to_array(lower("group"), ' ') @> string_to_array(lower(${query}), ' ')
       ORDER BY "group"
-      LIMIT 25
+      LIMIT 10
     `
 
     return Array.from(groups.flatMap((g) => g.group))
