@@ -22,9 +22,17 @@ export function GroupsAutocomplete(props: GroupsAutocompleteProps) {
     }
   )
 
-  useDebounce(() => groups.refetch(), 100, [inputValue])
-  // useEffect(() => setInputValue(props.value), [props.value])
-  useEffect(() => props.onChange?.(inputValue), [inputValue])
+  useEffect(() => setInputValue(props.value), [props.value])
+  useEffect(() => {
+    if (props.value !== inputValue) props.onChange?.(inputValue)
+  }, [inputValue])
+  useDebounce(
+    () => {
+      groups.refetch()
+    },
+    100,
+    [inputValue]
+  )
 
   return (
     <div>
@@ -33,8 +41,11 @@ export function GroupsAutocomplete(props: GroupsAutocompleteProps) {
           className="input input-bordered"
           onChange={(event) => setInputValue(event.target.value)}
         />
-        <Combobox.Options className="card card-bordered bg-base-100 absolute list-none p-0">
-          <div className="flex flex-col p-4">
+        <Combobox.Options className="card card-bordered bg-base-100 absolute list-none p-2">
+          {!groups.data?.autocompleteGroups?.length && (
+            <span>Brak wyników</span>
+          )}
+          <div className="flex flex-col">
             {groups.data?.autocompleteGroups?.map((person) => (
               <Combobox.Option
                 className="btn btn-outline"
