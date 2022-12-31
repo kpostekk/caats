@@ -22,14 +22,19 @@ model User {
     isSuperuser Boolean       @default(false)
     groups      String[]
     sessions    UserSession[]
+
+    @@index([id(sort: Asc)])
 }
 
 model UserSession {
-    accessToken String   @id
-    user        User     @relation(fields: [userId], references: [id])
-    userId      String   @db.Uuid
-    userAgent   String?
-    createdAt   DateTime @default(now())
+    id        String    @id @default(uuid()) @db.Uuid
+    user      User      @relation(fields: [userId], references: [id])
+    userId    String    @db.Uuid
+    createdAt DateTime  @default(now())
+    expiresAt DateTime  @default(dbgenerated("now() + interval '1 day'"))
+    revokedAt DateTime?
+
+    @@index([id(sort: Asc), expiresAt(sort: Asc)])
 }
 
 enum TaskStatus {
@@ -56,10 +61,10 @@ model Task {
 }
 
 model TaskResult {
-    id        Int        @id @default(autoincrement())
-    task      Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    id        Int             @id @default(autoincrement())
+    task      Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId    Int
-    createdAt DateTime   @default(now())
+    createdAt DateTime        @default(now())
     object    Json
     usedBy    TimetableEvent?
 
@@ -68,12 +73,12 @@ model TaskResult {
 }
 
 model TimetableEvent {
-    id        Int             @id @default(autoincrement())
-    createdAt DateTime        @default(now())
+    id        Int        @id @default(autoincrement())
+    createdAt DateTime   @default(now())
     startsAt  DateTime
     endsAt    DateTime
-    source    TaskResult      @relation(fields: [sourceId], references: [id], onDelete: Cascade)
-    sourceId  Int             @unique
+    source    TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+    sourceId  Int        @unique
     name      String
     code      String
     type      String

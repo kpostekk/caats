@@ -8,6 +8,7 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 import { JwtService } from '@nestjs/jwt'
 import { FastifyRequest } from 'fastify'
 import { PrismaService } from '../prisma/prisma.service'
+import { JwtPayload } from './auth.service'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,10 +24,20 @@ export class AuthGuard implements CanActivate {
 
     if (!authorization) throw new UnauthorizedException()
 
-    const [, token] = authorization.split(' ')
+    const [type, jwtString] = authorization.split(' ')
+    if (type !== 'Bearer') throw new UnauthorizedException()
+
     try {
-      const { sub: userId } = await this.jwtService.verifyAsync(token)
-      context.userId = userId
+      const { sub: userId } = await this.jwtService.verifyAsync<JwtPayload>(
+        jwtString
+      )
+      context.session = await this.prisma.userSession.findFirstOrThrow({
+        where: {
+          userId: userId,
+          expiresAt: { gt: new Date() },
+          revokedAt: null,
+        },
+      })
       context.user = await this.prisma.user.findUniqueOrThrow({
         where: { id: userId },
       })
