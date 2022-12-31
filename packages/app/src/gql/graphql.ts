@@ -18,6 +18,7 @@ export type Scalars = {
   JWT: any;
   PositiveInt: any;
   URL: any;
+  UUID: any;
 };
 
 export type App = {
@@ -38,6 +39,7 @@ export type HostInput = {
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   accessToken: Scalars['JWT'];
+  sessionId: Scalars['UUID'];
   user: User;
 };
 

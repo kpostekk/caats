@@ -28,19 +28,20 @@ export class AuthGuard implements CanActivate {
     if (type !== 'Bearer') throw new UnauthorizedException()
 
     try {
-      const { sub: userId } = await this.jwtService.verifyAsync<JwtPayload>(
-        jwtString
-      )
-      context.session = await this.prisma.userSession.findFirstOrThrow({
+      const { sub: userId, sid } =
+        await this.jwtService.verifyAsync<JwtPayload>(jwtString)
+      context.session = await this.prisma.userSession.findUniqueOrThrow({
         where: {
           userId: userId,
+          id: sid,
           expiresAt: { gt: new Date() },
           revokedAt: null,
         },
+        include: {
+          user: true,
+        },
       })
-      context.user = await this.prisma.user.findUniqueOrThrow({
-        where: { id: userId },
-      })
+      context.user = context.session.user
     } catch (e) {
       throw new UnauthorizedException()
     }

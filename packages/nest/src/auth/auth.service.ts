@@ -74,6 +74,14 @@ export class AuthService {
         exp: session.expiresAt.getTime(),
         sid: session.id,
       }),
+      sessionId: session.id,
     }
+  }
+
+  async revokeSession(sessionId: string) {
+    await this.prisma.userSession.update({
+      where: { id: sessionId },
+      data: { revokedAt: new Date() },
+    })
   }
 }

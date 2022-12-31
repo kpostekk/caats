@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common'
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
-import { LoginResponse } from 'src/_autogen/gql'
+import { Args, Context, Mutation, Resolver } from '@nestjs/graphql'
+import { UserSession } from '@prisma/client'
+import { LoginResponse } from '../_autogen/gql'
 import { AuthGuard } from './auth.guard'
 import { AuthService } from './auth.service'
 
@@ -11,13 +12,14 @@ export class AuthResolver {
   @Mutation()
   async authGoogle(@Args('code') code: string): Promise<LoginResponse> {
     const user = await this.auth.loginWithGoogle(code)
-    const { accessToken } = await this.auth.createSession(user.id)
-    return { accessToken, user }
+    const { accessToken, sessionId } = await this.auth.createSession(user.id)
+    return { accessToken, user, sessionId }
   }
 
   @UseGuards(AuthGuard)
   @Mutation()
-  async logout(): Promise<boolean> {
+  async logout(@Context('session') session: UserSession): Promise<boolean> {
+    await this.auth.revokeSession(session.id)
     return false
   }
 }

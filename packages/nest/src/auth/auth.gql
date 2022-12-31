@@ -1,6 +1,7 @@
 scalar JWT
 scalar URL
 scalar EmailAddress
+scalar UUID
 
 "A CaaTS user."
 type User {
@@ -19,6 +20,7 @@ type User {
 
 type LoginResponse {
   accessToken: JWT!
+  sessionId: UUID!
   user: User!
 }
 

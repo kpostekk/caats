@@ -77,6 +77,7 @@ export interface User {
 export interface LoginResponse {
     __typename?: 'LoginResponse';
     accessToken: JWT;
+    sessionId: UUID;
     user: User;
 }
 
@@ -112,6 +113,7 @@ export interface Task {
 export type JWT = any;
 export type URL = any;
 export type EmailAddress = any;
+export type UUID = any;
 export type DateTime = any;
 export type PositiveInt = any;
 export type JSON = any;
@@ -139,7 +141,6 @@ export type UnsignedInt = any;
 export type BigInt = any;
 export type Long = any;
 export type Byte = any;
-export type UUID = any;
 export type GUID = any;
 export type Hexadecimal = any;
 export type HexColorCode = any;
