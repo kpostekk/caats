@@ -3,3 +3,13 @@ query App {
 		version
 	}
 }
+
+query User {
+  me {
+    name,
+    email,
+    isSuperuser,
+    picture,
+    groups
+  }
+}

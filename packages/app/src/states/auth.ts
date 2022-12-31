@@ -5,10 +5,17 @@ import { LoginMutation } from '../gql/graphql'
 export type AuthStore = {
   auth?: LoginMutation['authGoogle']
   update: (response: LoginMutation['authGoogle']) => void
+  logout: () => void
 }
 
 export const useAuthStore = create<AuthStore>()(
-  persist((set) => ({ update: (response) => set({ auth: response }) }), {
-    name: 'auth',
-  })
+  persist(
+    (set) => ({
+      update: (response) => set({ auth: response }),
+      logout: () => set({ auth: undefined }),
+    }),
+    {
+      name: 'auth',
+    }
+  )
 )

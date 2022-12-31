@@ -9,6 +9,7 @@ import { Settings } from './pages/Settings/Settings'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { App } from './pages/App'
+import { Logout } from './pages/Logout'
 
 export const router = createBrowserRouter([
   {
@@ -17,11 +18,15 @@ export const router = createBrowserRouter([
     errorElement: <NotFoundGlobal />,
   },
   {
-    path: '/login',
+    path: '/login/',
     element: <Login />,
   },
   {
-    path: '/app',
+    path: '/logout/',
+    element: <Logout />,
+  },
+  {
+    path: '/app/',
     element: <Auth />,
     children: [
       {
@@ -33,7 +38,7 @@ export const router = createBrowserRouter([
             element: <Dashboard />,
           },
           {
-            path: '/app/settings',
+            path: '/app/settings/',
             element: <Settings />,
             children: [
               {
@@ -65,7 +70,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/app/settings/groups',
+                path: '/app/settings/groups/',
                 element: <SettingsGroups />,
               },
             ],

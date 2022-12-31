@@ -1,9 +1,13 @@
+import { useEffect } from 'react'
 import { HiAdjustments, HiLogout, HiMenu, HiTemplate, HiViewGrid } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
+import { useGqlClient } from '../components/useGqlClient/useGqlClient'
+import { useUserQuery } from '../gql/react-query'
 import { useAuthStore } from '../states/auth'
 
 export function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
+
 
   return (
     <div>
@@ -38,7 +42,7 @@ export function App() {
             </button>
             <ul className="dropdown-content menu bg-base-100 w-52 p-2 shadow-xl">
               <li>
-                <Link to="/logout">
+                <Link to="/logout/">
                   <HiLogout /> Wyloguj się
                 </Link>
               </li>

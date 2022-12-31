@@ -216,6 +216,11 @@ export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
 
+export type UserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserQuery = { __typename?: 'Query', me: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string> } };
+
 export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -260,6 +265,31 @@ export const useAppQuery = <
     useQuery<AppQuery, TError, TData>(
       variables === undefined ? ['App'] : ['App', variables],
       fetcher<AppQuery, AppQueryVariables>(client, AppDocument, variables, headers),
+      options
+    );
+export const UserDocument = `
+    query User {
+  me {
+    name
+    email
+    isSuperuser
+    picture
+    groups
+  }
+}
+    `;
+export const useUserQuery = <
+      TData = UserQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: UserQueryVariables,
+      options?: UseQueryOptions<UserQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<UserQuery, TError, TData>(
+      variables === undefined ? ['User'] : ['User', variables],
+      fetcher<UserQuery, UserQueryVariables>(client, UserDocument, variables, headers),
       options
     );
 export const AllNextEventsDocument = `
