@@ -67,4 +67,26 @@ export class BrowserService {
       ...skipTake,
     })
   }
+
+  async getGroupsList() {
+    const groups = await this.prisma.$queryRaw<{ group: string }[]>`
+      SELECT "group"
+      FROM (SELECT DISTINCT unnest(groups) as "group" FROM "TimetableEvent") as UnnestedGroups
+      ORDER BY "group"
+    `
+
+    return Array.from(groups.flatMap((g) => g.group))
+  }
+
+  async autocompleteGroups(query: string) {
+    const groups = await this.prisma.$queryRaw<{ group: string }[]>`
+      SELECT "group"
+      FROM (SELECT DISTINCT unnest(groups) as "group" FROM "TimetableEvent") as UnnestedGroups
+      WHERE string_to_array(lower("group"), ' ') @> string_to_array(lower(${query}), ' ')
+      ORDER BY "group"
+      LIMIT 25
+    `
+
+    return Array.from(groups.flatMap((g) => g.group))
+  }
 }

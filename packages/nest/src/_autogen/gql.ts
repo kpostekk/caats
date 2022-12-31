@@ -59,6 +59,8 @@ export interface IQuery {
     getScheduleUser(sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
     getScheduleGroups(groups: GroupInput, sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
     getScheduleHosts(host: HostInput, sinceUntil?: Nullable<SinceUntil>, skipTake?: Nullable<SkipTake>): ScheduleEvent[] | Promise<ScheduleEvent[]>;
+    getGroups(): Nullable<string[]> | Promise<Nullable<string[]>>;
+    autocompleteGroups(query: string): Nullable<string[]> | Promise<Nullable<string[]>>;
     getTasks(): Task[] | Promise<Task[]>;
     getTaskCollection(collection: TaskCollection): JSON[] | Promise<JSON[]>;
     me(): User | Promise<User>;

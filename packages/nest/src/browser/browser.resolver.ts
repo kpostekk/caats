@@ -34,4 +34,14 @@ export class BrowserResolver {
     )
     return result.map((r) => ({ ...r, subject: r.name }))
   }
+
+  @Query()
+  getGroups() {
+    return this.browser.getGroupsList()
+  }
+
+  @Query()
+  autocompleteGroups(@Args('query') query: string) {
+    return this.browser.autocompleteGroups(query)
+  }
 }

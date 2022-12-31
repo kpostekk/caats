@@ -48,4 +48,8 @@ type Query {
   getScheduleGroups(groups: GroupInput!, sinceUntil: SinceUntil, skipTake: SkipTake): [ScheduleEvent!]!
   "Returns all schedule events for the given host."
   getScheduleHosts(host: HostInput!, sinceUntil: SinceUntil, skipTake: SkipTake): [ScheduleEvent!]!
+
+  getGroups: [String!]
+
+  autocompleteGroups(query: String!): [String!]
 }
