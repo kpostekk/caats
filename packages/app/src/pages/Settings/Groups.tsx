@@ -8,6 +8,7 @@ import {
   useGetCurrentGroupsQuery,
 } from '../../gql/react-query'
 import { useDebounce } from 'react-use'
+import { GroupsAutocomplete } from '../../components/GroupsAutocomplete/GroupsAutocomplete'
 
 export function SettingsGroups() {
   const client = useGqlClient()
@@ -25,7 +26,7 @@ export function SettingsGroups() {
     () => {
       mutateGroups.mutate({ groups })
     },
-    120,
+    200,
     [groups]
   )
 

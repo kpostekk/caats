@@ -7,3 +7,7 @@ query GetCurrentGroups {
     groups
   }
 }
+
+query GetGroupsAutoComplete($search: String!) {
+  autocompleteGroups(query: $search)
+}

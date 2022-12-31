@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
-import { HiBackspace } from 'react-icons/hi'
+import { HiBackspace, HiPlus } from 'react-icons/hi'
 import { useList } from 'react-use'
+import { GroupsAutocomplete } from '../GroupsAutocomplete/GroupsAutocomplete'
 
 export type InputListProps = {
   initialItems: string[]
@@ -24,12 +25,16 @@ export function InputList(props: InputListProps) {
       <ul className="space-y-2">
         {items.map((val, i) => (
           <li key={i} className="flex items-center gap-1">
-            <input
-              className="input input-bordered input-sm"
+            {/* <GroupsAutocomplete
+              // className="input input-bordered input-sm"
               value={val ?? ''}
               onChange={({ currentTarget }) => updateAt(i, currentTarget.value)}
+            /> */}
+            <GroupsAutocomplete
+              value={val ?? ''}
+              onChange={(v) => updateAt(i, v)}
             />
-            <button className="btn btn-sm" onClick={() => removeAt(i)}>
+            <button className="btn" onClick={() => removeAt(i)}>
               <HiBackspace className="mr-2" /> usuń
             </button>
           </li>
@@ -44,7 +49,7 @@ export function InputList(props: InputListProps) {
             if (items[items.length - 1] !== '') push('')
           }}
         >
-          Dodaj pole
+          <HiPlus className="mr-2" /> Dodaj pole
         </button>
       </div>
     </div>

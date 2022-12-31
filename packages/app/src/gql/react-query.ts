@@ -94,6 +94,8 @@ export type MutationUpdateTaskStateArgs = {
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
+  autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
   getScheduleGroups: Array<ScheduleEvent>;
   /** Returns all schedule events for the given host. */
@@ -103,6 +105,11 @@ export type Query = {
   getTaskCollection: Array<Scalars['JSON']>;
   getTasks: Array<Task>;
   me: User;
+};
+
+
+export type QueryAutocompleteGroupsArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -247,6 +254,13 @@ export type GetCurrentGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCurrentGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
 
+export type GetGroupsAutoCompleteQueryVariables = Exact<{
+  search: Scalars['String'];
+}>;
+
+
+export type GetGroupsAutoCompleteQuery = { __typename?: 'Query', autocompleteGroups?: Array<string> | null };
+
 
 export const AppDocument = `
     query App {
@@ -382,5 +396,24 @@ export const useGetCurrentGroupsQuery = <
     useQuery<GetCurrentGroupsQuery, TError, TData>(
       variables === undefined ? ['GetCurrentGroups'] : ['GetCurrentGroups', variables],
       fetcher<GetCurrentGroupsQuery, GetCurrentGroupsQueryVariables>(client, GetCurrentGroupsDocument, variables, headers),
+      options
+    );
+export const GetGroupsAutoCompleteDocument = `
+    query GetGroupsAutoComplete($search: String!) {
+  autocompleteGroups(query: $search)
+}
+    `;
+export const useGetGroupsAutoCompleteQuery = <
+      TData = GetGroupsAutoCompleteQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetGroupsAutoCompleteQueryVariables,
+      options?: UseQueryOptions<GetGroupsAutoCompleteQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetGroupsAutoCompleteQuery, TError, TData>(
+      ['GetGroupsAutoComplete', variables],
+      fetcher<GetGroupsAutoCompleteQuery, GetGroupsAutoCompleteQueryVariables>(client, GetGroupsAutoCompleteDocument, variables, headers),
       options
     );
