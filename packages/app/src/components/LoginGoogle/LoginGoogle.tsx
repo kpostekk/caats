@@ -6,7 +6,7 @@ import { useLoginMutation } from '../../gql/react-query'
 import { useAuthStore } from '../../states/auth'
 import { useGqlClient } from '../useGqlClient/useGqlClient'
 
-function useThreeState() {
+function useTripleBoolean() {
   const [state, setState] = useState<boolean | null>(null)
 
   return {
@@ -16,11 +16,15 @@ function useThreeState() {
   }
 }
 
-export function LoginGoogle() {
+export type LoginGoogleProps = {
+  redirect?: string
+}
+
+export function LoginGoogle(props: LoginGoogleProps) {
   const client = useGqlClient()
   const navigate = useNavigate()
   const [loggingIn, setLoggingIn] = useState(false)
-  const loginState = useThreeState()
+  const loginState = useTripleBoolean()
   const updateAuth = useAuthStore(({ update }) => update)
   const isLoggedInAlready = useAuthStore(({ auth }) => !!auth)
   const loginMutation = useLoginMutation(client, {
@@ -28,7 +32,7 @@ export function LoginGoogle() {
       updateAuth(response.authGoogle)
       loginState.success()
       setLoggingIn(false)
-      navigate('/app')
+      navigate(props.redirect ?? '/app')
     },
     onError: () => loginState.failure(),
   })
