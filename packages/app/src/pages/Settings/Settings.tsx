@@ -15,7 +15,7 @@ function SettingsLink(props: LinkProps) {
 export function Settings() {
   return (
     <div>
-      <div className="mx-auto grid max-w-4xl grid-cols-3 gap-4">
+      <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
         <div className="card bg-base-200 card-bordered col-span-1 p-4">
           <SettingsLink to="/app/settings">
             <HiCog />
@@ -32,7 +32,7 @@ export function Settings() {
             Konto
           </Link> */}
         </div>
-        <div className="card card-bordered col-span-2 p-4">
+        <div className="card card-bordered p-4 md:col-span-2">
           <Outlet />
         </div>
       </div>

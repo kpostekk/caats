@@ -35,10 +35,10 @@ export function GroupsAutocomplete(props: GroupsAutocompleteProps) {
   )
 
   return (
-    <div>
+    <div className="w-2/3">
       <Combobox value={inputValue} onChange={setInputValue}>
         <Combobox.Input
-          className="input input-bordered"
+          className="input input-bordered w-full"
           onChange={(event) => setInputValue(event.target.value)}
         />
         <Combobox.Options className="card card-bordered bg-base-100 absolute list-none p-2">

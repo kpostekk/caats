@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { HiBackspace, HiPlus } from 'react-icons/hi'
 import { useList } from 'react-use'
 import { GroupsAutocomplete } from '../GroupsAutocomplete/GroupsAutocomplete'
@@ -22,7 +22,7 @@ export function InputList(props: InputListProps) {
 
   return (
     <div className="my-2 space-y-2">
-      <ul className="space-y-2">
+      <ul className="space-y-2 pl-0">
         {items.map((val, i) => (
           <li key={i} className="flex items-center gap-1">
             {/* <GroupsAutocomplete
