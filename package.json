@@ -10,5 +10,9 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "scripts": {
+    "dev-app": "yarn workspace @caats/app dev",
+    "dev-nest": "yarn workspace @caats/nest dev"
   }
 }
