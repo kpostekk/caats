@@ -235,6 +235,21 @@ export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllNextEventsQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null }> };
 
+export type NextEventsCalQueryVariables = Exact<{
+  start: Scalars['DateTime'];
+  end: Scalars['DateTime'];
+}>;
+
+
+export type NextEventsCalQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, code: string, type: string }> };
+
+export type NextEventsDashQueryVariables = Exact<{
+  now: Scalars['DateTime'];
+}>;
+
+
+export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null }> };
+
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
@@ -332,6 +347,55 @@ export const useAllNextEventsQuery = <
     useQuery<AllNextEventsQuery, TError, TData>(
       variables === undefined ? ['AllNextEvents'] : ['AllNextEvents', variables],
       fetcher<AllNextEventsQuery, AllNextEventsQueryVariables>(client, AllNextEventsDocument, variables, headers),
+      options
+    );
+export const NextEventsCalDocument = `
+    query NextEventsCal($start: DateTime!, $end: DateTime!) {
+  getScheduleUser(sinceUntil: {since: $start, until: $end}) {
+    startsAt
+    code
+    type
+  }
+}
+    `;
+export const useNextEventsCalQuery = <
+      TData = NextEventsCalQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: NextEventsCalQueryVariables,
+      options?: UseQueryOptions<NextEventsCalQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<NextEventsCalQuery, TError, TData>(
+      ['NextEventsCal', variables],
+      fetcher<NextEventsCalQuery, NextEventsCalQueryVariables>(client, NextEventsCalDocument, variables, headers),
+      options
+    );
+export const NextEventsDashDocument = `
+    query NextEventsDash($now: DateTime!) {
+  getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 4}) {
+    startsAt
+    endsAt
+    subject
+    code
+    type
+    room
+  }
+}
+    `;
+export const useNextEventsDashQuery = <
+      TData = NextEventsDashQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: NextEventsDashQueryVariables,
+      options?: UseQueryOptions<NextEventsDashQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<NextEventsDashQuery, TError, TData>(
+      ['NextEventsDash', variables],
+      fetcher<NextEventsDashQuery, NextEventsDashQueryVariables>(client, NextEventsDashDocument, variables, headers),
       options
     );
 export const LoginDocument = `

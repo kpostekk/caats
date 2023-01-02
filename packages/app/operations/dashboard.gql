@@ -8,3 +8,23 @@ query AllNextEvents {
     room
   }
 }
+
+query NextEventsCal($start: DateTime!, $end: DateTime!) {
+  getScheduleUser(sinceUntil: { since: $start, until: $end}) {
+    startsAt
+    code
+    type
+  }
+}
+
+query NextEventsDash($now: DateTime!) {
+  getScheduleUser(sinceUntil: { since: $now }, skipTake: { take: 4 }) {
+    startsAt
+    endsAt
+    subject
+    code
+    type
+    room
+  }
+}
+
