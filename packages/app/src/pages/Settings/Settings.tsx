@@ -12,7 +12,7 @@ function SettingsLink(props: LinkProps) {
   return <Link {...props} className="link-hover flex items-center gap-2" />
 }
 
-export function Settings() {
+export default function Settings() {
   return (
     <div>
       <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">

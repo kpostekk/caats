@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 
-export function NotFoundGlobal() {
+export default function NotFound() {
   const { pathname } = useLocation()
 
   return (

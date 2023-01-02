@@ -1,21 +1,23 @@
 import { HiBeaker, HiQuestionMarkCircle } from 'react-icons/hi'
 import { createBrowserRouter } from 'react-router-dom'
-import { NotFoundGlobal } from './pages/404'
 import { Auth } from './Auth'
-import { InputList } from './components/InputList/InputList'
-import { Dashboard } from './pages/Dashboard'
-import { SettingsGroups } from './pages/Settings/Groups'
-import { Settings } from './pages/Settings/Settings'
-import { Home } from './pages/Home'
-import { Login } from './pages/Login'
-import { App } from './pages/App'
-import { Logout } from './pages/Logout'
+import { lazy } from 'react'
+
+const Home = lazy(() => import('./pages/Home'))
+const NotFound = lazy(() => import('./pages/404'))
+const Login = lazy(() => import('./pages/Login'))
+const Logout = lazy(() => import('./pages/Logout'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const App = lazy(() => import('./pages/App'))
+const Settings = lazy(() => import('./pages/Settings/Settings'))
+const SettingsGroups = lazy(() => import('./pages/Settings/Groups'))
+const Schedule = lazy(() => import('./pages/Schedule'))
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
-    errorElement: <NotFoundGlobal />,
+    errorElement: <NotFound />,
   },
   {
     path: '/login/',
@@ -74,6 +76,10 @@ export const router = createBrowserRouter([
                 element: <SettingsGroups />,
               },
             ],
+          },
+          {
+            path: '/app/schedule',
+            element: <Schedule />,
           },
         ],
       },

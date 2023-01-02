@@ -1,4 +1,4 @@
-import { useAppQuery } from '../gql/react-query'
+import { lazy, Suspense } from 'react'
 import {
   FaArrowDown,
   FaBookOpen,
@@ -7,12 +7,10 @@ import {
   FaGithub,
 } from 'react-icons/fa'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
-import { useGqlClient } from '../components/useGqlClient/useGqlClient'
 
-export function Home() {
-  const client = useGqlClient()
-  const appQuery = useAppQuery(client)
+const AppVersion = lazy(() => import('../components/AppVersion'))
 
+export default function Home() {
   return (
     <div className="min-h-screen w-full">
       <div className="grid h-screen w-full place-content-center place-items-center gap-4 sm:grid-cols-1 md:grid-cols-2 md:p-24 lg:p-64">
@@ -21,13 +19,9 @@ export function Home() {
           <p className="my-2 text-xl font-semibold">
             Cats as a Timetable Service
           </p>
-          {appQuery.data ? (
-            <p className="text-base-300 my-2">
-              nest: v{appQuery.data.app?.version}, app: v{APP_VERSION}
-            </p>
-          ) : (
-            <div className="bg-base-300 h-2 w-1/3 animate-pulse rounded" />
-          )}
+          <Suspense>
+            <AppVersion />
+          </Suspense>
         </div>
         <div className="flex flex-col gap-2">
           <LoginGoogle />

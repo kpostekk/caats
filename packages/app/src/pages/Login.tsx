@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 import { useAuthStore } from '../states/auth'
 
-export function Login() {
+export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const params = useMemo(

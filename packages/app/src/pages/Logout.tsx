@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 import { useAuthStore } from '../states/auth'
 
-export function Logout() {
+export default function Logout() {
   const logout = useAuthStore(({ logout }) => logout)
 
   useEffect(() => logout(), [logout])

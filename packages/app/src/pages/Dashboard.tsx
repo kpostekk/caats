@@ -1,5 +1,9 @@
 import { useAuthStore } from '../states/auth'
-import { useAllNextEventsQuery } from '../gql/react-query'
+import {
+  useAllNextEventsQuery,
+  useNextEventsCalQuery,
+  useNextEventsDashQuery,
+} from '../gql/react-query'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
 import {
@@ -9,6 +13,12 @@ import {
   HiUserGroup,
 } from 'react-icons/hi'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
+import {
+  Calendar,
+  CalendarProvider,
+  CalendarEvent,
+} from '../components/Calendar/Calendar'
+import { useMemo, useState } from 'react'
 
 function Greeting() {
   const [userName] = useAuthStore(({ auth }) => [
@@ -54,13 +64,16 @@ function Greeting() {
   return <>Cześć, {name}</>
 }
 
-export function Dashboard() {
+export default function Dashboard() {
   const token = useAuthStore(({ auth }) => auth?.accessToken)
   const client = useGqlClient()
-  const events = useAllNextEventsQuery(client)
+  const [now] = useState(DateTime.now())
+  const events = useNextEventsDashQuery(client, {
+    now: now.toISO(),
+  })
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">
+    <div className="mx-auto grid max-w-6xl gap-4 py-4 md:grid-cols-3">
       <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
         <div className="card card-bordered md:col-span-2">
           <div className="card-body prose">
@@ -70,7 +83,7 @@ export function Dashboard() {
           </div>
         </div>
         {events.data ? (
-          events.data.getScheduleUser.slice(0, 4).map((ev, i) => (
+          events.data.getScheduleUser.map((ev, i) => (
             <div className="card card-bordered" key={i}>
               <div className="card-body">
                 <h3 className="text-xl font-bold">{ev.code}</h3>

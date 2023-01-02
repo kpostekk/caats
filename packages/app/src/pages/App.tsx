@@ -1,23 +1,19 @@
-import { useEffect } from 'react'
-import { HiAdjustments, HiLogout, HiMenu, HiTemplate, HiViewGrid } from 'react-icons/hi'
+import { HiAdjustments, HiLogout, HiMenu, HiTemplate } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
-import { useGqlClient } from '../components/useGqlClient/useGqlClient'
-import { useUserQuery } from '../gql/react-query'
 import { useAuthStore } from '../states/auth'
 
-export function App() {
+export default function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
-
 
   return (
     <div>
-      <div className="navbar border-b-base-200 bg-base-100/75 sticky top-0 z-50 mb-2 border-b backdrop-blur-sm">
+      <div className="navbar border-b-base-200 bg-base-100/75 sticky top-0 z-50 border-b backdrop-blur-sm">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
             <button className="btn btn-ghost">
               <HiMenu />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 shadow-xl">
               <li>
                 <Link to="/app">
                   <HiTemplate /> Kokpit
@@ -33,14 +29,14 @@ export function App() {
           </div>
         </div>
         <div className="navbar-center">
-          <h1 className="select-none text-3xl font-bold">CaaTS</h1>
+          <h1 className="select-none text-2xl font-bold">CaaTS</h1>
         </div>
         <div className="navbar-end">
           <div className="dropdown dropdown-end dropdown-hover">
             <button className="btn btn-ghost btn-square aspect-square p-1">
               <img src={picture ?? undefined} />
             </button>
-            <ul className="dropdown-content menu bg-base-100 w-52 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 w-44 p-1 shadow-xl">
               <li>
                 <Link to="/logout/">
                   <HiLogout /> Wyloguj się
@@ -50,7 +46,7 @@ export function App() {
           </div>
         </div>
       </div>
-      <div className="p-4">
+      <div className="relative h-[calc(100vh-4rem-2px)]">
         <Outlet />
       </div>
     </div>

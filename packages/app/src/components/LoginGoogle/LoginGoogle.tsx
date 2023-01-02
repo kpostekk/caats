@@ -1,4 +1,4 @@
-import { useGoogleLogin } from '@react-oauth/google'
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google'
 import { useState } from 'react'
 import { FaGoogle, FaSpinner } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
@@ -20,7 +20,7 @@ export type LoginGoogleProps = {
   redirect?: string
 }
 
-export function LoginGoogle(props: LoginGoogleProps) {
+export function LoginButton(props: LoginGoogleProps) {
   const client = useGqlClient()
   const navigate = useNavigate()
   const [loggingIn, setLoggingIn] = useState(false)
@@ -56,26 +56,32 @@ export function LoginGoogle(props: LoginGoogleProps) {
     )
 
   return (
-    <>
-      <button
-        className={
-          loginState.state === null
-            ? 'btn'
-            : loginState.state
-            ? 'btn btn-success'
-            : 'btn btn-error'
-        }
-        onClick={() => {
-          setLoggingIn(true)
-          googleLogin()
-        }}
-        disabled={loggingIn}
-      >
-        <div className="mr-2">
-          {loggingIn ? <FaSpinner className="animate-spin" /> : <FaGoogle />}
-        </div>
-        Zaloguj się
-      </button>
-    </>
+    <button
+      className={
+        loginState.state === null
+          ? 'btn'
+          : loginState.state
+          ? 'btn btn-success'
+          : 'btn btn-error'
+      }
+      onClick={() => {
+        setLoggingIn(true)
+        googleLogin()
+      }}
+      disabled={loggingIn}
+    >
+      <div className="mr-2">
+        {loggingIn ? <FaSpinner className="animate-spin" /> : <FaGoogle />}
+      </div>
+      Zaloguj się
+    </button>
+  )
+}
+
+export const LoginGoogle = (props: LoginGoogleProps) => {
+  return (
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENTID}>
+      <LoginButton {...props} />
+    </GoogleOAuthProvider>
   )
 }

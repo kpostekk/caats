@@ -10,7 +10,7 @@ import {
 import { useDebounce } from 'react-use'
 import { GroupsAutocomplete } from '../../components/GroupsAutocomplete/GroupsAutocomplete'
 
-export function SettingsGroups() {
+export default function SettingsGroups() {
   const client = useGqlClient()
   const [groups, setGroups] = useState<string[]>([])
   useGetCurrentGroupsQuery(
