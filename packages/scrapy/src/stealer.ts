@@ -1,4 +1,4 @@
-import { createHash } from 'crypto'
+import { createHash, getHashes } from 'crypto'
 import got from 'got'
 import parse from 'node-html-parser'
 
@@ -50,7 +50,7 @@ export class Stealer {
       pageBody = body.removeWhitespace().toString() // sanitization
     }
 
-    const dateHash = createHash('sha2').update(pageBody).digest('hex')
+    const dateHash = createHash('sha1').update(pageBody).digest('base64url')
     console.log({ targetDate: this.targetDate, dateHash })
 
     if (dateHash === this.lastResultHash) {

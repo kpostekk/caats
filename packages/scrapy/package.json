@@ -32,6 +32,7 @@
     "got": "11",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",
+    "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.11.2",
     "node-html-parser": "^6.1.4",
     "yargs": "^17.6.2"

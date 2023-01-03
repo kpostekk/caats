@@ -37,7 +37,8 @@ async function checkForTasks(client: GraphQLClient, rate = 16) {
       results: r,
     })
   } catch (e) {
-    await sdk.failTask({ id: task.id }).catch(console.error)
+    console.error(e)
+    await sdk.failTask({ id: task.id }).catch((e) => console.error(e))
     return 'failed'
   }
 
