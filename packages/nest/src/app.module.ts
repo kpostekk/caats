@@ -12,6 +12,8 @@ import Joi from 'joi'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { BrowserModule } from './browser/browser.module'
 import { resolvers, typeDefs } from 'graphql-scalars'
+import { IcsModule } from './ics/ics.module';
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
@@ -34,6 +36,7 @@ import { resolvers, typeDefs } from 'graphql-scalars'
       typeDefs,
       resolvers,
     }),
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'app', 'dist'),
     }),

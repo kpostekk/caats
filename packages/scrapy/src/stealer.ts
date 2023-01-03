@@ -50,7 +50,10 @@ export class Stealer {
       pageBody = body.removeWhitespace().toString() // sanitization
     }
 
-    const dateHash = createHash('sha1').update(pageBody).digest('base64url')
+    const dateHash = createHash('sha1')
+      .update(pageBody)
+      .digest('base64url')
+      .slice(0, 8)
     console.log({ targetDate: this.targetDate, dateHash })
 
     if (dateHash === this.lastResultHash) {

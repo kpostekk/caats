@@ -34,6 +34,7 @@
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/mercurius": "^10.1.7",
     "@nestjs/platform-fastify": "^9.0.0",
+    "@nestjs/schedule": "^2.1.0",
     "@nestjs/serve-static": "^3.0.0",
     "@ngneat/falso": "^6.3.2",
     "@prisma/client": "^4.8.0",

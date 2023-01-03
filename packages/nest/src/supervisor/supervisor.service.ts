@@ -1,8 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { Prisma, TaskStatus } from '@prisma/client'
+import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
+import { Interval, SchedulerRegistry } from '@nestjs/schedule'
+import { Duration } from 'luxon'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
@@ -10,11 +12,13 @@ export class SupervisorService implements OnModuleInit {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly parser: ParserService
+    private readonly parser: ParserService,
+    private readonly scheduler: SchedulerRegistry
   ) {}
 
   async onModuleInit() {
-    await this.createTasks()
+    await this.invalidateCorruptedTasks()
+    await this.createTasks(7, 1)
   }
 
   getPendingTasks() {
@@ -30,7 +34,9 @@ export class SupervisorService implements OnModuleInit {
       where: { id },
       data: {
         status: state,
-        finishedAt: !['PENDING', 'RUNNING'].includes(state) && new Date(),
+        finishedAt: !['PENDING', 'RUNNING'].includes(state)
+          ? new Date()
+          : undefined,
       },
     })
   }
@@ -134,8 +140,8 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
-  async createTasks() {
-    const [cancelled, failed] = await this.prisma.$transaction([
+  async invalidateCorruptedTasks() {
+    await this.prisma.$transaction([
       this.prisma.task.updateMany({
         where: { status: 'PENDING' },
         data: { status: 'CANCELLED' },
@@ -148,10 +154,14 @@ export class SupervisorService implements OnModuleInit {
         where: { NOT: { status: 'SUCCESS' } },
       }),
     ])
+  }
 
-    const initialDate = DateTime.now().startOf('day')
+  async createTasks(forwardDays = 30, backwardDays = 7) {
+    const initialDate = DateTime.local({ zone: 'UTC' })
+      .startOf('day')
+      .minus({ days: backwardDays })
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < forwardDays + backwardDays; i++) {
       const iterDate = initialDate.plus({ days: i }).toJSDate()
 
       const lastTask = await this.prisma.task.findFirst({
@@ -167,7 +177,34 @@ export class SupervisorService implements OnModuleInit {
           initialHash: lastTask?.finalHash,
         },
       })
+
+      this.logger.debug(`Created task for ${iterDate.toISOString()}!`)
     }
+  }
+
+  @Interval('periodic', Duration.fromObject({ seconds: 2 }).as('milliseconds'))
+  async periodicTaskCreation() {
+    const pendingTasks = await this.prisma.task.count({
+      where: { status: 'PENDING' },
+    })
+
+    if (pendingTasks >= 21) return
+
+    this.logger.verbose('Creating new tasks (periodic)...')
+    await this.createTasks(28, 0)
+    this.scheduler.deleteInterval('periodic')
+    this.scheduler.addInterval(
+      'periodic',
+      Duration.fromObject({ minutes: 10 + Math.random() * 50 }).as(
+        'milliseconds'
+      )
+    )
+    const next = this.scheduler.getInterval('periodic') as number
+    this.logger.verbose(
+      `Next periodic task creation in ${Duration.fromMillis(next)
+        .rescale()
+        .toHuman()}`
+    )
   }
 
   getTaskQueue() {
