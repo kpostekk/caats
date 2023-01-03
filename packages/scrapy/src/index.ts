@@ -4,6 +4,9 @@ import { hideBin } from 'yargs/helpers'
 import { getSdk } from './gql/sdk'
 import { Stealer } from './stealer'
 
+process.on('SIGINT', () => process.exit(1))
+process.on('SIGTERM', () => process.exit(1))
+
 async function checkForTasks(client: GraphQLClient, rate = 16) {
   const sdk = getSdk(client)
   const tasks = await sdk.getTasks()
@@ -16,13 +19,6 @@ async function checkForTasks(client: GraphQLClient, rate = 16) {
   await sdk.updateTaskState({
     id: task.id,
   })
-
-  const failAndExit = () => {
-    sdk.failTask({ id: task.id }).then(() => process.exit(0))
-  }
-
-  process.on('SIGINT', failAndExit)
-  process.on('SIGTERM', failAndExit)
 
   try {
     const r = await new Stealer(task.date, task.hash ?? undefined, rate).steal()
@@ -41,9 +37,6 @@ async function checkForTasks(client: GraphQLClient, rate = 16) {
     await sdk.failTask({ id: task.id }).catch((e) => console.error(e))
     return 'failed'
   }
-
-  process.removeListener('SIGINT', failAndExit)
-  process.removeListener('SIGTERM', failAndExit)
 
   return 'succeeded'
 }
@@ -73,9 +66,6 @@ yargs(hideBin(process.argv))
       while (true) {
         const disposition = await checkForTasks(gqlClient, rate)
 
-        process.on('SIGINT', process.exit)
-        process.on('SIGTERM', process.exit)
-
         if (disposition === 'skipped') {
           console.log('Task skipped! (╯°□°）╯︵ ┻━┻')
           await new Promise((r) => setTimeout(r, 250))
@@ -89,9 +79,6 @@ yargs(hideBin(process.argv))
           console.log('Task succeeded! o((>ω< ))o')
           await new Promise((r) => setTimeout(r, 500))
         }
-
-        process.removeListener('SIGINT', process.exit)
-        process.removeListener('SIGTERM', process.exit)
       }
     }
   )
