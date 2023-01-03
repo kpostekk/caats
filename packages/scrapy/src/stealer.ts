@@ -1,4 +1,4 @@
-import { createHash, getHashes } from 'crypto'
+import { createHash } from 'crypto'
 import got from 'got'
 import parse from 'node-html-parser'
 

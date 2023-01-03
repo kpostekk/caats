@@ -25,10 +25,13 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
-  updateTaskState(id: number, state: TaskStatus) {
-    return this.prisma.task.update({
+  async updateTaskState(id: number, state: TaskStatus) {
+    await this.prisma.task.update({
       where: { id },
-      data: { status: state },
+      data: {
+        status: state,
+        finishedAt: !['PENDING', 'RUNNING'].includes(state) && new Date(),
+      },
     })
   }
 
