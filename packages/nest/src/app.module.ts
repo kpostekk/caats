@@ -42,6 +42,7 @@ import { resolvers, typeDefs } from 'graphql-scalars'
     AuthModule,
     SupervisorModule,
     BrowserModule,
+    IcsModule,
   ],
   providers: [AppResolver],
 })

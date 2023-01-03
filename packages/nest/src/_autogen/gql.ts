@@ -87,6 +87,7 @@ export interface IMutation {
     __typename?: 'IMutation';
     authGoogle(code: string): LoginResponse | Promise<LoginResponse>;
     logout(): boolean | Promise<boolean>;
+    createSubscription(groups: Nullable<string>[]): string | Promise<string>;
     updateTaskState(id: string, state: TaskState): boolean | Promise<boolean>;
     finishTask(id: string, result: TaskResult): boolean | Promise<boolean>;
     addGroup(group: string): string[] | Promise<string[]>;

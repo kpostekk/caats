@@ -48,6 +48,7 @@ export type Mutation = {
   addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
+  createSubscription: Scalars['String'];
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
@@ -63,6 +64,11 @@ export type MutationAddGroupArgs = {
 
 export type MutationAuthGoogleArgs = {
   code: Scalars['String'];
+};
+
+
+export type MutationCreateSubscriptionArgs = {
+  groups: Array<InputMaybe<Scalars['String']>>;
 };
 
 
