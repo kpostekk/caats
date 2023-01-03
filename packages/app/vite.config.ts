@@ -49,14 +49,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          react: [
+          lib: [
             'react',
             'react-dom',
             '@tanstack/react-query',
             'react-router-dom',
             'react-use',
+            'zustand',
+            '@headlessui/react',
           ],
           graphql: ['graphql-request', 'graphql'],
+          luxon: ['luxon'],
         },
       },
     },
