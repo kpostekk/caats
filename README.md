@@ -8,14 +8,18 @@
 
 |                                      | CaaTS                                                            | Altapi                                            | Plan Zajęć PJATK                         |
 | ------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------- |
-| Średni czas oczekiwania na zapytania | 12ms                                                             | 112ms                                             | 1481ms                                   |
+| Średni czas oczekiwania na zapytania | <45ms                                                            | <115ms                                            | <620ms (lub <1730ms w ogólnej wersji)    |
 | Wygodna aplikacja webowa             | ✅                                                                | 🤔                                                | ❌                                        |
 | Logowanie i synchronizacja           | ✅                                                                | ❌                                                 | ✅                                        |
-| Wsparcie dla ICS                     | ✅                                                                | ✅                                                 | ⚠️częściowe i niepełne dane              |
-| Wykorzystane technologie             | NestJS, Fastify, Mercurius, Prisma, Postgres, React, TailwindCSS | NestJS, Express, Mongoose, MongoDB, React, NextUI | ASP.NET 4.0, SQL Server 2008, TelerikUI* |
+| Wsparcie dla subskrybcji ICS         | ✅                                                                | ✅                                                 | ❌                                        |
 | Dostęp do API                        | GraphQL                                                          | OpenAPIv3 REST                                    | ❌                                        |
+| Format zapytań                       | GraphQL**                                                        | REST                                              | ViewState*                               |
+| Format odpowiedzi                    | JSON                                                             | JSON                                              | CSV + HTML                               |
+| Wykorzystane technologie             | NestJS, Fastify, Mercurius, Prisma, Postgres, React, TailwindCSS | NestJS, Express, Mongoose, MongoDB, React, NextUI | ASP.NET 4.0, SQL Server 2008, TelerikUI* |
 
 > *zaobserwowany stack technologiczny, może się różnić w rzeczywistości
+> 
+> **nie dotyczy subskrypcji ICS
 
 ### Zmiany w stosunku do Altapi
 
