@@ -31,8 +31,16 @@ export class BrowserService {
         endsAt: {
           lte: sinceUntil?.until && new Date(sinceUntil.until),
         },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
       },
       ...skipTake,
+      orderBy: {
+        startsAt: 'asc',
+      },
     })
   }
 
@@ -52,8 +60,16 @@ export class BrowserService {
         endsAt: {
           lte: sinceUntil?.until,
         },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
       },
       ...skipTake,
+      orderBy: {
+        startsAt: 'asc',
+      },
     })
   }
 
@@ -69,8 +85,16 @@ export class BrowserService {
         endsAt: {
           lte: sinceUntil?.until,
         },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
       },
       ...skipTake,
+      orderBy: {
+        startsAt: 'asc',
+      },
     })
   }
 
