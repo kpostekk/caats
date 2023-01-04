@@ -86,6 +86,8 @@ model TimetableEvent {
     room      String?
     groups    String[]
     hosts     String[]
+
+    @@index([startsAt(sort: Asc), code(sort: Asc), groups(sort: Asc)])
 }
 
 model IcsSubscriptions {
