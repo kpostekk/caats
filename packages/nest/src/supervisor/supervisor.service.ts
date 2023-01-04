@@ -3,7 +3,12 @@ import { PrismaService } from '../prisma/prisma.service'
 import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
-import { Interval, SchedulerRegistry } from '@nestjs/schedule'
+import {
+  Cron,
+  CronExpression,
+  Interval,
+  SchedulerRegistry,
+} from '@nestjs/schedule'
 import { Duration } from 'luxon'
 
 @Injectable()
@@ -18,7 +23,6 @@ export class SupervisorService implements OnModuleInit {
 
   async onModuleInit() {
     await this.invalidateCorruptedTasks()
-    await this.createTasks(7, 1)
   }
 
   getPendingTasks() {
@@ -177,12 +181,10 @@ export class SupervisorService implements OnModuleInit {
           initialHash: lastTask?.finalHash,
         },
       })
-
-      this.logger.debug(`Created task for ${iterDate.toISOString()}!`)
     }
   }
 
-  @Interval('periodic', Duration.fromObject({ seconds: 2 }).as('milliseconds'))
+  @Cron('*/10 7-22 * * *')
   async periodicTaskCreation() {
     const pendingTasks = await this.prisma.task.count({
       where: { status: 'PENDING' },
@@ -190,21 +192,7 @@ export class SupervisorService implements OnModuleInit {
 
     if (pendingTasks >= 21) return
 
-    this.logger.verbose('Creating new tasks (periodic)...')
-    await this.createTasks(28, 0)
-    this.scheduler.deleteInterval('periodic')
-    this.scheduler.addInterval(
-      'periodic',
-      Duration.fromObject({ minutes: 10 + Math.random() * 50 }).as(
-        'milliseconds'
-      )
-    )
-    const next = this.scheduler.getInterval('periodic') as number
-    this.logger.verbose(
-      `Next periodic task creation in ${Duration.fromMillis(next)
-        .rescale()
-        .toHuman()}`
-    )
+    await this.createTasks(35, 0)
   }
 
   getTaskQueue() {
