@@ -192,7 +192,7 @@ export class SupervisorService implements OnModuleInit {
 
     if (pendingTasks >= 21) return
 
-    await this.createTasks(35, 0)
+    await this.createTasks(7 * 12, 0)
   }
 
   getTaskQueue() {
