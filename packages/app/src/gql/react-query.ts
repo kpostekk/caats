@@ -241,6 +241,13 @@ export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AllNextEventsQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null }> };
 
+export type AllEventsSinceQueryVariables = Exact<{
+  since: Scalars['DateTime'];
+}>;
+
+
+export type AllEventsSinceQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null, hosts: Array<string> }> };
+
 export type NextEventsCalQueryVariables = Exact<{
   start: Scalars['DateTime'];
   end: Scalars['DateTime'];
@@ -254,7 +261,7 @@ export type NextEventsDashQueryVariables = Exact<{
 }>;
 
 
-export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null }> };
+export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, code: string, type: string, room?: string | null }> };
 
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
@@ -355,6 +362,33 @@ export const useAllNextEventsQuery = <
       fetcher<AllNextEventsQuery, AllNextEventsQueryVariables>(client, AllNextEventsDocument, variables, headers),
       options
     );
+export const AllEventsSinceDocument = `
+    query AllEventsSince($since: DateTime!) {
+  getScheduleUser(sinceUntil: {since: $since}) {
+    startsAt
+    endsAt
+    subject
+    code
+    type
+    room
+    hosts
+  }
+}
+    `;
+export const useAllEventsSinceQuery = <
+      TData = AllEventsSinceQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: AllEventsSinceQueryVariables,
+      options?: UseQueryOptions<AllEventsSinceQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<AllEventsSinceQuery, TError, TData>(
+      ['AllEventsSince', variables],
+      fetcher<AllEventsSinceQuery, AllEventsSinceQueryVariables>(client, AllEventsSinceDocument, variables, headers),
+      options
+    );
 export const NextEventsCalDocument = `
     query NextEventsCal($start: DateTime!, $end: DateTime!) {
   getScheduleUser(sinceUntil: {since: $start, until: $end}) {
@@ -382,8 +416,6 @@ export const NextEventsDashDocument = `
     query NextEventsDash($now: DateTime!) {
   getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 4}) {
     startsAt
-    endsAt
-    subject
     code
     type
     room

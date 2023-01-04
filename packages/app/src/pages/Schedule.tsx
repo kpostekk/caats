@@ -1,52 +1,91 @@
 import { DateTime } from 'luxon'
-import { useMemo, useState } from 'react'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { Fragment, useMemo, useState } from 'react'
 import { useGqlClient } from '../components'
-import {
-  Calendar,
-  CalendarEvent,
-  CalendarProvider,
-} from '../components/Calendar/Calendar'
-import { useNextEventsCalQuery } from '../gql/react-query'
+import { AllEventsSinceQuery } from '../gql/graphql'
+import { useAllEventsSinceQuery } from '../gql/react-query'
+
+type ScheduleCardProps = {
+  event: AllEventsSinceQuery['getScheduleUser'][0]
+}
+
+function ScheduleCard(props: ScheduleCardProps) {
+  const ev = props.event
+  const start = useMemo(() => DateTime.fromISO(ev.startsAt), [ev.startsAt])
+  const end = useMemo(() => DateTime.fromISO(ev.endsAt), [ev.endsAt])
+
+  return (
+    <div className="card card-compact card-bordered">
+      <div className="card-body">
+        <div className="flex items-end gap-2">
+          <span className="text-3xl font-bold">{ev.code}</span>
+          <span>{ev.type}</span>
+          <div className="grow" />
+          <span className="text-right">{ev.subject}</span>
+        </div>
+        <span className="text-lg font-bold">
+          {start.toLocaleString(DateTime.TIME_24_SIMPLE)}
+          {' - '}
+          {end.toLocaleString(DateTime.TIME_24_SIMPLE)}
+        </span>
+        <div className="flex items-end gap-1">
+          <span>{ev.room}</span>
+          <div className="grow" />
+          <span className="text-right">{ev.hosts.join(', ')}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Schedule() {
   const client = useGqlClient()
-  const [now] = useState(DateTime.now())
-  const scheduleEvents = useNextEventsCalQuery(client, {
-    start: now.startOf('month').startOf('week'),
-    end: now.endOf('month').endOf('week'),
+  const [now] = useState(DateTime.now().startOf('day'))
+  const allEventsSinceNow = useAllEventsSinceQuery(client, {
+    since: now.toISO(),
   })
 
-  const nextEventsCal: CalendarEvent[] | undefined = useMemo(
-    () =>
-      scheduleEvents.data?.getScheduleUser.map((e) => ({
-        datetime: DateTime.fromISO(e.startsAt),
-        title: `${e.code} - ${e.type}`,
-      })),
-    [scheduleEvents.data]
-  )
-
   return (
-    <div className="h-full">
-      <div className="flex">{'<- date ->'}</div>
-      <div className="grid h-full grid-cols-7"></div>
-      {/* <CalendarProvider value={nextEventsCal}>
-        <div className="flex h-full items-center">
-          <div className="flex w-12 grow justify-end px-4">
-            <button className="btn btn-outline btn-circle">
-              <HiChevronLeft />
-            </button>
-          </div>
-          <div className="h-full overflow-auto">
-            <Calendar date={now.toJSDate()} mode={'month'} />
-          </div>
-          <div className="w-12 grow px-4">
-            <button className="btn btn-outline btn-circle">
-              <HiChevronRight />
-            </button>
-          </div>
-        </div>
-      </CalendarProvider> */}
+    <div className="container max-w-3xl space-y-2 py-2">
+      {allEventsSinceNow.data ? (
+        allEventsSinceNow.data.getScheduleUser.map((ev, i) => {
+          const prevDate =
+            allEventsSinceNow.data.getScheduleUser[i - 1]?.startsAt.split(
+              'T'
+            )[0]
+          const currentDate = ev.startsAt.split('T')[0]
+
+          const appendDivider =
+            prevDate === undefined || prevDate !== currentDate
+
+          // console.log({ prevDate, currentDate, appendDivider })
+
+          return (
+            <Fragment key={i}>
+              {appendDivider && (
+                <p
+                  className="pt-4 pl-1 text-2xl font-extrabold"
+                  key={i + 'div'}
+                >
+                  {DateTime.fromISO(currentDate).toFormat('EEEE, dd MMMM')}
+                </p>
+              )}
+              <ScheduleCard key={i + 'sc'} event={ev} />
+            </Fragment>
+          )
+        })
+      ) : (
+        <>
+          <div className="bg-base-200 h-10 w-72 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-10 w-72 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+          <div className="bg-base-200 h-32 animate-pulse rounded" />
+        </>
+      )}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { HiAdjustments, HiLogout, HiMenu, HiTemplate } from 'react-icons/hi'
+import { HiAdjustments, HiCalendar, HiLogout, HiMenu, HiTemplate } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
 import { useAuthStore } from '../states/auth'
 
@@ -17,6 +17,11 @@ export default function App() {
               <li>
                 <Link to="/app">
                   <HiTemplate /> Kokpit
+                </Link>
+              </li>
+              <li>
+                <Link to="/app/schedule">
+                  <HiCalendar /> Plan zajęć
                 </Link>
               </li>
               <li>

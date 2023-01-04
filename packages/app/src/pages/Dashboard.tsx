@@ -1,23 +1,10 @@
 import { useAuthStore } from '../states/auth'
-import {
-  useAllNextEventsQuery,
-  useNextEventsCalQuery,
-  useNextEventsDashQuery,
-} from '../gql/react-query'
+import { useNextEventsDashQuery } from '../gql/react-query'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
-import {
-  HiCalendar,
-  HiClipboardList,
-  HiCubeTransparent,
-  HiUserGroup,
-} from 'react-icons/hi'
+import { HiCalendar, HiClipboardList, HiUserGroup } from 'react-icons/hi'
+import { SiGraphql } from 'react-icons/si'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
-import {
-  Calendar,
-  CalendarProvider,
-  CalendarEvent,
-} from '../components/Calendar/Calendar'
 import { useMemo, useState } from 'react'
 
 function Greeting() {
@@ -84,14 +71,17 @@ export default function Dashboard() {
         </div>
         {events.data ? (
           events.data.getScheduleUser.map((ev, i) => (
-            <div className="card card-bordered" key={i}>
+            <div className="card card-bordered card-compact" key={i}>
               <div className="card-body">
-                <h3 className="text-xl font-bold">{ev.code}</h3>
-                <h4>
+                <p className="text-xl font-bold">{ev.code}</p>
+                <p>
+                  {ev.type} w {ev.room}
+                </p>
+                <p>
                   {DateTime.fromISO(ev.startsAt).toFormat(
                     'HH:mm, EEEE dd MMMM'
                   )}
-                </h4>
+                </p>
               </div>
             </div>
           ))
@@ -107,7 +97,7 @@ export default function Dashboard() {
       <div className="card card-bordered">
         <div className="card-body">
           <a className="btn btn-outline" href="/graphiql">
-            <HiCubeTransparent className="mr-2" /> GraphiQL
+            <SiGraphql className="mr-2" /> GraphiQL
           </a>
           <Link className="btn btn-outline" to="/app/settings/groups">
             <HiUserGroup className="mr-2" /> Konfiguruj grupy

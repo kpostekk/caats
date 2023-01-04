@@ -9,6 +9,18 @@ query AllNextEvents {
   }
 }
 
+query AllEventsSince($since: DateTime!) {
+  getScheduleUser(sinceUntil: { since: $since }) {
+    startsAt
+    endsAt
+    subject
+    code
+    type
+    room
+    hosts
+  }
+}
+
 query NextEventsCal($start: DateTime!, $end: DateTime!) {
   getScheduleUser(sinceUntil: { since: $start, until: $end}) {
     startsAt
@@ -20,8 +32,6 @@ query NextEventsCal($start: DateTime!, $end: DateTime!) {
 query NextEventsDash($now: DateTime!) {
   getScheduleUser(sinceUntil: { since: $now }, skipTake: { take: 4 }) {
     startsAt
-    endsAt
-    subject
     code
     type
     room
