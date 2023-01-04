@@ -61,6 +61,7 @@ yargs(hideBin(process.argv))
       const sdk = getSdk(gqlClient)
 
       console.log(await sdk.getAppVersion())
+      let noTaskMsg = false
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -70,7 +71,8 @@ yargs(hideBin(process.argv))
           console.log('Task skipped! (╯°□°）╯︵ ┻━┻')
           await new Promise((r) => setTimeout(r, 250))
         } else if (disposition === 'no tasks remaining') {
-          console.log('No tasks remaining 👈(ﾟヮﾟ👈)')
+          if (!noTaskMsg) console.log('No tasks remaining 👈(ﾟヮﾟ👈)')
+          noTaskMsg = true
           await new Promise((r) => setTimeout(r, 10_000))
         } else if (disposition === 'failed') {
           console.log('Task failed! Cooling down... (。﹏。)')
@@ -78,6 +80,10 @@ yargs(hideBin(process.argv))
         } else {
           console.log('Task succeeded! o((>ω< ))o')
           await new Promise((r) => setTimeout(r, 500))
+        }
+
+        if (disposition !== 'no tasks remaining') {
+          noTaskMsg = false
         }
       }
     }
