@@ -57,11 +57,17 @@ export class BrowserService {
     })
   }
 
-  async findByHost(host: string, skipTake?: SkipTake) {
+  async findByHost(host: string, sinceUntil?: SinceUntil, skipTake?: SkipTake) {
     return this.prisma.timetableEvent.findMany({
       where: {
         hosts: {
           has: host,
+        },
+        startsAt: {
+          gte: sinceUntil?.since,
+        },
+        endsAt: {
+          lte: sinceUntil?.until,
         },
       },
       ...skipTake,
