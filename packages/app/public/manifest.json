@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "CaaTS",
+  "description": "Jeszcze lepsza apka do planu zajęć PJATK.",
+  "categories": ["education"],
+  "lang": "pl",
+  "id": "/app",
+  "start_url": "/app",
+  "display": "standalone",
+  "icons": [
+    {
+      "purpose": "any",
+      "src": "logo.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "purpose": "maskable",
+      "src": "logo.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    }
+  ]
+}
