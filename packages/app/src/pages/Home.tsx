@@ -6,6 +6,7 @@ import {
   FaGhost,
   FaGithub,
 } from 'react-icons/fa'
+import { HiEyeOff, HiLightBulb, HiLightningBolt } from 'react-icons/hi'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 
 const AppVersion = lazy(() => import('../components/AppVersion'))
@@ -22,6 +23,18 @@ export default function Home() {
           <Suspense>
             <AppVersion />
           </Suspense>
+          <p>
+            <HiEyeOff className="inline" /> private by design, no cookies, no
+            analytics or tracking
+          </p>
+          <p>
+            <HiLightningBolt className="inline" /> fast by choice, modern tech
+            stack
+          </p>
+          <p>
+            <HiLightBulb className="inline" /> made by enthusiasts, available
+            for everyone
+          </p>
         </div>
         <div className="flex flex-col gap-2">
           <LoginGoogle />
@@ -34,7 +47,7 @@ export default function Home() {
           </a>
         </div>
       </div>
-      <footer className="border-t-secondary border-t px-6 pt-12">
+      <footer className="border-t-base-200 border-t px-6 py-12">
         <div className="flex w-full select-none flex-wrap justify-center gap-12">
           <div className="prose prose-p:my-1">
             <p>
@@ -64,21 +77,30 @@ export default function Home() {
               </a>
             </p>
           </div>
-        </div>
-        <div className="text-base-300 mx-auto max-w-xl pb-4 pt-8 text-sm">
-          <p className="pt-2">
-            Coded and designed by{' '}
-            <a className="link" href="https://github.com/aleksandra-indulska">
-              Krystian Postek
-            </a>
-          </p>
-          <p className="py-2">
-            Thanks to{' '}
-            <a className="link" href="https://github.com/aleksandra-indulska">
-              Aleksandra Indulska
-            </a>{' '}
-            for scraper performance improvements
-          </p>
+          <div className="text-base-300 max-w-md space-y-2 text-sm">
+            <p>
+              Coded and designed by{' '}
+              <a className="link" href="https://github.com/aleksandra-indulska">
+                Krystian Postek
+              </a>
+              .
+            </p>
+            <p>
+              Thanks to{' '}
+              <a className="link" href="https://github.com/aleksandra-indulska">
+                Aleksandra Indulska
+              </a>{' '}
+              for scraper performance improvements, security advisories and
+              project consulting.
+            </p>
+            <p>
+              Thanks to{' '}
+              <a className="link" href="https://github.com/rafalopilowski1">
+                Rafał Opiłowski
+              </a>{' '}
+              for his contribution to Altapi, which is a base for this project.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
