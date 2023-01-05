@@ -46,3 +46,9 @@
 - Masywna redukcja codebase
 - Optymalizacja wydajności
 - Poprawiona wydajność dla wielu scraperów
+
+## Porównanie "side by side"
+
+Od lewej: CaaTS, Altapi, Plan zajęć PJATK
+
+![](.github/sidebyside.mp4)
