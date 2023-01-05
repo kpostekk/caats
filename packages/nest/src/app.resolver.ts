@@ -1,4 +1,4 @@
-import { App } from 'src/_autogen/gql'
+import { App } from './_autogen/gql'
 import { Resolver, Query } from '@nestjs/graphql'
 import fs from 'fs/promises'
 
