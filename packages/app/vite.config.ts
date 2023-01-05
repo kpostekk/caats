@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { readFile } from 'fs/promises'
 import react from '@vitejs/plugin-react-swc'
 import codegen from 'vite-plugin-graphql-codegen'
+import { VitePWA as pwa } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,6 +39,34 @@ export default defineConfig({
           },
         },
       }),
+    pwa({
+      injectRegister: 'inline',
+      registerType: 'autoUpdate',
+      filename: 'service-worker.js',
+      scope: '/app',
+      manifest: {
+        name: 'CaaTS',
+        description: 'Jeszcze lepsza apka do planu zajęć PJATK.',
+        lang: 'pl',
+        id: '/app',
+        start_url: '/app',
+        display: 'standalone',
+        icons: [
+          {
+            purpose: 'any',
+            src: 'logo.png',
+            sizes: '384x384',
+            type: 'image/png',
+          },
+          {
+            purpose: 'maskable',
+            src: 'logo.png',
+            sizes: '384x384',
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
   ],
   server: {
     proxy: {
