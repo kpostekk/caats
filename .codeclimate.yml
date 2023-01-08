@@ -8,3 +8,4 @@ exclude_patterns:
   - "*.config.cjs"
   - "*.config.ts"
   - "*rc.js"
+  - "*.spec.ts" # temporarily disable checks for tests
