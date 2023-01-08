@@ -51,4 +51,6 @@
 
 Od lewej: CaaTS, Altapi, Plan zajęć PJATK
 
-![](.github/sidebyside.mp4)
+
+https://user-images.githubusercontent.com/30326322/210854927-a036c456-5ac7-4038-af0b-0bd2870a1077.mp4
+
