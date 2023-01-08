@@ -2,7 +2,7 @@ version: "2"
 
 exclude_patterns:
   - "packages/app/src/gql/*"
-  - "packages/app/src/gql/*"
+  - "packages/scrapy/src/gql/*"
   - "packages/nest/src/_autogen/*"
   - "*.config.js"
   - "*.config.cjs"
