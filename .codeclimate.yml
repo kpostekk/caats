@@ -4,8 +4,8 @@ exclude_patterns:
   - "packages/app/src/gql/*"
   - "packages/scrapy/src/gql/*"
   - "packages/nest/src/_autogen/*"
-  - "*.config.js"
-  - "*.config.cjs"
-  - "*.config.ts"
-  - "*rc.js"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.ts"
+  - "**/*rc.js"
   - "packages/nest/src/**/*.spec.ts" # temporarily disable checks for tests
