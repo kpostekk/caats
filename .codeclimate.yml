@@ -7,5 +7,5 @@ exclude_patterns:
   - "**/*.config.js"
   - "**/*.config.cjs"
   - "**/*.config.ts"
-  - "**/*rc.js"
+  - "**/.eslintrc.js"
   - "packages/nest/src/**/*.spec.ts" # temporarily disable checks for tests
