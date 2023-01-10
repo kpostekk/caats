@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { IcsController } from './ics.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { IcsController } from './ics.controller'
 
 describe('IcsController', () => {
-  let controller: IcsController;
+  let controller: IcsController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [IcsController],
-    }).compile();
+    }).compile()
 
-    controller = module.get<IcsController>(IcsController);
-  });
+    controller = module.get<IcsController>(IcsController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

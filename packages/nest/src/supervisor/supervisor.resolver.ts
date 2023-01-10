@@ -1,12 +1,5 @@
 import { ParseIntPipe } from '@nestjs/common'
-import {
-  Args,
-  Context,
-  Mutation,
-  Query,
-  Resolver,
-  Subscription,
-} from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { TaskStatus } from '@prisma/client'
 import {
   TaskResult as GqlTaskResult,
@@ -14,7 +7,6 @@ import {
   TaskCollection,
 } from '../_autogen/gql'
 import { SupervisorService } from './supervisor.service'
-import { PubSub } from 'mercurius'
 
 @Resolver()
 export class SupervisorResolver {
