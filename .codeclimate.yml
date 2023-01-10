@@ -16,4 +16,4 @@ checks:
       threshold: 50
   similar-code:
     config:
-      threshold: 95
+      threshold: 55
