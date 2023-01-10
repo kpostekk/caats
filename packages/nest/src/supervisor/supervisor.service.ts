@@ -3,13 +3,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
-import {
-  Cron,
-  CronExpression,
-  Interval,
-  SchedulerRegistry,
-} from '@nestjs/schedule'
-import { Duration } from 'luxon'
+import { Cron } from '@nestjs/schedule'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
@@ -17,8 +11,7 @@ export class SupervisorService implements OnModuleInit {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly parser: ParserService,
-    private readonly scheduler: SchedulerRegistry
+    private readonly parser: ParserService
   ) {}
 
   async onModuleInit() {
@@ -136,7 +129,7 @@ export class SupervisorService implements OnModuleInit {
           name: name.value,
           room: room?.value,
           groups: groupsString?.value.split(', '),
-          hosts: hostsString?.value.split(', '),
+          hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),
           type: type.value,
           startsAt,
           endsAt,
