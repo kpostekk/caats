@@ -52,9 +52,14 @@ export class Stealer {
 
     const dateHash = createHash('sha1')
       .update(pageBody)
+      .update('v2') // change only if something related to scrapping has changed
       .digest('base64url')
       .slice(0, 8)
-    console.log({ targetDate: this.targetDate, dateHash })
+    console.log({
+      targetDate: this.targetDate,
+      dateHash,
+      lastResultHash: this.lastResultHash,
+    })
 
     if (dateHash === this.lastResultHash) {
       console.warn('No changes detected. Skipping... (∪.∪ )...zzz')
@@ -65,7 +70,7 @@ export class Stealer {
       console.log('No hash provided. Updating... (๑•̀ㅂ•́)و✧')
     }
 
-    const ids = Array.from(new Set(pageBody.match(/\d+;z/g)))
+    const ids = Array.from(new Set(pageBody.match(/\d+;\w/g)))
     this.targetSize = ids.length
 
     const chunks = createChunks(ids, this.maxRequestRate)
