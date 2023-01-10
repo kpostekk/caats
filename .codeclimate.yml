@@ -9,3 +9,11 @@ exclude_patterns:
   - "**/*.config.ts"
   - "**/.eslintrc.js"
   - "packages/nest/src/**/*.spec.ts" # temporarily disable checks for tests
+
+checks:
+  method-lines:
+    config:
+      threshold: 50
+  identical-code:
+    config:
+      threshold: 2
