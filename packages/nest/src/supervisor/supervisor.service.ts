@@ -122,11 +122,13 @@ export class SupervisorService implements OnModuleInit {
 
         const startsAt = DateTime.fromFormat(
           `${date.value} ${timeStart.value}`,
-          'dd.MM.yyyy HH:mm:ss'
+          'dd.MM.yyyy HH:mm:ss',
+          { zone: 'Europe/Warsaw' }
         ).toJSDate()
         const endsAt = DateTime.fromFormat(
           `${date.value} ${timeEnd.value}`,
-          'dd.MM.yyyy HH:mm:ss'
+          'dd.MM.yyyy HH:mm:ss',
+          { zone: 'Europe/Warsaw' }
         ).toJSDate()
 
         return {
