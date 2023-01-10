@@ -48,6 +48,11 @@ export class IcsService {
         groups: {
           hasSome: includeGroups,
         },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
       },
     })
 
