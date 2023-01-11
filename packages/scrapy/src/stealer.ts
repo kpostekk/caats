@@ -53,8 +53,8 @@ export class Stealer {
     const dateHash = createHash('sha1')
       .update(pageBody)
       .update('v2') // change only if something related to scrapping has changed
-      .digest('base64url')
-      .slice(0, 8)
+      .digest('hex')
+      .slice(0, 12)
     console.log({
       targetDate: this.targetDate,
       dateHash,
@@ -70,7 +70,7 @@ export class Stealer {
       console.log('No hash provided. Updating... (๑•̀ㅂ•́)و✧')
     }
 
-    const ids = Array.from(new Set(pageBody.match(/\d+;\w/g)))
+    const ids = Array.from(new Set(pageBody.match(/\d+;[rz]/g)))
     this.targetSize = ids.length
 
     const chunks = createChunks(ids, this.maxRequestRate)
