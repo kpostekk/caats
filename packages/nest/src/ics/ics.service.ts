@@ -80,7 +80,7 @@ export class IcsService {
         }.\nProwadzący: ${event.hosts.join(', ')}`,
         organizer: {
           name: 'CaaTS',
-          email: 'calmaster@caats.kpostek.dev',
+          email: 'calmaster@caats.app',
         },
         alarms: [
           {
