@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa'
 import { HiEyeOff, HiLightBulb, HiLightningBolt } from 'react-icons/hi'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
+import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 
 const AppVersion = lazy(() => import('../components/AppVersion'))
 
@@ -22,6 +23,7 @@ export default function Home() {
           </p>
           <Suspense>
             <AppVersion />
+            <UpdatePrompt />
           </Suspense>
           <p>
             <HiEyeOff className="inline" /> private by design, no cookies, no

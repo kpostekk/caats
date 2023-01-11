@@ -8,6 +8,7 @@ import { useGqlClient } from '../components/useGqlClient/useGqlClient'
 import { useEffect, useMemo, useState } from 'react'
 import { Greeting } from '../components/Greeting/Greeting'
 import { useEffectOnce, useHarmonicIntervalFn } from 'react-use'
+import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 
 declare module 'react' {
   interface CSSProperties {
@@ -46,7 +47,8 @@ export default function Dashboard() {
   )
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-4 py-4">
+    <div className="mx-auto max-w-6xl gap-4 space-y-2 py-4">
+      <UpdatePrompt />
       <div className="grid grid-cols-1 gap-4 md:col-span-3 md:grid-cols-3">
         <div className="card card-bordered md:col-span-2">
           <div className="card-body prose">

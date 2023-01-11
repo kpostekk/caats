@@ -44,7 +44,7 @@ export default defineConfig({
       }),
     pwa({
       injectRegister: 'inline',
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       filename: 'service-worker.js',
       scope: '/app',
       manifest: {
@@ -68,6 +68,9 @@ export default defineConfig({
             type: 'image/png',
           },
         ],
+      },
+      workbox: {
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
