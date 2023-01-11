@@ -39,7 +39,7 @@ function CalendarDate(props: CalendarDateProps) {
         </p>
       ))}
       {!events?.length && (
-        <p className="text-base-300 italic">Brak zajęć tego dnia</p>
+        <p className="italic opacity-40">Brak zajęć tego dnia</p>
       )}
     </div>
   )

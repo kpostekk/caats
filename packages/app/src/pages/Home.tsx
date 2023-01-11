@@ -77,7 +77,7 @@ export default function Home() {
               </a>
             </p>
           </div>
-          <div className="text-base-300 max-w-md space-y-2 text-sm">
+          <div className="max-w-md space-y-2 text-sm opacity-40">
             <p>
               Coded and designed by{' '}
               <a className="link" href="https://github.com/aleksandra-indulska">

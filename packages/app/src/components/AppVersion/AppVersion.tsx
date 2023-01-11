@@ -8,7 +8,7 @@ export function AppVersion() {
   return (
     <>
       {appQuery.data ? (
-        <p className="text-base-300 my-2">
+        <p className="my-2 opacity-40">
           nest: v{appQuery.data.app?.version}, app: v{APP_VERSION}
         </p>
       ) : (

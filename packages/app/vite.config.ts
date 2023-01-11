@@ -1,8 +1,11 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import { readFile } from 'fs/promises'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import codegen from 'vite-plugin-graphql-codegen'
 import { VitePWA as pwa } from 'vite-plugin-pwa'
+
+const graphql =
+  loadEnv('dev', process.cwd()).VITE_GRAPHQL ?? 'http://127.0.0.1:3000'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -70,8 +73,8 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/graphql': 'http://127.0.0.1:3000',
-      '/graphiql': 'http://127.0.0.1:3000',
+      '/graphql': graphql,
+      '/graphiql': graphql,
     },
   },
   build: {
