@@ -16,6 +16,14 @@ export class SupervisorService implements OnModuleInit {
 
   async onModuleInit() {
     await this.invalidateCorruptedTasks()
+
+    const taskCount = await this.prisma.task.count({
+      where: { status: 'SUCCESS' },
+    })
+
+    if (taskCount < 14) {
+      await this.createTasks(21, 1)
+    }
   }
 
   getPendingTasks() {
