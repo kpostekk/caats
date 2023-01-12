@@ -1,7 +1,7 @@
 <div align="center">
     <h1>🐈‍⬛ CaaTS</h1>
     <p><i>Cats as a Timetable Service</i></p>
-    <p>Dostępny na <a href="https://caats.kpostek.dev/">caats.kpostek.dev</a>
+    <p>Dostępny na <a href="https://caats.app/">caats.app</a>
     <p>
         <a href="https://codeclimate.com/github/kpostekk/caats/maintainability"><img src="https://api.codeclimate.com/v1/badges/263c7c9bbe2163a7d7f5/maintainability" /></a>
     </p>
