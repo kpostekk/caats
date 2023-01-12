@@ -1,7 +1,6 @@
 <div align="center">
-    <h1>🐈‍⬛ CaaTS</h1>
+    <a href="https://caats.app"><img alt="Tak, lubię SYCe. A co?" width="400" src="https://user-images.githubusercontent.com/30326322/212149829-0341926f-35d2-4e7b-ba46-f5bfa884a59e.PNG"></a>
     <p><i>Cats as a Timetable Service</i></p>
-    <p>Dostępny na <a href="https://caats.app/">caats.app</a>
     <p>
         <a href="https://codeclimate.com/github/kpostekk/caats/maintainability"><img src="https://api.codeclimate.com/v1/badges/263c7c9bbe2163a7d7f5/maintainability" /></a>
     </p>
@@ -23,37 +22,3 @@
 > *zaobserwowany stack technologiczny, może się różnić w rzeczywistości
 > 
 > **nie dotyczy subskrypcji ICS
-
-### Zmiany w stosunku do Altapi
-
-#### Frontend
-
-- Bump do Vite 4 oraz React 18 (oraz wielu innych bibliotek)
-- Poprawne wykorzystanie global states manager'a
-- Wykorzystanie TailwindCSS zamiast NextUI
-- Usprawniony UX
-
-#### Backend
-
-- Obsługa użytkowników
-- Wykorzystanie JWT do autoryzacji
-- Zmiana ORM z Mongoose na Prisma
-- Poprawny design bazy danych (rozłożenie danych, indeksy, relacje)
-- Wykorzystanie GraphQL zamiast REST
-- Optymalizacje wewnątrz konfiguracji NestJS
-
-#### Scraper
-
-- Uproszczony protokół komunikacji z API
-- Czyszczenie danych przed zapisem do bazy
-- Masywna redukcja codebase
-- Optymalizacja wydajności
-- Poprawiona wydajność dla wielu scraperów
-
-## Porównanie "side by side"
-
-Od lewej: CaaTS, Altapi, Plan zajęć PJATK
-
-
-https://user-images.githubusercontent.com/30326322/210854927-a036c456-5ac7-4038-af0b-0bd2870a1077.mp4
-
