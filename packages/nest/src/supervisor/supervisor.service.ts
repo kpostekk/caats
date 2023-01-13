@@ -68,7 +68,7 @@ export class SupervisorService implements OnModuleInit {
       this.prisma.taskResult.createMany({
         data: result.map((r) => ({
           taskId: id,
-          object: this.parser.htmlToObject(r),
+          object: this.parser.htmlToRawObject(r),
         })),
       }),
       // mark task as success
@@ -108,50 +108,36 @@ export class SupervisorService implements OnModuleInit {
       },
     })
 
-    await this.prisma.timetableEvent.createMany({
-      data: eventsCandidates.map((c) => {
-        const {
-          ctl06_DataZajecLabel: date,
-          ctl06_GodzRozpLabel: timeStart,
-          ctl06_GodzZakonLabel: timeEnd,
-          ctl06_DydaktycyLabel: hostsString,
-          ctl06_SalaLabel: room,
-          ctl06_TypZajecLabel: type,
-          ctl06_KodPrzedmiotuLabel: code,
-          ctl06_NazwaPrzedmiotyLabel: name,
-          ctl06_GrupyLabel: groupsString,
-        } = c.object as Record<string, { value?: string; humanKey: string }>
+    for (const candidate of eventsCandidates) {
+      // if constantId is already in use, reassign it to the new task
+      const constantId = createHash('sha1')
+        .update(JSON.stringify(candidate.object))
+        .digest('hex')
+        .slice(0, 16)
 
-        const sourceHash = createHash('sha1')
-          .update(JSON.stringify(c.object))
-          .digest('hex')
-          .slice(0, 16)
+      const existingEvent = await this.prisma.timetableEvent.findFirst({
+        where: { constantId },
+      })
 
-        const startsAt = DateTime.fromFormat(
-          `${date.value} ${timeStart.value}`,
-          'dd.MM.yyyy HH:mm:ss',
-          { zone: 'Europe/Warsaw' }
-        ).toJSDate()
-        const endsAt = DateTime.fromFormat(
-          `${date.value} ${timeEnd.value}`,
-          'dd.MM.yyyy HH:mm:ss',
-          { zone: 'Europe/Warsaw' }
-        ).toJSDate()
+      if (existingEvent) {
+        await this.prisma.timetableEvent.update({
+          where: { id: existingEvent.id },
+          data: { sourceId: candidate.id },
+        })
+        continue
+      }
 
-        return {
-          constantId: sourceHash,
-          code: code.value,
-          name: name.value,
-          room: room?.value,
-          groups: groupsString?.value.split(', '),
-          hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),
-          type: type.value,
-          startsAt,
-          endsAt,
-          sourceId: c.id,
-        }
-      }),
-    })
+      // otherwise, create a new event
+      const evBody = this.parser.convertRawObjectToEvent(
+        candidate.id,
+        constantId,
+        candidate.object as Record<string, { value?: string; humanKey: string }>
+      )
+
+      await this.prisma.timetableEvent.create({
+        data: evBody,
+      })
+    }
   }
 
   async invalidateCorruptedTasks() {
