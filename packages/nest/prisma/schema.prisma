@@ -60,31 +60,31 @@ model Task {
 }
 
 model TaskResult {
-    id        Int             @id @default(autoincrement())
-    task      Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
-    taskId    Int
-    createdAt DateTime        @default(now())
-    object    Json
-    usedBy    TimetableEvent?
+    id         Int             @id @default(autoincrement())
+    task       Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    taskId     Int
+    constantId String          @db.Char(16) @unique
+    createdAt  DateTime        @default(now())
+    object     Json
+    usedBy     TimetableEvent?
 
     @@index([createdAt(sort: Desc)])
     @@index([object], type: Gin)
 }
 
 model TimetableEvent {
-    id         Int        @id @default(autoincrement())
-    constantId String     @db.Char(16)
-    createdAt  DateTime   @default(now())
-    startsAt   DateTime
-    endsAt     DateTime
-    source     TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
-    sourceId   Int        @unique
-    name       String
-    code       String
-    type       String
-    room       String?
-    groups     String[]
-    hosts      String[]
+    id        Int        @id @default(autoincrement())
+    createdAt DateTime   @default(now())
+    startsAt  DateTime
+    endsAt    DateTime
+    source    TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+    sourceId  Int        @unique
+    name      String
+    code      String
+    type      String
+    room      String?
+    groups    String[]
+    hosts     String[]
 
     @@index([startsAt(sort: Asc), code(sort: Asc), groups(sort: Asc)])
 }

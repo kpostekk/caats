@@ -98,6 +98,7 @@ export type GqlQuery = {
   __typename?: 'Query';
   app?: Maybe<GqlApp>;
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  getEventHistory: Array<GqlScheduleEvent>;
   getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
   getScheduleGroups: Array<GqlScheduleEvent>;
@@ -113,6 +114,11 @@ export type GqlQuery = {
 
 export type GqlQueryAutocompleteGroupsArgs = {
   query: Scalars['String'];
+};
+
+
+export type GqlQueryGetEventHistoryArgs = {
+  constantId: Scalars['String'];
 };
 
 

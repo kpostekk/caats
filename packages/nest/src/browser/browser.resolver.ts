@@ -2,7 +2,13 @@ import { UseGuards } from '@nestjs/common'
 import { Query, Resolver, Args, Context } from '@nestjs/graphql'
 import { User } from '@prisma/client'
 import { AuthGuard } from '../auth/auth.guard'
-import { GqlGroupInput, GqlHostInput, GqlSinceUntil, GqlSkipTake } from '../gql'
+import {
+  GqlGroupInput,
+  GqlHostInput,
+  GqlQueryGetEventHistoryArgs,
+  GqlSinceUntil,
+  GqlSkipTake,
+} from '../gql'
 import { BrowserService } from './browser.service'
 
 @Resolver()
@@ -56,5 +62,10 @@ export class BrowserResolver {
   @Query()
   autocompleteGroups(@Args('query') query: string) {
     return this.browser.autocompleteGroups(query)
+  }
+
+  @Query()
+  getEventHistory(@Args() { constantId }: GqlQueryGetEventHistoryArgs) {
+    return this.browser.getEventHistory(constantId)
   }
 }

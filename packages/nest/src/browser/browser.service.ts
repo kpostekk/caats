@@ -127,4 +127,26 @@ export class BrowserService {
 
     return Array.from(groups.flatMap((g) => g.group))
   }
+
+  getEventHistory(constantId: string) {
+    const event = this.prisma.timetableEvent.findMany({
+      where: {
+        source: {
+          constantId,
+        },
+      },
+      include: {
+        source: {
+          include: {
+            task: {
+              select: {
+                status: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    return event
+  }
 }

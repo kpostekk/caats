@@ -52,4 +52,6 @@ type Query {
   getGroups: [String!]
 
   autocompleteGroups(query: String!): [String!]
+
+  getEventHistory(constantId: String!): [ScheduleEvent!]!
 }

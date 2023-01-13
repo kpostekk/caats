@@ -47,97 +47,95 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
-  async storeTaskResult(id: number, hash: string, result: string[]) {
-    const { targetDate } = await this.prisma.task.findFirstOrThrow({
+  async storeTaskResult(id: number, hash: string, results: string[]) {
+    const task = await this.prisma.task.findFirstOrThrow({
       where: { id },
     })
 
     const start = DateTime.now()
-    await this.prisma.$transaction([
-      // invalidate outdated tasks
-      this.prisma.task.updateMany({
-        where: { targetDate },
-        data: { status: 'OUTDATED' },
-      }),
-      // update task props
-      this.prisma.task.update({
-        where: { id },
-        data: { finalHash: hash, finishedAt: new Date() },
-      }),
-      // store task results
-      this.prisma.taskResult.createMany({
-        data: result.map((r) => ({
-          taskId: id,
-          object: this.parser.htmlToRawObject(r),
-        })),
-      }),
-      // mark task as success
-      this.prisma.task.update({
-        where: { id },
-        data: { status: 'SUCCESS' },
-      }),
-    ])
-    const end = DateTime.now()
 
-    this.logger.debug(
-      `Task ${id} parsed ${result.length} elements in ${end
-        .diff(start)
-        .toISO()}. Parse speed: ${(
-        result.length / end.diff(start).as('seconds')
-      ).toFixed(2)} results per second.`
-    )
+    const stats = {
+      dropped: 0,
+      replaced: 0,
+      inserted: 0,
+    }
 
-    // create events from results
-    const eventsCandidates = await this.prisma.taskResult.findMany({
-      where: {
-        taskId: id,
-        OR: [
-          {
-            object: {
-              path: ['ctl06_TypZajecLabel', 'value'],
-              equals: 'Wykład',
-            },
-          },
-          {
-            object: {
-              path: ['ctl06_TypZajecLabel', 'value'],
-              equals: 'Ćwiczenia',
-            },
-          },
-        ],
-      },
-    })
+    for (const result of results) {
+      const candidate = this.parser.htmlToRawObject(result)
 
-    for (const candidate of eventsCandidates) {
       // if constantId is already in use, reassign it to the new task
       const constantId = createHash('sha1')
-        .update(JSON.stringify(candidate.object))
+        .update(JSON.stringify(candidate))
+        .update(task.targetDate.getTime().toString())
         .digest('hex')
         .slice(0, 16)
 
-      const existingEvent = await this.prisma.timetableEvent.findFirst({
+      const existingResult = await this.prisma.taskResult.findFirst({
         where: { constantId },
       })
 
-      if (existingEvent) {
-        await this.prisma.timetableEvent.update({
-          where: { id: existingEvent.id },
-          data: { sourceId: candidate.id },
+      if (existingResult) {
+        await this.prisma.taskResult.update({
+          where: { constantId },
+          data: { taskId: id },
         })
+        stats.replaced++
         continue
       }
 
-      // otherwise, create a new event
+      // otherwise, create a new task result and event
+      const newTaskResult = await this.prisma.taskResult.create({
+        data: {
+          constantId,
+          taskId: id,
+          object: candidate,
+        },
+      })
+
+      if (
+        candidate.ctl06_TypZajecLabel?.value !== 'Wykład' &&
+        candidate.ctl06_TypZajecLabel?.value !== 'Ćwiczenia'
+      ) {
+        stats.dropped++
+        continue
+      }
+
       const evBody = this.parser.convertRawObjectToEvent(
-        candidate.id,
-        constantId,
-        candidate.object as Record<string, { value?: string; humanKey: string }>
+        newTaskResult.id,
+        candidate as Record<string, { value?: string; humanKey: string }>
       )
 
       await this.prisma.timetableEvent.create({
         data: evBody,
       })
+      stats.inserted++
     }
+
+    const end = DateTime.now()
+
+    this.logger.debug(
+      `Task ${id} processed ${results.length} elements in ${end
+        .diff(start)
+        .toISO()}. Processing speed: ${(
+        results.length / end.diff(start).as('seconds')
+      ).toFixed(2)} results per second.
+          dropped: ${stats.dropped},
+          replaced: ${stats.replaced},
+          inserted: ${stats.inserted}.`
+    )
+
+    await this.prisma.$transaction([
+      // invalidate outdated tasks
+      this.prisma.task.updateMany({
+        where: { targetDate: task.targetDate, id: { not: id } },
+        data: { status: 'OUTDATED' },
+      }),
+      // mark task as success
+      this.prisma.task.update({
+        where: { id },
+        data: { status: 'SUCCESS', finishedAt: new Date(), finalHash: hash },
+      }),
+    ])
   }
 
   async invalidateCorruptedTasks() {
@@ -178,6 +176,8 @@ export class SupervisorService implements OnModuleInit {
         },
       })
     }
+
+    return true
   }
 
   @Cron('*/10 7-22 * * *')

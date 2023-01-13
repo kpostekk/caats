@@ -27,7 +27,6 @@ export class ParserService {
 
   convertRawObjectToEvent(
     sourceId: number,
-    sourceHash: string,
     rawObject: Record<string, { value?: string; humanKey: string }>
   ) {
     const {
@@ -52,7 +51,6 @@ export class ParserService {
     ).toJSDate()
 
     return {
-      constantId: sourceHash,
       code: code.value,
       name: name.value,
       room: room?.value,
