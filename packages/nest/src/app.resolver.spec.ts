@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { AppModule } from './app.module'
 import { AppResolver } from './app.resolver'
 
 describe('AppResolver', () => {
@@ -6,6 +7,7 @@ describe('AppResolver', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
       providers: [AppResolver],
     }).compile()
 

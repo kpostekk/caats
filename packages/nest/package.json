@@ -44,6 +44,7 @@
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",
     "ics": "^2.41.0",
+    "jest-mock": "^29.3.1",
     "joi": "^17.7.0",
     "luxon": "^3.1.1",
     "mercurius": "^10.0.0",
@@ -62,6 +63,7 @@
     "@nestjs/testing": "^9.0.0",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.3.24",
+    "@swc/jest": "^0.2.24",
     "@swc/register": "^0.1.10",
     "@types/cron": "^2.0.0",
     "@types/jest": "28.1.8",
@@ -82,7 +84,7 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.1.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.9.4"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -93,7 +95,7 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": "@swc/jest"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
