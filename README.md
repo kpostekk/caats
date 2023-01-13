@@ -8,16 +8,15 @@
 
 ## Dlaczego?
 
-|                                      | CaaTS                                                            | Altapi                                            | Plan Zajęć PJATK                         |
-| ------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------- |
-| Średni czas oczekiwania na zapytania | <45ms                                                            | <115ms                                            | <620ms (lub <1730ms w ogólnej wersji)    |
-| Wygodna aplikacja webowa             | ✅                                                                | 🤔                                                | ❌                                        |
-| Logowanie i synchronizacja           | ✅                                                                | ❌                                                 | ✅                                        |
-| Wsparcie dla subskrybcji ICS         | ✅                                                                | ✅                                                 | ❌                                        |
-| Dostęp do API                        | GraphQL                                                          | OpenAPIv3 REST                                    | ❌                                        |
-| Format zapytań                       | GraphQL**                                                        | REST                                              | ViewState*                               |
-| Format odpowiedzi                    | JSON                                                             | JSON                                              | CSV + HTML                               |
-| Wykorzystane technologie             | NestJS, Fastify, Mercurius, Prisma, Postgres, React, TailwindCSS | NestJS, Express, Mongoose, MongoDB, React, NextUI | ASP.NET 4.0, SQL Server 2008, TelerikUI* |
+|                                      | CaaTS     | Altapi           | Plan Zajęć PJATK                      |
+| ------------------------------------ | --------- | ---------------- | ------------------------------------- |
+| Średni czas oczekiwania na zapytania | <45ms     | <115ms           | <620ms (lub <1730ms w ogólnej wersji) |
+| Wygodna aplikacja webowa             | ✅         | 🤔               | ❌                                     |
+| PWA                                  | ✅         | ✅                | ❌                                     |
+| Logowanie i synchronizacja           | ✅         | ❌                | ✅                                     |
+| Wsparcie dla subskrybcji ICS         | ✅         | ✅                | ❌                                     |
+| Dostęp do API                        | ✅ GraphQL | ✅ OpenAPIv3 REST | ❌                                     |
+| Format zapytań                       | GraphQL** | REST             | ViewState*                            |
 
 > *zaobserwowany stack technologiczny, może się różnić w rzeczywistości
 > 
