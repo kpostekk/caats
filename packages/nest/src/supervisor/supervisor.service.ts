@@ -4,6 +4,7 @@ import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
 import { Cron } from '@nestjs/schedule'
+import { createHash } from 'crypto'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
@@ -121,6 +122,11 @@ export class SupervisorService implements OnModuleInit {
           ctl06_GrupyLabel: groupsString,
         } = c.object as Record<string, { value?: string; humanKey: string }>
 
+        const sourceHash = createHash('sha1')
+          .update(JSON.stringify(c.object))
+          .digest('hex')
+          .slice(0, 16)
+
         const startsAt = DateTime.fromFormat(
           `${date.value} ${timeStart.value}`,
           'dd.MM.yyyy HH:mm:ss',
@@ -133,6 +139,7 @@ export class SupervisorService implements OnModuleInit {
         ).toJSDate()
 
         return {
+          constantId: sourceHash,
           code: code.value,
           name: name.value,
           room: room?.value,

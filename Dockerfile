@@ -36,7 +36,7 @@ EXPOSE 3000
 
 WORKDIR /caats/packages/nest
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/index.js"]
 
 # -- Scraper section --
 FROM build AS scraper-build

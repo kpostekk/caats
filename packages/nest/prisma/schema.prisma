@@ -23,8 +23,6 @@ model User {
     groups           String[]
     sessions         UserSession[]
     icsSubscriptions IcsSubscriptions[]
-
-    @@index([id(sort: Asc)])
 }
 
 model UserSession {
@@ -35,7 +33,7 @@ model UserSession {
     expiresAt DateTime  @default(dbgenerated("now() + interval '1 day'"))
     revokedAt DateTime?
 
-    @@index([id(sort: Asc), expiresAt(sort: Asc)])
+    @@index([expiresAt(sort: Asc)])
 }
 
 enum TaskStatus {
@@ -69,23 +67,24 @@ model TaskResult {
     object    Json
     usedBy    TimetableEvent?
 
-    @@index([taskId(sort: Desc), createdAt(sort: Desc)])
+    @@index([createdAt(sort: Desc)])
     @@index([object], type: Gin)
 }
 
 model TimetableEvent {
-    id        Int        @id @default(autoincrement())
-    createdAt DateTime   @default(now())
-    startsAt  DateTime
-    endsAt    DateTime
-    source    TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
-    sourceId  Int        @unique
-    name      String
-    code      String
-    type      String
-    room      String?
-    groups    String[]
-    hosts     String[]
+    id         Int        @id @default(autoincrement())
+    constantId String     @db.Char(16)
+    createdAt  DateTime   @default(now())
+    startsAt   DateTime
+    endsAt     DateTime
+    source     TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+    sourceId   Int        @unique
+    name       String
+    code       String
+    type       String
+    room       String?
+    groups     String[]
+    hosts      String[]
 
     @@index([startsAt(sort: Asc), code(sort: Asc), groups(sort: Asc)])
 }
