@@ -47,7 +47,7 @@ RUN yarn install
 
 COPY ./packages/scrapy /build/packages/scrapy
 
-RUN yarn workspace @caats/scrapy tsc
+RUN yarn workspace @caats/scrapy build
 
 RUN yarn install --production
 

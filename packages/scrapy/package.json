@@ -4,11 +4,12 @@
   "main": "dist/index.js",
   "author": "Krystian Postek <krystian@postek.eu>",
   "contributors": [
-    "Rafał Opiłowski",
-    "Aleksandra Indulska"
+    "Aleksandra Indulska",
+    "Rafał Opiłowski"
   ],
   "license": "MIT",
   "scripts": {
+    "build": "tsc --noEmit && swc src/ -d dist/",
     "codegen": "graphql-codegen --config codegen.yml",
     "scrapy": "node dist/index.js"
   },
