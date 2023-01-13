@@ -17,8 +17,4 @@ jobs:
         with:
           node-version: 19.x
       - run: yarn --frozen-lockfile
-      - uses: paambaati/codeclimate-action@v2.2.4
-        env:
-          CC_TEST_REPORTER_ID: d79c596ce02157e36a5dd03ff559a294efee49771b6f0cb6f2e90cb723450fde
-        with:
-          coverageCommand: yarn test --coverage
+      - run: yarn test --coverage
