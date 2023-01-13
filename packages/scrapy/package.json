@@ -1,6 +1,6 @@
 {
   "name": "@caats/scrapy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "author": "Krystian Postek <krystian@postek.eu>",
   "contributors": [
