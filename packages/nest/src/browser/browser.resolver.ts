@@ -1,10 +1,9 @@
 import { UseGuards } from '@nestjs/common'
 import { Query, Resolver, Args, Context } from '@nestjs/graphql'
 import { User } from '@prisma/client'
-import { GroupInput, HostInput, SinceUntil, SkipTake } from '../_autogen/gql'
 import { AuthGuard } from '../auth/auth.guard'
+import { GqlGroupInput, GqlHostInput, GqlSinceUntil, GqlSkipTake } from '../gql'
 import { BrowserService } from './browser.service'
-import {} from '../_autogen/gql'
 
 @Resolver()
 export class BrowserResolver {
@@ -14,8 +13,8 @@ export class BrowserResolver {
   @Query()
   async getScheduleUser(
     @Context('user') user: User,
-    @Args('sinceUntil') sinceUntil?: SinceUntil,
-    @Args('skipTake') skipTake?: SkipTake
+    @Args('sinceUntil') sinceUntil?: GqlSinceUntil,
+    @Args('skipTake') skipTake?: GqlSkipTake
   ) {
     const result = await this.browser.findByUser(user.id, sinceUntil, skipTake)
     return result.map((r) => ({ ...r, subject: r.name }))
@@ -23,9 +22,9 @@ export class BrowserResolver {
 
   @Query()
   async getScheduleGroups(
-    @Args('groups') groups: GroupInput,
-    @Args('sinceUntil') sinceUntil?: SinceUntil,
-    @Args('skipTake') skipTake?: SkipTake
+    @Args('groups') groups: GqlGroupInput,
+    @Args('sinceUntil') sinceUntil?: GqlSinceUntil,
+    @Args('skipTake') skipTake?: GqlSkipTake
   ) {
     const result = await this.browser.findByGroups(
       groups.groups,
@@ -37,9 +36,9 @@ export class BrowserResolver {
 
   @Query()
   async getScheduleHosts(
-    @Args('host') host: HostInput,
-    @Args('sinceUntil') sinceUntil?: SinceUntil,
-    @Args('skipTake') skipTake?: SkipTake
+    @Args('host') host: GqlHostInput,
+    @Args('sinceUntil') sinceUntil?: GqlSinceUntil,
+    @Args('skipTake') skipTake?: GqlSkipTake
   ) {
     const result = await this.browser.findByHost(
       host.host,

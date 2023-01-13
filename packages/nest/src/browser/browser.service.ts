@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { SinceUntil, SkipTake } from '../_autogen/gql'
+import { GqlSinceUntil, GqlSkipTake } from '../gql'
 import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class BrowserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByUser(id: string, sinceUntil?: SinceUntil, skipTake?: SkipTake) {
+  async findByUser(
+    id: string,
+    sinceUntil?: GqlSinceUntil,
+    skipTake?: GqlSkipTake
+  ) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id },
     })
@@ -26,10 +30,10 @@ export class BrowserService {
           },
         ],
         startsAt: {
-          gte: sinceUntil?.since && new Date(sinceUntil.since),
+          gte: sinceUntil?.since,
         },
         endsAt: {
-          lte: sinceUntil?.until && new Date(sinceUntil.until),
+          lte: sinceUntil?.until,
         },
         source: {
           task: {
@@ -46,8 +50,8 @@ export class BrowserService {
 
   async findByGroups(
     groups: string[],
-    sinceUntil?: SinceUntil,
-    skipTake?: SkipTake
+    sinceUntil?: GqlSinceUntil,
+    skipTake?: GqlSkipTake
   ) {
     return this.prisma.timetableEvent.findMany({
       where: {
@@ -73,7 +77,11 @@ export class BrowserService {
     })
   }
 
-  async findByHost(host: string, sinceUntil?: SinceUntil, skipTake?: SkipTake) {
+  async findByHost(
+    host: string,
+    sinceUntil?: GqlSinceUntil,
+    skipTake?: GqlSkipTake
+  ) {
     return this.prisma.timetableEvent.findMany({
       where: {
         hosts: {

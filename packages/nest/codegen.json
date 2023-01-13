@@ -1,0 +1,33 @@
+{
+  "schema": "src/**/*.{gql,graphql}",
+  "generates": {
+    "src/gql.ts": {
+      "plugins": [
+        "typescript",
+        {
+          "add": {
+            "content": "/* eslint-disable */"
+          }
+        }
+      ],
+      "config": {
+        "scalars": {
+          "DateTime": "Date",
+          "Date": "Date",
+          "JWT": "string",
+          "UUID": "string",
+          "PositiveInt": "number",
+          "EmailAddress": "string",
+          "JSON": "Record<string, unknown> | Array<unknown> | string | number | boolean | null",
+          "URL": "string"
+        },
+        "strictScalars": true,
+        "typesPrefix": "Gql",
+        "enumsAsTypes": true,
+        "namingConvention": {
+          "enumValues": "keep"
+        }
+      }
+    }
+  }
+}

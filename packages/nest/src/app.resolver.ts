@@ -1,4 +1,4 @@
-import { App } from './_autogen/gql'
+import { GqlApp } from './gql'
 import { Resolver, Query } from '@nestjs/graphql'
 import fs from 'fs/promises'
 
@@ -9,7 +9,7 @@ async function getVersion(): Promise<string | undefined> {
 @Resolver()
 export class AppResolver {
   @Query()
-  async app(): Promise<App> {
+  async app(): Promise<GqlApp> {
     return {
       version: await getVersion(),
       node: process.version,

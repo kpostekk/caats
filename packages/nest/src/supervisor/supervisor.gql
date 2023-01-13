@@ -1,4 +1,6 @@
 scalar JSON
+scalar PositiveInt
+scalar Date
 
 type Task {
   id: ID!
@@ -33,6 +35,11 @@ input TaskResult {
   hash: String!
 }
 
+input TasksBulkInput {
+  count: PositiveInt!
+  offset: Int
+}
+
 type Query {
   getTasks: [Task!]!
   getTaskCollection(collection: TaskCollection!): [JSON!]!
@@ -41,4 +48,5 @@ type Query {
 type Mutation {
   updateTaskState(id: ID!, state: TaskState!): Boolean!
   finishTask(id: ID!, result: TaskResult!): Boolean!
+  createTasksBulk(input: TasksBulkInput!): Boolean!
 }

@@ -2,10 +2,11 @@ import { ParseIntPipe } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { TaskStatus } from '@prisma/client'
 import {
-  TaskResult as GqlTaskResult,
-  Task as GqlTask,
-  TaskCollection,
-} from '../_autogen/gql'
+  GqlQueryGetTaskCollectionArgs,
+  GqlTask,
+  GqlTaskResult,
+  GqlTasksBulkInput,
+} from '../gql'
 import { SupervisorService } from './supervisor.service'
 
 @Resolver()
@@ -41,11 +42,20 @@ export class SupervisorResolver {
   }
 
   @Query()
-  async getTaskCollection(@Args('collection') collectionType: TaskCollection) {
-    if (collectionType === TaskCollection.HISTORICAL) {
+  async getTaskCollection(
+    @Args() { collection }: GqlQueryGetTaskCollectionArgs
+  ) {
+    if (collection === 'HISTORICAL') {
       return await this.supervisor.getHistoricalTasks()
-    } else if (collectionType === TaskCollection.QUEUE) {
+    } else if (collection === 'QUEUE') {
       return await this.supervisor.getPendingTasks()
     }
+  }
+
+  @Mutation()
+  createTasksBulk(@Args('input') input: GqlTasksBulkInput) {
+    const offset = input.offset ?? 0
+
+    return this.supervisor.createTasks(input.count - offset, offset)
   }
 }

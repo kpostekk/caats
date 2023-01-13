@@ -27,10 +27,6 @@ import { ScheduleModule } from '@nestjs/schedule'
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       typePaths: ['./**/*.{gql,graphql}'],
-      definitions: {
-        path: join(__dirname, '_autogen/gql.ts'),
-        emitTypenameField: true,
-      },
       queryDepth: 4,
       graphiql: true,
       typeDefs,
