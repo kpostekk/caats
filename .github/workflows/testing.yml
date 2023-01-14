@@ -19,3 +19,4 @@ jobs:
           node-version: 19.x
       - run: yarn --frozen-lockfile
       - run: yarn jest --coverage
+        working-directory: ./packages/nest
