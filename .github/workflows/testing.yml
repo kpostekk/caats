@@ -20,3 +20,7 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn jest --coverage
         working-directory: ./packages/nest
+        env: 
+          JWT_SECRET: 'true'
+          GOOGLE_CLIENT_ID: testing
+          GOOGLE_SECRET: testing
