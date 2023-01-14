@@ -4,20 +4,14 @@ import { PrismaService } from '../prisma/prisma.service'
 import { EventAttributes, createEvents } from 'ics'
 import { DateTime } from 'luxon'
 import { randProductAdjective, randAccessory, randNumber } from '@ngneat/falso'
+import { randomBytes } from 'crypto'
 
 @Injectable()
 export class IcsService {
   constructor(private readonly prisma: PrismaService) {}
 
   private getSubscriptionName() {
-    return [
-      randProductAdjective(),
-      randAccessory(),
-      randNumber({ min: 1000, max: 9999 }),
-    ]
-      .join(' ')
-      .replaceAll(' ', '-')
-      .toLowerCase()
+    return randomBytes(8).toString('base64url')
   }
 
   async createSubscription(userId: string, groups: string[]) {
