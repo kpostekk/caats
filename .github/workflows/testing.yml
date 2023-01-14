@@ -18,4 +18,4 @@ jobs:
         with:
           node-version: 19.x
       - run: yarn --frozen-lockfile
-      - run: yarn test --coverage
+      - run: yarn jest --coverage
