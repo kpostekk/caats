@@ -1,0 +1,20 @@
+query AllRange {
+  getScheduleUser {
+    startsAt
+    endsAt
+    code
+  }
+}
+
+query InRange($start: DateTime!, $end: DateTime!) {
+  getScheduleUser(sinceUntil: { since: $start, until: $end }) {
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
+    hosts
+    groups
+  }
+}

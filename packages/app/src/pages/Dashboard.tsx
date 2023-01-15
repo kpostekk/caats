@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Greeting } from '../components/Greeting/Greeting'
 import { useEffectOnce, useHarmonicIntervalFn } from 'react-use'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
+import { ScheduleEvent } from '../components/ScheduleEvent/ScheduleEvent'
 
 declare module 'react' {
   interface CSSProperties {
@@ -47,9 +48,53 @@ export default function Dashboard() {
   )
 
   return (
-    <div className="mx-auto max-w-6xl gap-4 space-y-2 py-4">
+    <div className="container max-w-5xl">
       <UpdatePrompt />
-      <div className="grid grid-cols-1 gap-4 md:col-span-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 xl:grid-cols-3">
+        <div className="col-span-2">
+          <div className="flex items-center">
+            <h1 className="w-2/3 px-2 text-[36pt] font-extrabold">
+              Siema, student!
+            </h1>
+            {/* <div className="grow" /> */}
+            {/* <img className="h-32 p-2" src="cat.png"></img> */}
+          </div>
+          <div className="rounded-xl bg-black p-2 text-white">
+            <div className="space-y-2">
+              <a className="btn btn-link text-white" href="/graphiql">
+                <SiGraphql className="mr-2" /> GraphiQL
+              </a>
+              <Link
+                className="btn btn-link text-white"
+                to="/app/settings/groups"
+              >
+                <HiUserGroup className="mr-2" /> Konfiguruj grupy
+              </Link>
+              <Link className="btn btn-link text-white" to="/app/ics">
+                <HiCalendar className="mr-2" /> Zarządzaj linkami .ICS
+              </Link>
+              <Link className="btn btn-link text-white" to="/app/su/history">
+                <HiClipboardList className="mr-2" /> Historia scrapowania
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-1 space-y-2 px-2">
+          <h2 className="text-[22pt] font-semibold">Najbliższe zajęcia</h2>
+          <hr />
+          {events.data?.getScheduleUser.map((e, i) => (
+            <ScheduleEvent
+              key={i}
+              {...e}
+              start={new Date(e.startsAt)}
+              end={new Date(e.endsAt)}
+              room={e.room ?? 'TBA'}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* <div className="grid grid-cols-1 gap-4 md:col-span-3 md:grid-cols-3">
         <div className="card card-bordered md:col-span-2">
           <div className="card-body prose">
             <h2>
@@ -80,9 +125,9 @@ export default function Dashboard() {
             </div>
             <Link
               className="btn btn-outline mt-auto max-w-fit"
-              to="/app/schedule"
+              to="/app/calendar"
             >
-              Plan zajęć
+              Kalendarz
             </Link>
           </div>
         </div>
@@ -128,7 +173,7 @@ export default function Dashboard() {
             <HiClipboardList className="mr-2" /> Historia scrapowania
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

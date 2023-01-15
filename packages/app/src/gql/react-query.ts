@@ -21,6 +21,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
   DateTime: any;
   EmailAddress: any;
   JSON: any;
@@ -58,6 +59,7 @@ export type Mutation = {
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
   createSubscription: Scalars['String'];
+  createTasksBulk: Scalars['Boolean'];
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
@@ -81,6 +83,11 @@ export type MutationCreateSubscriptionArgs = {
 };
 
 
+export type MutationCreateTasksBulkArgs = {
+  input: TasksBulkInput;
+};
+
+
 export type MutationFinishTaskArgs = {
   id: Scalars['ID'];
   result: TaskResult;
@@ -101,6 +108,7 @@ export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  getEventHistory: Array<ScheduleEvent>;
   getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
   getScheduleGroups: Array<ScheduleEvent>;
@@ -116,6 +124,11 @@ export type Query = {
 
 export type QueryAutocompleteGroupsArgs = {
   query: Scalars['String'];
+};
+
+
+export type QueryGetEventHistoryArgs = {
+  constantId: Scalars['String'];
 };
 
 
@@ -210,6 +223,11 @@ export enum TaskState {
   Success = 'SUCCESS'
 }
 
+export type TasksBulkInput = {
+  count: Scalars['PositiveInt'];
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
 /** A CaaTS user. */
 export type User = {
   __typename?: 'User';
@@ -236,6 +254,19 @@ export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UserQuery = { __typename?: 'Query', me: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string> } };
 
+export type AllRangeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string }> };
+
+export type InRangeQueryVariables = Exact<{
+  start: Scalars['DateTime'];
+  end: Scalars['DateTime'];
+}>;
+
+
+export type InRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
+
 export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -254,14 +285,14 @@ export type NextEventsCalQueryVariables = Exact<{
 }>;
 
 
-export type NextEventsCalQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, code: string, type: string }> };
+export type NextEventsCalQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
 
 export type NextEventsDashQueryVariables = Exact<{
   now: Scalars['DateTime'];
 }>;
 
 
-export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, code: string, type: string, room?: string | null }> };
+export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
 
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
@@ -336,6 +367,57 @@ export const useUserQuery = <
       fetcher<UserQuery, UserQueryVariables>(client, UserDocument, variables, headers),
       options
     );
+export const AllRangeDocument = `
+    query AllRange {
+  getScheduleUser {
+    startsAt
+    endsAt
+    code
+  }
+}
+    `;
+export const useAllRangeQuery = <
+      TData = AllRangeQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: AllRangeQueryVariables,
+      options?: UseQueryOptions<AllRangeQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<AllRangeQuery, TError, TData>(
+      variables === undefined ? ['AllRange'] : ['AllRange', variables],
+      fetcher<AllRangeQuery, AllRangeQueryVariables>(client, AllRangeDocument, variables, headers),
+      options
+    );
+export const InRangeDocument = `
+    query InRange($start: DateTime!, $end: DateTime!) {
+  getScheduleUser(sinceUntil: {since: $start, until: $end}) {
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
+    hosts
+    groups
+  }
+}
+    `;
+export const useInRangeQuery = <
+      TData = InRangeQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: InRangeQueryVariables,
+      options?: UseQueryOptions<InRangeQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<InRangeQuery, TError, TData>(
+      ['InRange', variables],
+      fetcher<InRangeQuery, InRangeQueryVariables>(client, InRangeDocument, variables, headers),
+      options
+    );
 export const AllNextEventsDocument = `
     query AllNextEvents {
   getScheduleUser {
@@ -393,8 +475,11 @@ export const NextEventsCalDocument = `
     query NextEventsCal($start: DateTime!, $end: DateTime!) {
   getScheduleUser(sinceUntil: {since: $start, until: $end}) {
     startsAt
+    endsAt
     code
+    subject
     type
+    room
   }
 }
     `;
@@ -416,7 +501,9 @@ export const NextEventsDashDocument = `
     query NextEventsDash($now: DateTime!) {
   getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 4}) {
     startsAt
+    endsAt
     code
+    subject
     type
     room
   }

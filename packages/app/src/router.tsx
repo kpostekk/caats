@@ -12,6 +12,8 @@ const App = lazy(() => import('./pages/App'))
 const Settings = lazy(() => import('./pages/Settings/Settings'))
 const SettingsGroups = lazy(() => import('./pages/Settings/Groups'))
 const Schedule = lazy(() => import('./pages/Schedule'))
+const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
+const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
 
 export const router = createBrowserRouter([
   {
@@ -78,8 +80,16 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            path: '/app/schedule',
+            path: '/app/schedule/',
             element: <Schedule />,
+          },
+          {
+            path: '/app/calendar/',
+            element: <Calendar />,
+          },
+          {
+            path: '/app/calendar/:date/',
+            element: <CalendarDay />,
           },
         ],
       },

@@ -16,7 +16,7 @@ export default function Settings() {
   return (
     <div className="py-4">
       <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="card bg-base-200 card-bordered col-span-1 p-4">
+        <div className="card bg-base-content card-bordered col-span-1 p-4 text-white">
           <SettingsLink to="/app/settings">
             <HiCog />
             Ogólne
