@@ -57,14 +57,14 @@ export default defineConfig({
         icons: [
           {
             purpose: 'any',
-            src: 'logo.png',
-            sizes: '384x384',
+            src: 'icon.png',
+            sizes: '256x256',
             type: 'image/png',
           },
           {
             purpose: 'maskable',
-            src: 'logo.png',
-            sizes: '384x384',
+            src: 'icon.png',
+            sizes: '256x256',
             type: 'image/png',
           },
         ],
