@@ -36,7 +36,11 @@ export default function CalendarDay() {
                 subject={e.subject}
                 start={new Date(e.startsAt)}
                 end={new Date(e.endsAt)}
-                room={e.room ?? 'TBA'}
+                focused={
+                  new Date(e.startsAt) <= new Date() &&
+                  new Date(e.endsAt) > new Date()
+                }
+                room={e.room}
               />
             )
           })}

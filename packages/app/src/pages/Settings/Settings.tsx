@@ -21,7 +21,6 @@ export default function Settings() {
             <HiCog />
             Ogólne
           </SettingsLink>
-
           <SettingsLink to="/app/settings/groups">
             <HiUserGroup /> Grupy
           </SettingsLink>

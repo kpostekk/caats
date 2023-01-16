@@ -56,11 +56,12 @@ export default function Dashboard() {
             <h1 className="w-2/3 px-2 text-[36pt] font-extrabold">
               Siema, student!
             </h1>
-            {/* <div className="grow" /> */}
-            {/* <img className="h-32 p-2" src="cat.png"></img> */}
           </div>
           <div className="rounded-xl bg-black p-2 text-white">
             <div className="space-y-2">
+              <Link to="/app/calendar" className="btn btn-link text-white">
+                <HiCalendar className="mr-2" /> Kalendarz
+              </Link>
               <a className="btn btn-link text-white" href="/graphiql">
                 <SiGraphql className="mr-2" /> GraphiQL
               </a>
@@ -70,12 +71,13 @@ export default function Dashboard() {
               >
                 <HiUserGroup className="mr-2" /> Konfiguruj grupy
               </Link>
-              <Link className="btn btn-link text-white" to="/app/ics">
+
+              {/* <Link className="btn btn-link text-white" to="/app/ics">
                 <HiCalendar className="mr-2" /> Zarządzaj linkami .ICS
               </Link>
               <Link className="btn btn-link text-white" to="/app/su/history">
                 <HiClipboardList className="mr-2" /> Historia scrapowania
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
@@ -88,6 +90,10 @@ export default function Dashboard() {
               {...e}
               start={new Date(e.startsAt)}
               end={new Date(e.endsAt)}
+              focused={
+                new Date(e.startsAt) <= new Date() &&
+                new Date(e.endsAt) > new Date()
+              }
               room={e.room ?? 'TBA'}
             />
           ))}
