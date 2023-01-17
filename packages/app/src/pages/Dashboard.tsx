@@ -41,15 +41,14 @@ export default function Dashboard() {
     now: now.toISO(),
   })
 
-  const cNow = useCountdown(
-    events.data?.getScheduleUser[0]
-      ? DateTime.fromISO(events.data?.getScheduleUser[0].startsAt)
-      : undefined
-  )
+  // const cNow = useCountdown(
+  //   events.data?.getScheduleUser[0]
+  //     ? DateTime.fromISO(events.data?.getScheduleUser[0].startsAt)
+  //     : undefined
+  // )
 
   return (
-    <div className="container max-w-5xl">
-      <UpdatePrompt />
+    <div className="container max-w-5xl pb-12 md:pb-0">
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-3">
         <div className="col-span-2">
           <div className="flex items-center">
@@ -58,7 +57,8 @@ export default function Dashboard() {
             </h1>
           </div>
           <div className="rounded-xl bg-black p-2 text-white">
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+              <UpdatePrompt />
               <Link to="/app/calendar" className="btn btn-link text-white">
                 <HiCalendar className="mr-2" /> Kalendarz
               </Link>
@@ -71,6 +71,9 @@ export default function Dashboard() {
               >
                 <HiUserGroup className="mr-2" /> Konfiguruj grupy
               </Link>
+              <span className="text-center text-[9pt] text-white opacity-50">
+                v{APP_VERSION}
+              </span>
 
               {/* <Link className="btn btn-link text-white" to="/app/ics">
                 <HiCalendar className="mr-2" /> Zarządzaj linkami .ICS
@@ -94,7 +97,7 @@ export default function Dashboard() {
                 new Date(e.startsAt) <= new Date() &&
                 new Date(e.endsAt) > new Date()
               }
-              room={e.room ?? 'TBA'}
+              room={e.room}
             />
           ))}
         </div>

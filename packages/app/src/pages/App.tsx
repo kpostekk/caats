@@ -60,9 +60,6 @@ export default function App() {
       <div className="relative h-[calc(100vh-4rem-6px)]">
         <Outlet />
       </div>
-      <div className="grid h-12 grid-cols-2 place-items-center border-t mt-12 p-4">
-        <div className="opacity-70">v{APP_VERSION}</div>
-      </div>
     </div>
   )
 }

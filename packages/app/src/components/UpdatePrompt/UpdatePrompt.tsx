@@ -12,18 +12,16 @@ export function UpdatePrompt() {
   if (!needRefresh) return null
 
   return (
-    <div className="alert alert-info">
-      <div className="flex w-full">
-        <HiCloudDownload className="text-2xl" />
-        <span>Nowa wersja dostępna!</span>
-        <div className="grow" />
-        <button
-          className="btn btn-outline btn-secondary"
-          onClick={() => updateServiceWorker(true)}
-        >
-          Zaktualizuj
-        </button>
-      </div>
+    <div className="text-warning flex w-full items-center">
+      <HiCloudDownload className="mr-2 text-2xl" />
+      <span>Nowa wersja dostępna!</span>
+      <div className="grow" />
+      <button
+        className="btn btn-link text-white"
+        onClick={() => updateServiceWorker(true)}
+      >
+        Zaktualizuj
+      </button>
     </div>
   )
 }
