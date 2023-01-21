@@ -38,7 +38,7 @@ export function ScheduleEvent(props: ScheduleEvent) {
             <div
               className={
                 props.focused
-                  ? 'h- 6 border-r-[1px] border-white'
+                  ? 'h-6 border-r-[1px] border-white'
                   : 'h-6 border-r-[1px] border-black'
               }
             />
