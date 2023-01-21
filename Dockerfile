@@ -36,7 +36,7 @@ EXPOSE 3000
 
 WORKDIR /caats/packages/nest
 
-CMD ["node", "dist/index.js"]
+CMD ["yarn", "start"]
 
 # -- Scraper section --
 FROM build AS scraper-build
@@ -59,4 +59,4 @@ COPY --from=scraper-build /build /caats
 
 WORKDIR /caats/packages/scrapy
 
-CMD ["node", "dist/index.js"]
+CMD ["yarn", "scrapy"]

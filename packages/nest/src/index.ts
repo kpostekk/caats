@@ -10,10 +10,6 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter()
   )
-  app.enableCors()
-
-  process.on('SIGINT', () => void app.close().then(() => process.exit(0)))
-  process.on('SIGTERM', () => void app.close().then(() => process.exit(0)))
 
   await app.listen(3000, '0.0.0.0')
 }
