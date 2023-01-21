@@ -16,19 +16,22 @@ export class SupervisorService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.verbose('Invalidating corrupted tasks...')
+    const initLogger = new Logger(`SupervisorService::onModuleInit`, {
+      timestamp: true,
+    })
+    initLogger.verbose('Invalidating corrupted tasks...')
     await this.invalidateCorruptedTasks()
 
     const taskCount = await this.prisma.task.count({
       where: { status: 'SUCCESS' },
     })
 
-    this.logger.verbose('Creating tasks if needed...')
+    initLogger.verbose('Creating tasks if needed...')
     if (taskCount < 14) {
       await this.createTasks(21, 1)
     }
 
-    this.logger.verbose('Superivsor is ready.')
+    initLogger.verbose('Initial cleanup is done.')
   }
 
   getPendingTasks() {
