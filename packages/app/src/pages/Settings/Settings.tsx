@@ -1,5 +1,12 @@
 import { forwardRef } from 'react'
-import { HiCog, HiUserGroup } from 'react-icons/hi'
+import {
+  HiBriefcase,
+  HiCalendar,
+  HiCog,
+  HiEyeOff,
+  HiKey,
+  HiUserGroup,
+} from 'react-icons/hi'
 import { Link, LinkProps, Outlet, useLocation } from 'react-router-dom'
 
 function SettingsLink(props: LinkProps) {
@@ -14,15 +21,30 @@ function SettingsLink(props: LinkProps) {
 
 export default function Settings() {
   return (
-    <div className="py-4">
-      <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="card bg-base-content card-bordered col-span-1 p-4 text-white">
+    <div className="h-full py-4">
+      <div className="mx-auto grid h-4/5 max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="card bg-base-content card-bordered col-span-1 space-y-2 p-4 text-white">
           <SettingsLink to="/app/settings">
             <HiCog />
             Ogólne
           </SettingsLink>
+          <hr className="m-2 opacity-40" />
           <SettingsLink to="/app/settings/groups">
             <HiUserGroup /> Grupy
+          </SettingsLink>
+          <SettingsLink to="/app/settings/ics">
+            <HiCalendar /> Subskrypcje ICS
+          </SettingsLink>
+          <hr className="m-2 opacity-40" />
+          <SettingsLink to="/app/settings/safety">
+            <HiKey /> Bezpieczeństwo
+          </SettingsLink>
+          <hr className="m-2 opacity-40" />
+          <SettingsLink to="/app/settings/tos">
+            <HiBriefcase /> Regulaminy
+          </SettingsLink>
+          <SettingsLink to="/app/settings/privacy">
+            <HiEyeOff /> Prywatność
           </SettingsLink>
           {/* <Link className="link-hover" to="/app/settings/">
             Wgląd

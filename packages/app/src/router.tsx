@@ -77,6 +77,22 @@ export const router = createBrowserRouter([
                 path: '/app/settings/groups/',
                 element: <SettingsGroups />,
               },
+              {
+                path: '/app/settings/ics/',
+                element: <p>Under construction 🏗️</p>,
+              },
+              {
+                path: '/app/settings/safety/',
+                element: <p>Under construction 🏗️</p>,
+              },
+              {
+                path: '/app/settings/tos/',
+                element: <p>Under construction 🏗️</p>,
+              },
+              {
+                path: '/app/settings/privacy/',
+                element: <p>Under construction 🏗️</p>,
+              },
             ],
           },
           {

@@ -47,7 +47,7 @@ export default function App() {
             <button className="btn btn-ghost btn-square aspect-square rounded-lg">
               <img className="w-8 rounded-md" src={picture ?? undefined} />
             </button>
-            <ul className="dropdown-content menu bg-base-100 w-44 p-1 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 shadow-xl">
               <li>
                 <Link to="/logout/">
                   <HiLogout /> Wyloguj się

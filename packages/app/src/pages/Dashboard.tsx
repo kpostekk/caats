@@ -35,6 +35,7 @@ function useCountdown(targetDateTime?: DateTime) {
 
 export default function Dashboard() {
   // const token = useAuthStore(({ auth }) => auth?.accessToken)
+  const name = useAuthStore(({ auth }) => auth?.user.name)
   const client = useGqlClient()
   const [now] = useState(DateTime.now())
   const events = useNextEventsDashQuery(client, {
@@ -42,19 +43,13 @@ export default function Dashboard() {
     deadline: now.endOf('day').toISO(),
   })
 
-  // const cNow = useCountdown(
-  //   events.data?.getScheduleUser[0]
-  //     ? DateTime.fromISO(events.data?.getScheduleUser[0].startsAt)
-  //     : undefined
-  // )
-
   return (
     <div className="container max-w-5xl pb-12 md:pb-0">
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-3">
         <div className="col-span-2">
           <div className="flex items-center">
             <h1 className="w-2/3 px-2 text-[36pt] font-extrabold">
-              Siema, student!
+              Siema, {name?.split(' ')[0]}!
             </h1>
           </div>
           <div className="rounded-xl bg-black p-2 text-white">
