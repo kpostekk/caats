@@ -1,7 +1,7 @@
 {
   "name": "@caats/app",
   "private": true,
-  "version": "0.5.3-1",
+  "version": "0.5.3-2",
   "author": "Krystian <krystian@postek.eu>",
   "type": "module",
   "scripts": {
