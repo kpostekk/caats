@@ -38,7 +38,8 @@ export default function Dashboard() {
   const client = useGqlClient()
   const [now] = useState(DateTime.now())
   const events = useNextEventsDashQuery(client, {
-    now: now.toISO(),
+    now: now.minus({ minutes: 25 }).toISO(),
+    deadline: now.endOf('day').toISO(),
   })
 
   // const cNow = useCountdown(
@@ -71,7 +72,7 @@ export default function Dashboard() {
               >
                 <HiUserGroup className="mr-2" /> Konfiguruj grupy
               </Link>
-              <span className="text-center text-[9pt] text-white opacity-50">
+              <span className="text-center text-[9pt] text-white opacity-50 md:col-span-3">
                 v{APP_VERSION}
               </span>
 
@@ -100,6 +101,11 @@ export default function Dashboard() {
               room={e.room}
             />
           ))}
+          {events.data?.getScheduleUser.length === 0 ? (
+            <p className="text-center italic opacity-70">
+              Nie ma więcej zajęć na dziś! 🎉
+            </p>
+          ) : null}
         </div>
       </div>
 

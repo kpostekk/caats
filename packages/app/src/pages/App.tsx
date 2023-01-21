@@ -16,7 +16,7 @@ export default function App() {
       <div className="navbar border-b-base-200 bg-base-100/75 sticky top-0 z-50 border-b backdrop-blur-sm">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
-            <button className="btn btn-outline">
+            <button className="btn btn-ghost">
               <HiMenu />
             </button>
             <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 shadow-xl">
@@ -44,8 +44,8 @@ export default function App() {
         </div>
         <div className="navbar-end">
           <div className="dropdown dropdown-end dropdown-hover">
-            <button className="btn btn-outline btn-square aspect-square rounded-lg">
-              <img className="rounded-md" src={picture ?? undefined} />
+            <button className="btn btn-ghost btn-square aspect-square rounded-lg">
+              <img className="w-8 rounded-md" src={picture ?? undefined} />
             </button>
             <ul className="dropdown-content menu bg-base-100 w-44 p-1 shadow-xl">
               <li>

@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
 import { useInRangeQuery } from '../../gql/react-query'
 import { useGqlClient } from '../useGqlClient/useGqlClient'
@@ -86,8 +86,10 @@ export function CalDatePicker(props: CalDatePickerProps) {
           <CalDate
             date={begin.plus({ days: i })}
             current={
-              i === DateTime.now().day - 1 &&
-              begin.month === DateTime.now().month
+              begin.plus({ days: i }).diffNow() >=
+                Duration.fromObject({ day: 1 }) &&
+              begin.plus({ days: i }).diffNow() <
+                Duration.fromObject({ day: 1 })
             }
             key={i}
             onClick={() =>

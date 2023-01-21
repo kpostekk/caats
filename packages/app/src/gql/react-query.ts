@@ -289,6 +289,7 @@ export type NextEventsCalQuery = { __typename?: 'Query', getScheduleUser: Array<
 
 export type NextEventsDashQueryVariables = Exact<{
   now: Scalars['DateTime'];
+  deadline: Scalars['DateTime'];
 }>;
 
 
@@ -498,8 +499,11 @@ export const useNextEventsCalQuery = <
       options
     );
 export const NextEventsDashDocument = `
-    query NextEventsDash($now: DateTime!) {
-  getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 4}) {
+    query NextEventsDash($now: DateTime!, $deadline: DateTime!) {
+  getScheduleUser(
+    sinceUntil: {since: $now, until: $deadline}
+    skipTake: {take: 4}
+  ) {
     startsAt
     endsAt
     code
