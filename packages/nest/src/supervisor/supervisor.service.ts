@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
-import { Cron } from '@nestjs/schedule'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import { createHash } from 'crypto'
 
 @Injectable()
@@ -16,22 +16,22 @@ export class SupervisorService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const initLogger = new Logger(`SupervisorService::onModuleInit`, {
-      timestamp: true,
-    })
-    initLogger.verbose('Invalidating corrupted tasks...')
-    await this.invalidateCorruptedTasks()
-
     const taskCount = await this.prisma.task.count({
       where: { status: 'SUCCESS' },
     })
 
-    initLogger.verbose('Creating tasks if needed...')
+    this.logger.verbose('Creating tasks if needed...')
     if (taskCount < 14) {
       await this.createTasks(21, 1)
     }
 
-    initLogger.verbose('Initial cleanup is done.')
+    this.logger.verbose('Initial cleanup is done.')
+  }
+
+  @Cron(CronExpression.EVERY_6_HOURS)
+  private async periodicCleanup() {
+    this.logger.verbose('Invalidating corrupted tasks...')
+    await this.invalidateCorruptedTasks()
   }
 
   getPendingTasks() {
