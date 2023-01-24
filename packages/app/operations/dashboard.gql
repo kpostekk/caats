@@ -43,3 +43,8 @@ query NextEventsDash($now: DateTime!, $deadline: DateTime!) {
   }
 }
 
+query UserGroups {
+  me {
+    groups
+  }
+}

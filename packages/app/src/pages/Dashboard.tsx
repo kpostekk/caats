@@ -1,5 +1,5 @@
 import { useAuthStore } from '../states/auth'
-import { useNextEventsDashQuery } from '../gql/react-query'
+import { useNextEventsDashQuery, useUserGroupsQuery } from '../gql/react-query'
 import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
 import { HiCalendar, HiUserGroup } from 'react-icons/hi'
@@ -18,6 +18,7 @@ export default function Dashboard() {
     now: now.minus({ minutes: 25 }).toISO(),
     deadline: now.endOf('day').toISO(),
   })
+  const groups = useUserGroupsQuery(client)
 
   return (
     <div className="container max-w-5xl pb-12 md:pb-0">
@@ -31,6 +32,12 @@ export default function Dashboard() {
           <div className="rounded-xl bg-black p-2 text-white">
             <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
               <UpdatePrompt />
+              {!groups.data?.me.groups.length ? (
+                <div className="text-warning py-2 sm:px-1 md:col-span-3 md:px-12">
+                  Nie masz jeszcze skonfigurowanych grup ćwiczeniowych! Udaj się
+                  do ustawień i popraw to!
+                </div>
+              ) : null}
               <Link to="/app/calendar" className="btn btn-link text-white">
                 <HiCalendar className="mr-2" /> Kalendarz
               </Link>

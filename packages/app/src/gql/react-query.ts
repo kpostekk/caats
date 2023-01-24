@@ -295,6 +295,11 @@ export type NextEventsDashQueryVariables = Exact<{
 
 export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
 
+export type UserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
+
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
@@ -525,6 +530,27 @@ export const useNextEventsDashQuery = <
     useQuery<NextEventsDashQuery, TError, TData>(
       ['NextEventsDash', variables],
       fetcher<NextEventsDashQuery, NextEventsDashQueryVariables>(client, NextEventsDashDocument, variables, headers),
+      options
+    );
+export const UserGroupsDocument = `
+    query UserGroups {
+  me {
+    groups
+  }
+}
+    `;
+export const useUserGroupsQuery = <
+      TData = UserGroupsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: UserGroupsQueryVariables,
+      options?: UseQueryOptions<UserGroupsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<UserGroupsQuery, TError, TData>(
+      variables === undefined ? ['UserGroups'] : ['UserGroups', variables],
+      fetcher<UserGroupsQuery, UserGroupsQueryVariables>(client, UserGroupsDocument, variables, headers),
       options
     );
 export const LoginDocument = `
