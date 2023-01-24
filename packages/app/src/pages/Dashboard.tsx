@@ -1,37 +1,13 @@
 import { useAuthStore } from '../states/auth'
 import { useNextEventsDashQuery } from '../gql/react-query'
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 import { Link } from 'react-router-dom'
-import { HiCalendar, HiClipboardList, HiUserGroup } from 'react-icons/hi'
+import { HiCalendar, HiUserGroup } from 'react-icons/hi'
 import { SiGraphql } from 'react-icons/si'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
-import { useEffect, useMemo, useState } from 'react'
-import { Greeting } from '../components/Greeting/Greeting'
-import { useEffectOnce, useHarmonicIntervalFn } from 'react-use'
+import { useState } from 'react'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 import { ScheduleEvent } from '../components/ScheduleEvent/ScheduleEvent'
-
-// declare module 'react' {
-//   interface CSSProperties {
-//     [key: `--${string}`]: string | number
-//   }
-// }
-
-// function useCountdown(targetDateTime?: DateTime) {
-//   const [now, setNow] = useState<Duration | undefined>()
-
-//   useHarmonicIntervalFn(
-//     () =>
-//       setNow(
-//         targetDateTime
-//           ?.diffNow()
-//           .shiftTo('hours', 'minutes', 'seconds', 'milliseconds')
-//       ),
-//     200
-//   )
-
-//   return now || Duration.fromMillis(0)
-// }
 
 export default function Dashboard() {
   // const token = useAuthStore(({ auth }) => auth?.accessToken)
@@ -70,13 +46,6 @@ export default function Dashboard() {
               <span className="text-center text-[9pt] text-white opacity-50 md:col-span-3">
                 v{APP_VERSION}
               </span>
-
-              {/* <Link className="btn btn-link text-white" to="/app/ics">
-                <HiCalendar className="mr-2" /> Zarządzaj linkami .ICS
-              </Link>
-              <Link className="btn btn-link text-white" to="/app/su/history">
-                <HiClipboardList className="mr-2" /> Historia scrapowania
-              </Link> */}
             </div>
           </div>
         </div>

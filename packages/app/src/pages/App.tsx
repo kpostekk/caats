@@ -1,15 +1,19 @@
+import { Transition } from '@headlessui/react'
 import {
   HiAdjustments,
   HiCalendar,
   HiLogout,
   HiMenu,
+  HiStatusOffline,
   HiTemplate,
 } from 'react-icons/hi'
 import { Link, Outlet } from 'react-router-dom'
+import { useNetworkState } from 'react-use'
 import { useAuthStore } from '../states/auth'
 
 export default function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
+  const networkState = useNetworkState()
 
   return (
     <div>
@@ -40,6 +44,19 @@ export default function App() {
           </div>
         </div>
         <div className="navbar-center">
+          <Transition
+            show={!networkState.online}
+            enter="transition-opacity duration-200"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="animate-pulse pr-2 text-2xl">
+              <HiStatusOffline />
+            </div>
+          </Transition>
           <h1 className="select-none text-2xl font-bold">CaaTS</h1>
         </div>
         <div className="navbar-end">
