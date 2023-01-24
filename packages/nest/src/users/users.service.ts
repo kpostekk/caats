@@ -25,7 +25,7 @@ export class UsersService {
         email,
         name,
         picture,
-        groups: ['WIs I.3 - 17c', 'WIs I.3 - 1w'],
+        // groups: ['WIs I.3 - 17c', 'WIs I.3 - 1w'],
       },
     })
   }
