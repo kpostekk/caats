@@ -24,6 +24,23 @@ export default function Login() {
       <div className="mx-auto grid h-full max-w-3xl grid-cols-1 place-content-center">
         <div className="prose">
           <h1>Zaloguj się</h1>
+          <p className="text-sm opacity-60">
+            Logując się do aplikacji akceptujesz obecną{' '}
+            <a
+              href="https://github.com/kpostekk/caats/blob/main/PRIVACY.md"
+              className="link"
+            >
+              politykę prywatności
+            </a>
+            {' oraz '}
+            <a
+              href="https://github.com/kpostekk/caats/blob/main/TOS.md"
+              className="link"
+            >
+              warunki użytkowania
+            </a>
+            .
+          </p>
           {!userAuthenticated ? (
             <div className="w-72">
               <LoginGoogle redirect={redirect} />
@@ -36,6 +53,10 @@ export default function Login() {
               </div>
             </div>
           )}
+          <p>
+            Przypominamy, że do zalogowania możesz wykorzystać jedynie konto
+            studenckie.
+          </p>
         </div>
       </div>
     </div>
