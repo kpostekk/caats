@@ -6,7 +6,7 @@ import {
   FaGhost,
   FaGithub,
 } from 'react-icons/fa'
-import { HiEyeOff, HiLightBulb, HiLightningBolt } from 'react-icons/hi'
+import { HiExternalLink, HiEyeOff, HiLightBulb, HiLightningBolt } from 'react-icons/hi'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 
@@ -15,7 +15,7 @@ const AppVersion = lazy(() => import('../components/AppVersion'))
 export default function Home() {
   return (
     <div className="min-h-screen w-full">
-      <div className="grid h-screen w-full place-content-center place-items-center gap-4 sm:grid-cols-1 md:grid-cols-2 md:p-24 lg:p-64">
+      <div className="grid h-screen w-full place-content-center place-items-center gap-4 px-8 sm:grid-cols-1 md:grid-cols-2 md:p-24 md:px-0 lg:p-64">
         <div>
           <h1 className="select-none text-6xl font-extrabold">CaaTS</h1>
           <p className="my-2 text-xl font-semibold">
@@ -44,7 +44,7 @@ export default function Home() {
             href="https://github.com/kpostekk/caats/blob/main/README.md"
             className="btn btn-outline"
           >
-            <FaArrowDown className="mr-2" />
+            <HiExternalLink className="mr-2" />
             Dowiedz się więcej
           </a>
         </div>
