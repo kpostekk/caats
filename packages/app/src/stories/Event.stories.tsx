@@ -30,6 +30,7 @@ export const Default: Story = {
     start: new Date(),
     end: new Date(),
     room: 'A/312',
+    type: 'Ćwiczenia',
   },
 }
 
@@ -41,6 +42,7 @@ export const WithFocus: Story = {
     end: new Date(),
     room: 'A/312',
     focused: true,
+    type: 'Ćwiczenia',
   },
 }
 
