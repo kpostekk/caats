@@ -69,7 +69,7 @@ export class IcsService {
         ],
         duration: endDt.diff(startDt).shiftTo('hours', 'minutes').toObject(),
         title: `${event.code} - ${event.type} (${event.room})`,
-        description: `${event.type} z ${event.name} w sali ${
+        description: `${event.type} z ${event.subject} w sali ${
           event.room
         }.\nProwadzący: ${event.hosts.join(', ')}`,
         organizer: {

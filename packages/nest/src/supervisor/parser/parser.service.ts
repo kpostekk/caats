@@ -52,7 +52,7 @@ export class ParserService {
 
     return {
       code: code.value,
-      name: name.value,
+      subject: name.value,
       room: room?.value,
       groups: groupsString?.value.split(', '),
       hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),

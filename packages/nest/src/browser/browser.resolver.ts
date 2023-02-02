@@ -23,7 +23,7 @@ export class BrowserResolver {
     @Args('skipTake') skipTake?: GqlSkipTake
   ) {
     const result = await this.browser.findByUser(user.id, sinceUntil, skipTake)
-    return result.map((r) => ({ ...r, subject: r.name }))
+    return result
   }
 
   @Query()
@@ -37,7 +37,7 @@ export class BrowserResolver {
       sinceUntil,
       skipTake
     )
-    return result.map((r) => ({ ...r, subject: r.name }))
+    return result
   }
 
   @Query()
@@ -51,7 +51,7 @@ export class BrowserResolver {
       sinceUntil,
       skipTake
     )
-    return result.map((r) => ({ ...r, subject: r.name }))
+    return result
   }
 
   @Query()
@@ -67,5 +67,10 @@ export class BrowserResolver {
   @Query()
   getEventHistory(@Args() { constantId }: GqlQueryGetEventHistoryArgs) {
     return this.browser.getEventHistory(constantId)
+  }
+
+  @Query()
+  findByDescription(@Args('query') query: string) {
+    return this.browser.findByDescription(query)
   }
 }

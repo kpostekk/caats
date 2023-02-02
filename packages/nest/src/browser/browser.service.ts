@@ -120,12 +120,43 @@ export class BrowserService {
     const groups = await this.prisma.$queryRaw<{ group: string }[]>`
       SELECT "group"
       FROM (SELECT DISTINCT unnest(groups) as "group" FROM "TimetableEvent") as UnnestedGroups
-      WHERE string_to_array(lower("group"), ' ') @> string_to_array(lower(${query}), ' ')
+      WHERE string_to_array(lower("group"), ' ') @> string_to_array(lower(${query}), ' ') OR lower("group") LIKE lower(${query}) || '%'
       ORDER BY "group"
       LIMIT 10
     `
 
     return Array.from(groups.flatMap((g) => g.group))
+  }
+
+  async findByDescription(fullQuery: string) {
+    const parsed = /^(?<q>[\p{L} ]+)(, ?(?<mod>[\p{L} ]+\p{N}*))*$/gmu
+    const results = parsed.exec(fullQuery)
+
+    if (!results) return []
+
+    const groups: Partial<{ q: string; mod: string }> = results.groups
+
+    if (!groups || !groups.q) return []
+
+    const events = await this.prisma.$queryRaw<{ id: number }[]>`
+      SELECT id
+      FROM (SELECT id,
+                   ARRAY [lower(code), lower(subject), lower(type), lower(room)] || string_to_array(lower(array_to_string((hosts), ' ')), ' ') || groups AS "combined",
+                    "endsAt"
+            FROM "TimetableEvent") AS QueryCompound
+      WHERE combined @> string_to_array(lower(${groups.q}), ' ')
+      AND "endsAt" > now()
+      ORDER BY "endsAt"
+      LIMIT 50
+    `
+
+    return await this.prisma.timetableEvent.findMany({
+      where: {
+        id: {
+          in: events.map((e) => e.id),
+        },
+      },
+    })
   }
 
   getEventHistory(constantId: string) {

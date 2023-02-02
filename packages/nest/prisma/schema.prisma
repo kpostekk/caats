@@ -79,7 +79,7 @@ model TimetableEvent {
     endsAt    DateTime
     source    TaskResult @relation(fields: [sourceId], references: [id], onDelete: Cascade)
     sourceId  Int        @unique
-    name      String
+    subject   String
     code      String
     type      String
     room      String?

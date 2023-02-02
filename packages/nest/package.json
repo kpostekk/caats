@@ -1,6 +1,6 @@
 {
   "name": "@caats/nest",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "",
   "author": "Krystian Postek <krystian@postek.eu>",
   "contributors": [
@@ -14,6 +14,7 @@
     "build": "tsc --noEmit && swc src/ -d dist/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "nodemon -w src -e gql,ts --exec \"node -r @swc/register\" src/index.ts",
+    "prestart": "swc src/ -d dist/",
     "start": "node dist",
     "legacy:start": "nest start",
     "legacy:start:dev": "nest start --watch",
