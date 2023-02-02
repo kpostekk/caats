@@ -7,6 +7,7 @@ export type ScheduleEvent = {
   end: Date
   room?: string | null
   focused?: boolean
+  type: string
 }
 
 export function ScheduleEvent(props: ScheduleEvent) {
@@ -45,6 +46,16 @@ export function ScheduleEvent(props: ScheduleEvent) {
             <span>{props.room}</span>
           </>
         )}
+        <>
+          <div
+            className={
+              props.focused
+                ? 'h-6 border-r-[1px] border-white'
+                : 'h-6 border-r-[1px] border-black'
+            }
+          />
+          <span>{props.type}</span>
+        </>
       </div>
     </div>
   )

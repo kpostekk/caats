@@ -41,6 +41,7 @@ export default function CalendarDay() {
                   new Date(e.endsAt) > new Date()
                 }
                 room={e.room}
+                type={e.type}
               />
             )
           })}
