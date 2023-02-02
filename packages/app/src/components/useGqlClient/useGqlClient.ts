@@ -8,6 +8,7 @@ export const gqlClient = new GraphQLClient('/graphql', {
       useAuthStore.getState().logout()
     }
   },
+  fetch: fetch,
 })
 
 export function useGqlClient() {
