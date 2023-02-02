@@ -61,5 +61,9 @@
     "vite": "^4.0.0",
     "vite-plugin-graphql-codegen": "^3.0.1",
     "vite-plugin-pwa": "^0.14.1"
-  }
+  },
+  "browserslist": [
+    "cover 90% in PL",
+    "not dead"
+  ]
 }
