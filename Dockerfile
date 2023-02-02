@@ -32,6 +32,8 @@ WORKDIR /caats
 
 COPY --from=app-build /build /caats
 
+ENV NODE_ENV=production
+
 EXPOSE 3000
 
 WORKDIR /caats/packages/nest
@@ -58,5 +60,7 @@ WORKDIR /caats
 COPY --from=scraper-build /build /caats
 
 WORKDIR /caats/packages/scrapy
+
+ENV NODE_ENV=production
 
 CMD ["yarn", "scrapy"]

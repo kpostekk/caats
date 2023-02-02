@@ -22,12 +22,15 @@ import { ScheduleModule } from '@nestjs/schedule'
         GOOGLE_CLIENT_ID: Joi.string().exist(),
         GOOGLE_SECRET: Joi.string().exist(),
         JWT_SECRET: Joi.string().exist().min(32),
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
       }),
     }),
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       typePaths: ['./**/*.{gql,graphql}'],
-      queryDepth: 4,
+      queryDepth: process.env.NODE_ENV !== 'development' ? 5 : Infinity,
       graphiql: true,
       typeDefs,
       resolvers,
