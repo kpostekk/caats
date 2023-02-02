@@ -7,6 +7,7 @@ import {
   HiKey,
   HiUserGroup,
 } from 'react-icons/hi'
+import { TbBrandGithub } from 'react-icons/tb'
 import { Link, LinkProps, Outlet, useLocation } from 'react-router-dom'
 
 function SettingsLink(props: LinkProps) {
@@ -46,6 +47,14 @@ export default function Settings() {
           <SettingsLink to="/app/settings/privacy">
             <HiEyeOff /> Prywatność
           </SettingsLink>
+          <hr className="m-2 opacity-40" />
+          <a
+            className="link-hover flex items-center gap-2"
+            href="https://github.com/kpostekk/caats"
+            target="_blank"
+          >
+            <TbBrandGithub /> Github
+          </a>
           {/* <Link className="link-hover" to="/app/settings/">
             Wgląd
           </Link>
