@@ -6,6 +6,7 @@ services:
       POSTGRES_PASSWORD: kittycatcat
       POSTGRES_USER: cat
       POSTGRES_DB: caats
+      TZ: Europe/Warsaw
   app:
     image: kpostekk/caats
     build:
@@ -18,6 +19,7 @@ services:
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
       SECRET_KEY: supersecretkey
+      TZ: Europe/Warsaw
     ports:
       - 3000:3000
     depends_on:
@@ -32,3 +34,5 @@ services:
     depends_on:
       - app
     command: node dist/index.js --api http://app:3000/graphql
+    environment:
+      TZ: Europe/Warsaw
