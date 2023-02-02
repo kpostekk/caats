@@ -17,6 +17,7 @@ const documents = {
     "query AllRange {\n  getScheduleUser {\n    startsAt\n    endsAt\n    code\n  }\n}\n\nquery InRange($start: DateTime!, $end: DateTime!) {\n  getScheduleUser(sinceUntil: {since: $start, until: $end}) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n    hosts\n    groups\n  }\n}\n\nquery BusyDays {\n  getScheduleUser {\n    startsAt\n  }\n}": types.AllRangeDocument,
     "query AllNextEvents {\n  getScheduleUser {\n    startsAt\n    endsAt\n    subject\n    code\n    type\n    room\n  }\n}\n\nquery AllEventsSince($since: DateTime!) {\n  getScheduleUser(sinceUntil: {since: $since}) {\n    startsAt\n    endsAt\n    subject\n    code\n    type\n    room\n    hosts\n  }\n}\n\nquery NextEventsCal($start: DateTime!, $end: DateTime!) {\n  getScheduleUser(sinceUntil: {since: $start, until: $end}) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n  }\n}\n\nquery NextEventsDash($now: DateTime!, $deadline: DateTime!) {\n  getScheduleUser(\n    sinceUntil: {since: $now, until: $deadline}\n    skipTake: {take: 4}\n  ) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n  }\n}\n\nquery UserGroups {\n  me {\n    groups\n  }\n}": types.AllNextEventsDocument,
     "mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}": types.LoginDocument,
+    "query GeneralizedSearch($input: String!) {\n  findByDescription(query: $input) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n    hosts\n    groups\n  }\n}": types.GeneralizedSearchDocument,
     "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}": types.SetGroupsDocument,
 };
 
@@ -36,6 +37,10 @@ export function graphql(source: "query AllNextEvents {\n  getScheduleUser {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}"): (typeof documents)["mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GeneralizedSearch($input: String!) {\n  findByDescription(query: $input) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n    hosts\n    groups\n  }\n}"): (typeof documents)["query GeneralizedSearch($input: String!) {\n  findByDescription(query: $input) {\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n    hosts\n    groups\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

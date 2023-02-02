@@ -108,6 +108,7 @@ export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  findByDescription: Array<ScheduleEvent>;
   getEventHistory: Array<ScheduleEvent>;
   getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
@@ -123,6 +124,11 @@ export type Query = {
 
 
 export type QueryAutocompleteGroupsArgs = {
+  query: Scalars['String'];
+};
+
+
+export type QueryFindByDescriptionArgs = {
   query: Scalars['String'];
 };
 
@@ -311,6 +317,13 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', name: string, isSuperuser: boolean, picture?: any | null } } };
+
+export type GeneralizedSearchQueryVariables = Exact<{
+  input: Scalars['String'];
+}>;
+
+
+export type GeneralizedSearchQuery = { __typename?: 'Query', findByDescription: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
 
 export type SetGroupsMutationVariables = Exact<{
   groups: Array<Scalars['String']> | Scalars['String'];
@@ -602,6 +615,34 @@ export const useLoginMutation = <
     useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
       ['Login'],
       (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(client, LoginDocument, variables, headers)(),
+      options
+    );
+export const GeneralizedSearchDocument = `
+    query GeneralizedSearch($input: String!) {
+  findByDescription(query: $input) {
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
+    hosts
+    groups
+  }
+}
+    `;
+export const useGeneralizedSearchQuery = <
+      TData = GeneralizedSearchQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GeneralizedSearchQueryVariables,
+      options?: UseQueryOptions<GeneralizedSearchQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GeneralizedSearchQuery, TError, TData>(
+      ['GeneralizedSearch', variables],
+      fetcher<GeneralizedSearchQuery, GeneralizedSearchQueryVariables>(client, GeneralizedSearchDocument, variables, headers),
       options
     );
 export const SetGroupsDocument = `

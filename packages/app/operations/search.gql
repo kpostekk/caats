@@ -1,0 +1,12 @@
+query GeneralizedSearch($input: String!) {
+  findByDescription(query: $input) {
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
+    hosts
+    groups
+  }
+}

@@ -14,6 +14,7 @@ const SettingsGroups = lazy(() => import('./pages/Settings/Groups'))
 const Schedule = lazy(() => import('./pages/Schedule'))
 const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
 const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
+const Search = lazy(() => import('./pages/Search'))
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
                 element: <p>Under construction 🏗️</p>,
               },
             ],
+          },
+          {
+            path: '/app/search',
+            element: <Search />,
           },
           {
             path: '/app/schedule/',

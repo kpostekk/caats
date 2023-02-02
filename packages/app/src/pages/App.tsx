@@ -4,6 +4,7 @@ import {
   HiCalendar,
   HiLogout,
   HiMenu,
+  HiSearch,
   HiStatusOffline,
   HiTemplate,
 } from 'react-icons/hi'
@@ -23,7 +24,7 @@ export default function App() {
             <button className="btn btn-ghost">
               <HiMenu />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box p-2 shadow-xl">
               <li>
                 <Link to="/app">
                   <HiTemplate /> Kokpit
@@ -32,6 +33,11 @@ export default function App() {
               <li>
                 <Link to="/app/calendar">
                   <HiCalendar /> Kalendarz
+                </Link>
+              </li>
+              <li>
+                <Link to="/app/search">
+                  <HiSearch /> Wyszukiwarka
                 </Link>
               </li>
               <li>
