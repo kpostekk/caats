@@ -6,7 +6,13 @@ import {
   FaGhost,
   FaGithub,
 } from 'react-icons/fa'
-import { HiExternalLink, HiEyeOff, HiLightBulb, HiLightningBolt } from 'react-icons/hi'
+import {
+  HiExternalLink,
+  HiEyeOff,
+  HiLightBulb,
+  HiLightningBolt,
+  HiPuzzle,
+} from 'react-icons/hi'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 
@@ -25,6 +31,9 @@ export default function Home() {
             <AppVersion />
             <UpdatePrompt />
           </Suspense>
+          <p className="pb-2 italic opacity-40">
+            <HiPuzzle className="inline" /> this is prerelease, work in progress
+          </p>
           <p>
             <HiEyeOff className="inline" /> private by design, no cookies, no
             analytics or tracking

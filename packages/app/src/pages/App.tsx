@@ -24,7 +24,7 @@ export default function App() {
             <button className="btn btn-ghost">
               <HiMenu />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 shadow-xl">
               <li>
                 <Link to="/app">
                   <HiTemplate /> Kokpit
