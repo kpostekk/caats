@@ -1,6 +1,7 @@
 import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
 import { useInRangeQuery } from '../../gql/react-query'
+import { useIsBusy } from '../useBusyDays/useBusyDays'
 import { useGqlClient } from '../useGqlClient/useGqlClient'
 
 export type CalDatePickerProps = {
@@ -43,13 +44,16 @@ type RenderDayProps = {
 }
 
 function CalDate(props: RenderDayProps) {
-  const client = useGqlClient()
-  const { data } = useInRangeQuery(client, {
-    start: props.date.startOf('day').toISO(),
-    end: props.date.endOf('day').toISO(),
-  })
+  const isBusy = useIsBusy()
+  // const { data } = useInRangeQuery(client, {
+  //   start: props.date.startOf('day').toISO(),
+  //   end: props.date.endOf('day').toISO(),
+  // })
 
-  const busy = useMemo(() => !!data?.getScheduleUser.length, [data])
+  const busy = useMemo(
+    () => isBusy(props.date.toISODate()),
+    [props.date, isBusy]
+  )
 
   return (
     <div
@@ -78,7 +82,7 @@ export function CalDatePicker(props: CalDatePickerProps) {
   return (
     <>
       <h2 className="text-[18pt] font-semibold">{title}</h2>
-      <div className="grid min-h-[10px] grid-cols-7 border-y py-2">
+      <div className="grid h-[60vh] grid-cols-7 border-y py-2 md:h-[440px]">
         {Array.from({ length: offset }).map((_, i) => (
           <div key={i} />
         ))}
@@ -86,12 +90,9 @@ export function CalDatePicker(props: CalDatePickerProps) {
           <CalDate
             date={begin.plus({ days: i })}
             current={
-              begin.plus({ days: i }).diffNow() >=
-                Duration.fromObject({ day: 1 }) &&
-              begin.plus({ days: i }).diffNow() <
-                Duration.fromObject({ day: 1 })
+              begin.plus({ days: i }).toISODate() === DateTime.now().toISODate()
             }
-            key={i}
+            key={begin.plus({ days: i }).toISODate()}
             onClick={() =>
               props.onClick?.(begin.plus({ days: i }).startOf('day').toJSDate())
             }

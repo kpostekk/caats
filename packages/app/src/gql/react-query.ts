@@ -267,6 +267,11 @@ export type InRangeQueryVariables = Exact<{
 
 export type InRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
 
+export type BusyDaysQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BusyDaysQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any }> };
+
 export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -422,6 +427,27 @@ export const useInRangeQuery = <
     useQuery<InRangeQuery, TError, TData>(
       ['InRange', variables],
       fetcher<InRangeQuery, InRangeQueryVariables>(client, InRangeDocument, variables, headers),
+      options
+    );
+export const BusyDaysDocument = `
+    query BusyDays {
+  getScheduleUser {
+    startsAt
+  }
+}
+    `;
+export const useBusyDaysQuery = <
+      TData = BusyDaysQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: BusyDaysQueryVariables,
+      options?: UseQueryOptions<BusyDaysQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<BusyDaysQuery, TError, TData>(
+      variables === undefined ? ['BusyDays'] : ['BusyDays', variables],
+      fetcher<BusyDaysQuery, BusyDaysQueryVariables>(client, BusyDaysDocument, variables, headers),
       options
     );
 export const AllNextEventsDocument = `

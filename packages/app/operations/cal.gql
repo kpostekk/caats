@@ -18,3 +18,12 @@ query InRange($start: DateTime!, $end: DateTime!) {
     groups
   }
 }
+
+query BusyDays {
+  getScheduleUser {
+    startsAt
+    # endsAt
+    # code
+    # type
+  }
+}
