@@ -18,7 +18,6 @@ services:
       - .env
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
-      SECRET_KEY: supersecretkey
       TZ: Europe/Warsaw
     ports:
       - 3000:3000
