@@ -38,6 +38,15 @@ export type App = {
   version: Scalars['String'];
 };
 
+export type EventSource = {
+  __typename?: 'EventSource';
+  constantId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  object: Scalars['JSON'];
+  task: StoredTask;
+};
+
 export type GroupInput = {
   groups: Array<Scalars['String']>;
 };
@@ -109,6 +118,7 @@ export type Query = {
   app?: Maybe<App>;
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
   findByDescription: Array<ScheduleEvent>;
+  getEvent?: Maybe<ScheduleEvent>;
   getEventHistory: Array<ScheduleEvent>;
   getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
@@ -130,6 +140,11 @@ export type QueryAutocompleteGroupsArgs = {
 
 export type QueryFindByDescriptionArgs = {
   query: Scalars['String'];
+};
+
+
+export type QueryGetEventArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -172,8 +187,11 @@ export type ScheduleEvent = {
   groups: Array<Scalars['String']>;
   /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
+  id: Scalars['ID'];
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
+  /** The source of the event. */
+  source: EventSource;
   startsAt: Scalars['DateTime'];
   /** The full name of the subject. */
   subject: Scalars['String'];
@@ -193,6 +211,16 @@ export type SkipTake = {
   skip?: InputMaybe<Scalars['PositiveInt']>;
   /** The number of items to take. */
   take?: InputMaybe<Scalars['PositiveInt']>;
+};
+
+export type StoredTask = {
+  __typename?: 'StoredTask';
+  createdAt: Scalars['DateTime'];
+  finalHash?: Maybe<Scalars['String']>;
+  finishedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  initialHash?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
 };
 
 export type Task = {
@@ -311,6 +339,15 @@ export type UserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UserGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
 
+export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string } } };
+
+export type EventDetailsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type EventDetailsQuery = { __typename?: 'Query', getEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string } } } | null };
+
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
@@ -344,7 +381,33 @@ export type GetGroupsAutoCompleteQueryVariables = Exact<{
 
 export type GetGroupsAutoCompleteQuery = { __typename?: 'Query', autocompleteGroups?: Array<string> | null };
 
-
+export const DetailedEventFragmentDoc = `
+    fragment DetailedEvent on ScheduleEvent {
+  id
+  code
+  subject
+  startsAt
+  endsAt
+  room
+  groups
+  hosts
+  type
+  source {
+    id
+    constantId
+    object
+    createdAt
+    task {
+      id
+      createdAt
+      finishedAt
+      initialHash
+      finalHash
+      status
+    }
+  }
+}
+    `;
 export const AppDocument = `
     query App {
   app {
@@ -591,6 +654,27 @@ export const useUserGroupsQuery = <
     useQuery<UserGroupsQuery, TError, TData>(
       variables === undefined ? ['UserGroups'] : ['UserGroups', variables],
       fetcher<UserGroupsQuery, UserGroupsQueryVariables>(client, UserGroupsDocument, variables, headers),
+      options
+    );
+export const EventDetailsDocument = `
+    query EventDetails($id: ID!) {
+  getEvent(id: $id) {
+    ...DetailedEvent
+  }
+}
+    ${DetailedEventFragmentDoc}`;
+export const useEventDetailsQuery = <
+      TData = EventDetailsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: EventDetailsQueryVariables,
+      options?: UseQueryOptions<EventDetailsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<EventDetailsQuery, TError, TData>(
+      ['EventDetails', variables],
+      fetcher<EventDetailsQuery, EventDetailsQueryVariables>(client, EventDetailsDocument, variables, headers),
       options
     );
 export const LoginDocument = `
