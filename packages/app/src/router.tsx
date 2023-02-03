@@ -11,6 +11,10 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const App = lazy(() => import('./pages/App'))
 const Settings = lazy(() => import('./pages/Settings/Settings'))
 const SettingsGroups = lazy(() => import('./pages/Settings/Groups'))
+const SettingsGeneral = lazy(() => import('./pages/Settings/General'))
+const SettingsIcs = lazy(() => import('./pages/Settings/ICS'))
+const SettingsSafety = lazy(() => import('./pages/Settings/Safety'))
+const SettingsPrivacy = lazy(() => import('./pages/Settings/Privacy'))
 const Schedule = lazy(() => import('./pages/Schedule'))
 const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
 const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
@@ -48,31 +52,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: '/app/settings/',
-                element: (
-                  <div className="space-y-2">
-                    <div className="alert alert-info">
-                      <div>
-                        <HiBeaker />
-                        <span>
-                          Obecnie ustawienia są funkcjonalnością
-                          eksperymentalną!
-                        </span>
-                      </div>
-                    </div>
-                    <div className="alert alert-info">
-                      <div>
-                        <HiQuestionMarkCircle />
-                        <span>
-                          Wykorzystaj{' '}
-                          <a className="link" href="/graphiql">
-                            GraphiQL
-                          </a>{' '}
-                          do zmian, jeżeli nie są dostępne w ustawieniach.
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ),
+                element: <SettingsGeneral />,
               },
               {
                 path: '/app/settings/groups/',
@@ -80,19 +60,15 @@ export const router = createBrowserRouter([
               },
               {
                 path: '/app/settings/ics/',
-                element: <p>Under construction 🏗️</p>,
+                element: <SettingsIcs />,
               },
               {
                 path: '/app/settings/safety/',
-                element: <p>Under construction 🏗️</p>,
-              },
-              {
-                path: '/app/settings/tos/',
-                element: <p>Under construction 🏗️</p>,
+                element: <SettingsSafety />,
               },
               {
                 path: '/app/settings/privacy/',
-                element: <p>Under construction 🏗️</p>,
+                element: <SettingsPrivacy />,
               },
             ],
           },

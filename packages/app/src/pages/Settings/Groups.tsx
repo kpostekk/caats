@@ -1,14 +1,11 @@
 import { useState } from 'react'
-import { HiBeaker } from 'react-icons/hi'
 import { InputList } from '../../components/InputList/InputList'
-import { MutationResponse } from '../../components/MutationResponse/MurtationResponse'
 import { useGqlClient } from '../../components/useGqlClient/useGqlClient'
 import {
   useSetGroupsMutation,
   useGetCurrentGroupsQuery,
 } from '../../gql/react-query'
 import { useDebounce } from 'react-use'
-import { GroupsAutocomplete } from '../../components/GroupsAutocomplete/GroupsAutocomplete'
 
 export default function SettingsGroups() {
   const client = useGqlClient()
@@ -33,6 +30,7 @@ export default function SettingsGroups() {
   return (
     <div className="prose">
       {/* <MutationResponse mutation={mutateGroups} /> */}
+      <h2>Grupy</h2>
       <h3>Zmień grupy</h3>
       {groups ? (
         <>

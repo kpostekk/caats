@@ -8,7 +8,7 @@ import {
   HiUserGroup,
 } from 'react-icons/hi'
 import { TbBrandGithub } from 'react-icons/tb'
-import { Link, LinkProps, Outlet, useLocation } from 'react-router-dom'
+import { Link, LinkProps, Outlet } from 'react-router-dom'
 
 function SettingsLink(props: LinkProps) {
   const isInLocation = false
@@ -40,10 +40,6 @@ export default function Settings() {
           <SettingsLink to="/app/settings/safety">
             <HiKey /> Bezpieczeństwo
           </SettingsLink>
-          <hr className="m-2 opacity-40" />
-          <SettingsLink to="/app/settings/tos">
-            <HiBriefcase /> Regulaminy
-          </SettingsLink>
           <SettingsLink to="/app/settings/privacy">
             <HiEyeOff /> Prywatność
           </SettingsLink>
@@ -55,16 +51,10 @@ export default function Settings() {
           >
             <TbBrandGithub /> Github
           </a>
-          {/* <Link className="link-hover" to="/app/settings/">
-            Wgląd
-          </Link>
-          <Link className="link-hover" to="/app/settings/">
-            Konto
-          </Link> */}
         </div>
         <div className="card card-bordered p-4 md:col-span-2">
           <Suspense>
-          <Outlet />
+            <Outlet />
           </Suspense>
         </div>
       </div>
