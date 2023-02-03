@@ -8,6 +8,7 @@ query AllRange {
 
 query InRange($start: DateTime!, $end: DateTime!) {
   getScheduleUser(sinceUntil: { since: $start, until: $end }) {
+    id
     startsAt
     endsAt
     code

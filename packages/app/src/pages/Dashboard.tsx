@@ -7,7 +7,7 @@ import { SiGraphql } from 'react-icons/si'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
 import { useState } from 'react'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
-import { ScheduleEvent } from '../components/ScheduleEvent/ScheduleEvent'
+import { ScheduleEventRow } from '../components/ScheduleEvent/ScheduleEvent'
 
 export default function Dashboard() {
   // const token = useAuthStore(({ auth }) => auth?.accessToken)
@@ -60,16 +60,13 @@ export default function Dashboard() {
           <h2 className="text-[22pt] font-semibold">Najbliższe zajęcia</h2>
           <hr />
           {events.data?.getScheduleUser.map((e, i) => (
-            <ScheduleEvent
+            <ScheduleEventRow
               key={i}
-              {...e}
-              start={new Date(e.startsAt)}
-              end={new Date(e.endsAt)}
+              event={e}
               focused={
                 new Date(e.startsAt) <= new Date() &&
                 new Date(e.endsAt) > new Date()
               }
-              room={e.room}
             />
           ))}
           {events.data?.getScheduleUser.length === 0 ? (

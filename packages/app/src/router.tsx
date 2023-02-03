@@ -2,6 +2,7 @@ import { HiBeaker, HiQuestionMarkCircle } from 'react-icons/hi'
 import { createBrowserRouter } from 'react-router-dom'
 import { Auth } from './Auth'
 import { lazy } from 'react'
+import { AppErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 
 const Home = lazy(() => import('./pages/Home'))
 const NotFound = lazy(() => import('./pages/404'))
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
   {
     path: '/app/',
     element: <Auth />,
+    errorElement: <AppErrorBoundary />,
     children: [
       {
         path: '/app/',

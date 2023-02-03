@@ -1,40 +1,54 @@
 import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import { ScheduleEvent } from '../../gql/graphql'
 
-export type ScheduleEvent = {
-  code: string
-  subject: string
-  start: Date
-  end: Date
-  room?: string | null
+export type ScheduleEventProps = {
+  event: Pick<
+    ScheduleEvent,
+    'code' | 'startsAt' | 'endsAt' | 'subject' | 'room' | 'type'
+  > & { id?: string }
   focused?: boolean
-  type: string
 }
 
-export function ScheduleEvent(props: ScheduleEvent) {
+export function ScheduleEventRow(props: ScheduleEventProps) {
   const startString = useMemo(
-    () => props.start.toLocaleString(undefined, { timeStyle: 'short' }),
-    [props.start]
+    () =>
+      new Date(props.event.startsAt).toLocaleString(undefined, {
+        timeStyle: 'short',
+      }),
+    [props.event.startsAt]
   )
   const endString = useMemo(
-    () => props.end.toLocaleString(undefined, { timeStyle: 'short' }),
-    [props.end]
+    () =>
+      new Date(props.event.endsAt).toLocaleString(undefined, {
+        timeStyle: 'short',
+      }),
+    [props.event.endsAt]
   )
 
   return (
     <div
       className={
         props.focused
-          ? 'select-none rounded-lg border-2 border-black bg-black p-2 text-white'
-          : 'select-none rounded-lg border-2 border-black p-2'
+          ? 'select-none space-y-1 rounded-lg border-2 border-black bg-black p-2 text-white'
+          : 'select-none space-y-1 rounded-lg border-2 border-black p-2'
       }
     >
-      <h2 className="text-[21pt] font-bold">{props.code}</h2>
-      <p className="text-[10pt]">{props.subject}</p>
+      {props.event.id ? (
+        <Link to={`/app/event/${props.event.id}`}>
+          <h2 className="link-hover text-[24pt] font-bold">
+            {props.event.code}
+          </h2>
+        </Link>
+      ) : (
+        <h2 className="text-[21pt] font-bold">{props.event.code}</h2>
+      )}
+      {/* <p className="text-[10pt]">{props.subject}</p> */}
       <div className="flex items-center gap-2 text-[12pt] font-semibold">
         <span>
           {startString} - {endString}
         </span>
-        {!!props.room && (
+        {!!props.event.room && (
           <>
             <div
               className={
@@ -43,7 +57,7 @@ export function ScheduleEvent(props: ScheduleEvent) {
                   : 'h-6 border-r-[1px] border-black'
               }
             />
-            <span>{props.room}</span>
+            <span>{props.event.room}</span>
           </>
         )}
         <>
@@ -54,7 +68,7 @@ export function ScheduleEvent(props: ScheduleEvent) {
                 : 'h-6 border-r-[1px] border-black'
             }
           />
-          <span>{props.type}</span>
+          <span>{props.event.type}</span>
         </>
       </div>
     </div>

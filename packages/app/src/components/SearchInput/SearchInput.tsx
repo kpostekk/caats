@@ -17,7 +17,7 @@ export function SearchInput(props: SearchInputProps) {
   const client = useGqlClient()
   const query = useGeneralizedSearchQuery(
     client,
-    { input: inputVal },
+    { input: inputVal.trim() },
     { enabled: false }
   )
 
@@ -50,7 +50,7 @@ export function SearchInput(props: SearchInputProps) {
         className="input-lg mx-auto w-full rounded border-2 border-black shadow"
         placeholder={`przykładowo: skj smyk wykład`}
         value={inputVal}
-        onChange={(e) => setInputVal(e.target.value)}
+        onChange={(e) => setInputVal(e.target.value.trimStart())}
       />
       <label className="label">
         <span className="label-text-alt" />

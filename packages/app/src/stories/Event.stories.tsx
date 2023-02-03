@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { ScheduleEvent } from '../components/ScheduleEvent/ScheduleEvent'
+import { ScheduleEventRow } from '../components/ScheduleEvent/ScheduleEvent'
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/react/writing-stories/introduction
 const meta = {
   title: 'CaaTS/Event',
-  component: ScheduleEvent,
+  component: ScheduleEventRow,
   decorators: [
     (Story) => (
       <div className="max-w-[390px] p-2">
@@ -17,7 +17,7 @@ const meta = {
   // argTypes: {
   //   backgroundColor: { control: 'color' },
   // },
-} satisfies Meta<typeof ScheduleEvent>
+} satisfies Meta<typeof ScheduleEventRow>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -25,24 +25,28 @@ type Story = StoryObj<typeof meta>
 // More on writing stories with args: https://storybook.js.org/docs/7.0/react/writing-stories/args
 export const Default: Story = {
   args: {
-    code: 'PRI',
-    subject: 'Projektowanie Systemów Informacyjnych',
-    start: new Date(),
-    end: new Date(),
-    room: 'A/312',
-    type: 'Ćwiczenia',
+    event: {
+      code: 'PRI',
+      subject: 'Projektowanie Systemów Informacyjnych',
+      startsAt: new Date().toISOString(),
+      endsAt: new Date().toISOString(),
+      room: 'A/312',
+      type: 'Ćwiczenia',
+    },
   },
 }
 
 export const WithFocus: Story = {
   args: {
-    code: 'PRI',
-    subject: 'Projektowanie Systemów Informacyjnych',
-    start: new Date(),
-    end: new Date(),
-    room: 'A/312',
+    event: {
+      code: 'PRI',
+      subject: 'Projektowanie Systemów Informacyjnych',
+      startsAt: new Date().toISOString(),
+      endsAt: new Date().toISOString(),
+      room: 'A/312',
+      type: 'Ćwiczenia',
+    },
     focused: true,
-    type: 'Ćwiczenia',
   },
 }
 

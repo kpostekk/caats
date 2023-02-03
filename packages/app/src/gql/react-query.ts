@@ -271,7 +271,7 @@ export type InRangeQueryVariables = Exact<{
 }>;
 
 
-export type InRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
+export type InRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
 
 export type BusyDaysQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -323,7 +323,7 @@ export type GeneralizedSearchQueryVariables = Exact<{
 }>;
 
 
-export type GeneralizedSearchQuery = { __typename?: 'Query', findByDescription: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
+export type GeneralizedSearchQuery = { __typename?: 'Query', findByDescription: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
 
 export type SetGroupsMutationVariables = Exact<{
   groups: Array<Scalars['String']> | Scalars['String'];
@@ -417,6 +417,7 @@ export const useAllRangeQuery = <
 export const InRangeDocument = `
     query InRange($start: DateTime!, $end: DateTime!) {
   getScheduleUser(sinceUntil: {since: $start, until: $end}) {
+    id
     startsAt
     endsAt
     code
@@ -620,6 +621,7 @@ export const useLoginMutation = <
 export const GeneralizedSearchDocument = `
     query GeneralizedSearch($input: String!) {
   findByDescription(query: $input) {
+    id
     startsAt
     endsAt
     code

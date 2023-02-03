@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCalendar } from 'react-icons/hi'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGqlClient } from '../../components'
-import { ScheduleEvent } from '../../components/ScheduleEvent/ScheduleEvent'
+import { ScheduleEventRow } from '../../components/ScheduleEvent/ScheduleEvent'
 import { useAllEventsSinceQuery, useInRangeQuery } from '../../gql/react-query'
 
 export default function CalendarDay() {
@@ -30,18 +30,13 @@ export default function CalendarDay() {
           ) : null}
           {events.data.getScheduleUser.map((e, i) => {
             return (
-              <ScheduleEvent
+              <ScheduleEventRow
                 key={i}
-                code={e.code}
-                subject={e.subject}
-                start={new Date(e.startsAt)}
-                end={new Date(e.endsAt)}
+                event={e}
                 focused={
                   new Date(e.startsAt) <= new Date() &&
                   new Date(e.endsAt) > new Date()
                 }
-                room={e.room}
-                type={e.type}
               />
             )
           })}
