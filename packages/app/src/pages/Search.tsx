@@ -1,63 +1,57 @@
 import { DateTime } from 'luxon'
-import { useMemo, useState } from 'react'
-import { useDebounce } from 'react-use'
-import { useGqlClient } from '../components'
-import { ScheduleEvent } from '../components/ScheduleEvent/ScheduleEvent'
-import { useGeneralizedSearchQuery } from '../gql/react-query'
+import { useState } from 'react'
+import { SearchInput } from '../components/SearchInput/SearchInput'
+import { GeneralizedSearchQuery } from '../gql/react-query'
 
 export default function Search() {
-  const [inputVal, setInputVal] = useState('')
-  const client = useGqlClient()
-  const query = useGeneralizedSearchQuery(
-    client,
-    { input: inputVal },
-    { enabled: false }
-  )
-
-  const [debounced] = useDebounce(
-    () => {
-      if (inputVal.length < 3) return
-      query.refetch()
-    },
-    1_000,
-    [inputVal]
-  )
-  const isDebouncing = useMemo(() => !debounced(), [inputVal, query.isFetching])
+  const [data, setData] = useState<GeneralizedSearchQuery>()
 
   return (
-    <div className="container space-y-2 py-4">
+    <div className="container max-w-md space-y-2 py-4">
       <div className="flex justify-center">
-        <input
-          className="input mx-auto w-1/2 border-2 border-black shadow"
-          placeholder={`przykładowo: "asd bayer ćwiczenia", "skj smyk wykład", "tomaszewski"`}
-          value={inputVal}
-          onChange={(e) => setInputVal(e.target.value)}
-        />
+        <SearchInput onChange={setData} />
       </div>
-      {isDebouncing ? <p>Keep typing...</p> : null}
-      {query.isFetching ? <p>Pobieram...</p> : null}
-      {query.data ? (
-        query.data.findByDescription.length === 0 ? (
-          <p>Brak danych!</p>
-        ) : null
-      ) : null}
-      <div className="mx-auto grid max-w-3xl grid-cols-2 gap-2">
-        {query.data
-          ? query.data.findByDescription.map((e, i) => (
-              <div key={i}>
-                <p>
+      <div className="space-y-2">
+        {data
+          ? data.findByDescription.map((e, i) => (
+              <div key={i} className="space-y-1 py-2">
+                <p className="text-sm opacity-70">
                   {DateTime.fromISO(e.startsAt).toLocaleString({
                     dateStyle: 'medium',
                   })}
                 </p>
-                <p>{e.groups.join(', ')}</p>
-                <p>{e.hosts.join(', ')}</p>
-                <ScheduleEvent
-                  start={new Date(e.startsAt)}
-                  end={new Date(e.endsAt)}
-                  {...e}
-                />
+                <a href="#">
+                  <p className="link-hover text-3xl font-bold">{e.code}</p>
+                </a>
+                <p className="text-sm opacity-70">
+                  {e.type}
+                  {e.room ? ` w sali ${e.room}` : null}
+                </p>
+                <p>{e.hosts.concat(e.groups).join(', ')}</p>
+                <p>
+                  {DateTime.fromISO(e.startsAt).toLocaleString({
+                    timeStyle: 'short',
+                  })}
+                  {' - '}
+                  {DateTime.fromISO(e.endsAt).toLocaleString({
+                    timeStyle: 'short',
+                  })}
+                </p>
               </div>
+              // <div key={i}>
+              //   <p>
+              //     {DateTime.fromISO(e.startsAt).toLocaleString({
+              //       dateStyle: 'medium',
+              //     })}
+              //   </p>
+              //   <p>{e.groups.join(', ')}</p>
+              //   <p>{e.hosts.join(', ')}</p>
+              //   <ScheduleEvent
+              //     start={new Date(e.startsAt)}
+              //     end={new Date(e.endsAt)}
+              //     {...e}
+              //   />
+              // </div>
             ))
           : null}
       </div>
