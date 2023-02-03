@@ -5,6 +5,7 @@ import { AuthGuard } from '../auth/auth.guard'
 import {
   GqlGroupInput,
   GqlHostInput,
+  GqlQueryGetEventArgs,
   GqlQueryGetEventHistoryArgs,
   GqlSinceUntil,
   GqlSkipTake,
@@ -72,5 +73,10 @@ export class BrowserResolver {
   @Query()
   findByDescription(@Args('query') query: string) {
     return this.browser.findByDescription(query)
+  }
+
+  @Query()
+  getEvent(@Args() { id }: GqlQueryGetEventArgs) {
+    return this.browser.getEvent(id)
   }
 }

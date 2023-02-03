@@ -19,6 +19,7 @@ const Schedule = lazy(() => import('./pages/Schedule'))
 const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
 const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
 const Search = lazy(() => import('./pages/Search'))
+const Event = lazy(() => import('./pages/Event'))
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
           {
             path: '/app/calendar/:date/',
             element: <CalendarDay />,
+          },
+          {
+            path: '/app/event/:id/',
+            element: <Event />,
           },
         ],
       },

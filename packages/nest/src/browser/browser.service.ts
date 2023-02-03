@@ -208,4 +208,23 @@ export class BrowserService {
     })
     return event
   }
+
+  async getEvent(id: string | number) {
+    const target = Number(id)
+
+    if (Number.isNaN(target)) return null
+
+    return await this.prisma.timetableEvent.findUnique({
+      where: {
+        id: target,
+      },
+      include: {
+        source: {
+          include: {
+            task: true,
+          },
+        },
+      },
+    })
+  }
 }
