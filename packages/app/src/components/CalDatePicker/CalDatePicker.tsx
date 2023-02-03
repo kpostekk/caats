@@ -82,9 +82,18 @@ export function CalDatePicker(props: CalDatePickerProps) {
   return (
     <>
       <h2 className="text-[18pt] font-semibold">{title}</h2>
-      <div className="grid h-[60vh] grid-cols-7 border-y py-2 md:h-[440px]">
+      <div className="grid h-[60vh] grid-cols-7 py-2 md:h-[440px]">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <span
+            key={i + '_h'}
+            className="select-none text-center text-xs opacity-50"
+          >
+            {begin.minus({ days: offset }).plus({ days: i }).toFormat('EEE')}
+          </span>
+        ))}
+        <hr className="col-span-7" />
         {Array.from({ length: offset }).map((_, i) => (
-          <div key={i} />
+          <div key={i + '_s'} />
         ))}
         {Array.from({ length }).map((_, i) => (
           <CalDate
@@ -92,12 +101,13 @@ export function CalDatePicker(props: CalDatePickerProps) {
             current={
               begin.plus({ days: i }).toISODate() === DateTime.now().toISODate()
             }
-            key={begin.plus({ days: i }).toISODate()}
+            key={i + '_' + props.date}
             onClick={() =>
               props.onClick?.(begin.plus({ days: i }).startOf('day').toJSDate())
             }
           />
         ))}
+        <hr className="col-span-7" />
       </div>
     </>
   )
