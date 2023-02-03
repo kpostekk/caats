@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, Suspense } from 'react'
 import {
   HiBriefcase,
   HiCalendar,
@@ -63,7 +63,9 @@ export default function Settings() {
           </Link> */}
         </div>
         <div className="card card-bordered p-4 md:col-span-2">
+          <Suspense>
           <Outlet />
+          </Suspense>
         </div>
       </div>
     </div>
