@@ -45,6 +45,13 @@ export class BrowserService {
       orderBy: {
         startsAt: 'asc',
       },
+      include: {
+        source: {
+          include: {
+            task: true,
+          },
+        },
+      },
     })
   }
 
@@ -74,6 +81,13 @@ export class BrowserService {
       orderBy: {
         startsAt: 'asc',
       },
+      include: {
+        source: {
+          include: {
+            task: true,
+          },
+        },
+      },
     })
   }
 
@@ -102,6 +116,13 @@ export class BrowserService {
       ...skipTake,
       orderBy: {
         startsAt: 'asc',
+      },
+      include: {
+        source: {
+          include: {
+            task: true,
+          },
+        },
       },
     })
   }
@@ -154,6 +175,13 @@ export class BrowserService {
       where: {
         id: {
           in: events.map((e) => e.id),
+        },
+      },
+      include: {
+        source: {
+          include: {
+            task: true,
+          },
         },
       },
     })

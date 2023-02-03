@@ -28,6 +28,15 @@ export type GqlApp = {
   version: Scalars['String'];
 };
 
+export type GqlEventSource = {
+  __typename?: 'EventSource';
+  constantId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  object: Scalars['JSON'];
+  task: GqlStoredTask;
+};
+
 export type GqlGroupInput = {
   groups: Array<Scalars['String']>;
 };
@@ -98,6 +107,7 @@ export type GqlQuery = {
   __typename?: 'Query';
   app?: Maybe<GqlApp>;
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  findByDescription: Array<GqlScheduleEvent>;
   getEventHistory: Array<GqlScheduleEvent>;
   getGroups?: Maybe<Array<Scalars['String']>>;
   /** Returns all schedule events for the given groups. */
@@ -113,6 +123,11 @@ export type GqlQuery = {
 
 
 export type GqlQueryAutocompleteGroupsArgs = {
+  query: Scalars['String'];
+};
+
+
+export type GqlQueryFindByDescriptionArgs = {
   query: Scalars['String'];
 };
 
@@ -156,8 +171,11 @@ export type GqlScheduleEvent = {
   groups: Array<Scalars['String']>;
   /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
+  id: Scalars['ID'];
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
+  /** The source of the event. */
+  source: GqlEventSource;
   startsAt: Scalars['DateTime'];
   /** The full name of the subject. */
   subject: Scalars['String'];
@@ -177,6 +195,16 @@ export type GqlSkipTake = {
   skip?: InputMaybe<Scalars['PositiveInt']>;
   /** The number of items to take. */
   take?: InputMaybe<Scalars['PositiveInt']>;
+};
+
+export type GqlStoredTask = {
+  __typename?: 'StoredTask';
+  createdAt: Scalars['DateTime'];
+  finalHash?: Maybe<Scalars['String']>;
+  finishedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  initialHash?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
 };
 
 export type GqlTask = {
