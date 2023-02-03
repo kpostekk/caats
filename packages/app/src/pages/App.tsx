@@ -1,4 +1,5 @@
 import { Transition } from '@headlessui/react'
+import { Suspense } from 'react'
 import {
   HiAdjustments,
   HiCalendar,
@@ -81,7 +82,9 @@ export default function App() {
         </div>
       </div>
       <div className="relative h-[calc(100vh-4rem-6px)]">
-        <Outlet />
+        <Suspense>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   )
