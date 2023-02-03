@@ -92,6 +92,7 @@ export class IcsService {
           lastModified.hour,
           lastModified.minute,
         ],
+        url: `https://caats.app/app/event/${event.id}`,
       }
     })
 
