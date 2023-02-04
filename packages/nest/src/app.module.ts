@@ -14,6 +14,8 @@ import { BrowserModule } from './browser/browser.module'
 import { resolvers, typeDefs } from 'graphql-scalars'
 import { IcsModule } from './ics/ics.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { EmitterModule } from './emitter/emitter.module'
+import { EmitterService } from './emitter/emitter.service'
 
 @Module({
   imports: [
@@ -27,13 +29,20 @@ import { ScheduleModule } from '@nestjs/schedule'
           .default('development'),
       }),
     }),
-    GraphQLModule.forRoot<MercuriusDriverConfig>({
+    GraphQLModule.forRootAsync<MercuriusDriverConfig>({
       driver: MercuriusDriver,
-      typePaths: ['./**/*.{gql,graphql}'],
-      queryDepth: process.env.NODE_ENV !== 'development' ? 5 : Infinity,
-      graphiql: true,
-      typeDefs,
-      resolvers,
+      imports: [EmitterModule],
+      inject: [EmitterService],
+      useFactory: (emitter: EmitterService) => ({
+        typePaths: ['./**/*.{gql,graphql}'],
+        queryDepth: process.env.NODE_ENV !== 'development' ? 7 : Infinity,
+        graphiql: true,
+        typeDefs,
+        resolvers,
+        subscription: {
+          emitter: emitter.getEmitter(),
+        },
+      }),
     }),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
@@ -45,6 +54,7 @@ import { ScheduleModule } from '@nestjs/schedule'
     SupervisorModule,
     BrowserModule,
     IcsModule,
+    EmitterModule,
   ],
   providers: [AppResolver],
 })

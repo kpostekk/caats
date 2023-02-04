@@ -1,7 +1,23 @@
-import { ParseIntPipe } from '@nestjs/common'
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { TaskStatus } from '@prisma/client'
 import {
+  ParseIntPipe,
+  Request,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common'
+import {
+  Args,
+  Context,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql'
+import { Scraper, TaskStatus, User } from '@prisma/client'
+import { FastifyRequest } from 'fastify'
+import { PubSub } from 'mercurius'
+import { AuthGuard, ScraperGuard, SuperuserGuard } from '../auth/auth.guard'
+import {
+  GqlMutationCreateScraperArgs,
   GqlQueryGetTaskCollectionArgs,
   GqlTask,
   GqlTaskResult,
@@ -15,14 +31,10 @@ export class SupervisorResolver {
 
   @Query()
   async getTasks(): Promise<GqlTask[]> {
-    const tasks = await this.supervisor.getPendingTasks()
-    return tasks.map((task) => ({
-      id: task.id.toString(),
-      date: task.targetDate.toISOString().substring(0, 10),
-      hash: task.initialHash,
-    }))
+    return []
   }
 
+  @UseGuards(ScraperGuard)
   @Mutation()
   async updateTaskState(
     @Args('id', ParseIntPipe) id: number,
@@ -32,12 +44,14 @@ export class SupervisorResolver {
     return true
   }
 
+  @UseGuards(ScraperGuard)
   @Mutation()
   async finishTask(
     @Args('id', ParseIntPipe) id: number,
-    @Args('result') { hash, result }: GqlTaskResult
+    @Args('result') { hash, result }: GqlTaskResult,
+    @Context('scraper') scraper: Scraper
   ) {
-    await this.supervisor.storeTaskResult(id, hash, result)
+    await this.supervisor.storeTaskResult(id, hash, result, scraper?.id)
     return true
   }
 
@@ -52,10 +66,40 @@ export class SupervisorResolver {
     }
   }
 
+  @UseGuards(AuthGuard, SuperuserGuard)
   @Mutation()
   createTasksBulk(@Args('input') input: GqlTasksBulkInput) {
     const offset = input.offset ?? 0
 
     return this.supervisor.createTasks(input.count - offset, offset)
+  }
+
+  @UseGuards(ScraperGuard)
+  @Subscription()
+  async receiveTask(
+    @Context('pubsub') pubsub: PubSub,
+    @Context('scraper') scraper: Scraper
+  ) {
+    const subscription = pubsub
+      .subscribe(['newTask', scraper.id, scraper.ownerId])
+      .then((i) => {
+        return i.once('close', () => {
+          this.supervisor.updateScraper(scraper.id, 'DISCONNECTED')
+        })
+      })
+
+    await this.supervisor.updateScraper(scraper.id, 'AWAITING')
+    await this.supervisor.dispatch()
+    return subscription
+  }
+
+  @UseGuards(AuthGuard, SuperuserGuard)
+  @Mutation()
+  async createScraper(
+    @Args() args: GqlMutationCreateScraperArgs,
+    @Context('user') user: User
+  ) {
+    const [, token] = await this.supervisor.createScraper(user.id, args.name)
+    return token
   }
 }

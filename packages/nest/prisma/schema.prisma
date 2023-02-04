@@ -23,6 +23,7 @@ model User {
     groups           String[]
     sessions         UserSession[]
     icsSubscriptions IcsSubscriptions[]
+    scrapers         Scraper[]
 }
 
 model UserSession {
@@ -55,6 +56,9 @@ model Task {
     finalHash   String?
     status      TaskStatus
     results     TaskResult[]
+    processedBy Scraper?     @relation("processedBy")
+    worker      Scraper?     @relation("worker", fields: [workerId], references: [id], onDelete: SetNull)
+    workerId    String?      @db.Uuid
 
     @@index([createdAt(sort: Desc), targetDate(sort: Asc)])
 }
@@ -63,7 +67,7 @@ model TaskResult {
     id         Int             @id @default(autoincrement())
     task       Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId     Int
-    constantId String          @db.Char(16) @unique
+    constantId String          @unique @db.Char(16)
     createdAt  DateTime        @default(now())
     object     Json
     usedBy     TimetableEvent?
@@ -95,4 +99,22 @@ model IcsSubscriptions {
     includeGroups String[]
     userId        String   @db.Uuid
     user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ConnectionStatus {
+    AWAITING
+    BUSY
+    DISCONNECTED
+}
+
+model Scraper {
+    id          String           @id @default(uuid()) @db.Uuid
+    alias       String
+    owner       User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId     String           @db.Uuid
+    currentTask Task?            @relation("processedBy", fields: [taskId], references: [id])
+    taskId      Int?             @unique
+    state       ConnectionStatus @default(DISCONNECTED)
+    lastSeen    DateTime?
+    tasks       Task[]           @relation("worker")
 }

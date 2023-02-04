@@ -57,12 +57,15 @@ export type GqlMutation = {
   addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: GqlLoginResponse;
+  createScraper: Scalars['String'];
   createSubscription: Scalars['String'];
   createTasksBulk: Scalars['Boolean'];
+  /** @deprecated Use subscription receiveTask instead. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
+  /** @deprecated Use subscription receiveTask instead. */
   updateTaskState: Scalars['Boolean'];
 };
 
@@ -74,6 +77,11 @@ export type GqlMutationAddGroupArgs = {
 
 export type GqlMutationAuthGoogleArgs = {
   code: Scalars['String'];
+};
+
+
+export type GqlMutationCreateScraperArgs = {
+  name?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -118,6 +126,7 @@ export type GqlQuery = {
   /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
   getScheduleUser: Array<GqlScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
+  /** @deprecated Use subscription receiveTask instead. */
   getTasks: Array<GqlTask>;
   me: GqlUser;
 };
@@ -211,6 +220,11 @@ export type GqlStoredTask = {
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
   status: Scalars['String'];
+};
+
+export type GqlSubscription = {
+  __typename?: 'Subscription';
+  receiveTask?: Maybe<GqlTask>;
 };
 
 export type GqlTask = {

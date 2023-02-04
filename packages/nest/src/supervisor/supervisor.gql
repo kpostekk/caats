@@ -41,7 +41,7 @@ input TasksBulkInput {
 }
 
 type Query {
-  getTasks: [Task!]!
+  getTasks: [Task!]! @deprecated(reason: "Use subscription receiveTask instead.")
   getTaskCollection(collection: TaskCollection!): [JSON!]!
 }
 
@@ -49,4 +49,9 @@ type Mutation {
   updateTaskState(id: ID!, state: TaskState!): Boolean!
   finishTask(id: ID!, result: TaskResult!): Boolean!
   createTasksBulk(input: TasksBulkInput!): Boolean!
+  createScraper(name: String): String!
+}
+
+type Subscription {
+  receiveTask: Task
 }

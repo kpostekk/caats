@@ -1,10 +1,13 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { TaskStatus } from '@prisma/client'
+import { ConnectionStatus, TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { createHash } from 'crypto'
+import { createHash, randomBytes } from 'crypto'
+import { randAnimal } from '@ngneat/falso'
+import { JwtService } from '@nestjs/jwt'
+import { EmitterService } from '../emitter/emitter.service'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
@@ -12,10 +15,16 @@ export class SupervisorService implements OnModuleInit {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly parser: ParserService
+    private readonly parser: ParserService,
+    private readonly jwt: JwtService,
+    private readonly emitter: EmitterService
   ) {}
 
   async onModuleInit() {
+    await this.prisma.scraper.updateMany({
+      data: { state: 'DISCONNECTED' },
+    })
+
     const taskCount = await this.prisma.task.count({
       where: { status: 'SUCCESS' },
     })
@@ -54,7 +63,12 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
-  async storeTaskResult(id: number, hash: string, results: string[]) {
+  async storeTaskResult(
+    id: number,
+    hash: string,
+    results: string[],
+    scraperId?: string
+  ) {
     const task = await this.prisma.task.findFirstOrThrow({
       where: { id },
     })
@@ -66,6 +80,8 @@ export class SupervisorService implements OnModuleInit {
       replaced: 0,
       inserted: 0,
     }
+
+    this.logger.debug(`Processing result of task #${task.id}...`)
 
     for (const result of results) {
       const candidate = this.parser.htmlToRawObject(result)
@@ -121,7 +137,7 @@ export class SupervisorService implements OnModuleInit {
     const end = DateTime.now()
 
     this.logger.debug(
-      `Task ${id} processed ${results.length} elements in ${end
+      `Task #${id} processed ${results.length} elements in ${end
         .diff(start)
         .toISO()}. Processing speed: ${(
         results.length / end.diff(start).as('seconds')
@@ -143,6 +159,18 @@ export class SupervisorService implements OnModuleInit {
         data: { status: 'SUCCESS', finishedAt: new Date(), finalHash: hash },
       }),
     ])
+
+    if (!scraperId) return
+    await this.prisma.task.update({
+      where: {
+        id: task.id,
+      },
+      data: {
+        workerId: scraperId,
+      },
+    })
+    await this.updateScraper(scraperId, 'AWAITING')
+    await this.dispatch()
   }
 
   async invalidateCorruptedTasks() {
@@ -184,7 +212,53 @@ export class SupervisorService implements OnModuleInit {
       })
     }
 
+    await this.dispatch()
+
     return true
+  }
+
+  async dispatch() {
+    const tasksLeft = await this.prisma.task.count({
+      where: { status: 'PENDING' },
+    })
+
+    if (tasksLeft > 0) this.logger.verbose(`${tasksLeft} tasks left.`)
+
+    const nextTask = await this.prisma.task.findFirst({
+      where: { status: 'PENDING' },
+      orderBy: { createdAt: 'asc' },
+    })
+
+    if (!nextTask) return
+    this.logger.debug(`Found task #${nextTask.id} to dispatch!`)
+
+    const nextScraper = await this.prisma.scraper.findFirst({
+      where: { state: 'AWAITING' },
+      orderBy: { lastSeen: 'desc' },
+    })
+
+    if (!nextScraper) return
+    this.logger.debug(`Found scraper ${nextScraper.alias} to dispatch!`)
+
+    this.emitter.getEmitter().emit({
+      topic: nextScraper.id,
+      payload: {
+        receiveTask: {
+          id: nextTask.id,
+          date: nextTask.targetDate.toISOString().substring(0, 10),
+          hash: nextTask.initialHash,
+        },
+      },
+    })
+
+    await this.prisma.task.update({
+      where: { id: nextTask.id },
+      data: { status: 'RUNNING' },
+    })
+    await this.prisma.scraper.update({
+      where: { id: nextScraper.id },
+      data: { state: 'BUSY', taskId: nextTask.id },
+    })
   }
 
   @Cron('*/10 7-22 * * *')
@@ -216,5 +290,64 @@ export class SupervisorService implements OnModuleInit {
       },
       orderBy: { targetDate: 'desc' },
     })
+  }
+
+  async createScraper(ownerId: string, alias?: string) {
+    if (!alias) alias = randAnimal()
+
+    const newScraper = await this.prisma.scraper.create({
+      data: {
+        alias,
+        ownerId,
+      },
+    })
+
+    const accessToken = await this.jwt.signAsync({
+      jti: randomBytes(24).toString('hex'),
+      sub: newScraper.id,
+      scraper: true,
+      iat: new Date().getTime(),
+    })
+
+    return [newScraper, accessToken]
+  }
+
+  async updateScraper(id: string, connStatus: ConnectionStatus) {
+    const scraper = await this.prisma.scraper.findUniqueOrThrow({
+      where: { id },
+    })
+
+    switch (connStatus) {
+      case 'AWAITING':
+        await this.prisma.scraper.update({
+          where: { id },
+          data: {
+            lastSeen: new Date(),
+            state: 'AWAITING',
+          },
+        })
+        this.logger.verbose(`Scraper ${scraper.alias} is awaiting for a task.`)
+        break
+      case 'DISCONNECTED':
+        if (scraper.state === 'BUSY' && scraper.taskId) {
+          await this.prisma.task.update({
+            where: { id: scraper.taskId },
+            data: { status: 'FAILED' },
+          })
+        }
+
+        await this.prisma.scraper.update({
+          where: { id },
+          data: {
+            lastSeen: new Date(),
+            state: 'DISCONNECTED',
+            taskId: null,
+          },
+        })
+        this.logger.verbose(`Scraper ${scraper.alias} has been disconnected.`)
+        break
+      default:
+        throw new Error('Invalid connection status!')
+    }
   }
 }

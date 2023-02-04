@@ -3,12 +3,18 @@ import { AuthService } from './auth.service'
 import { AuthResolver } from './auth.resolver'
 import { JwtModule } from '@nestjs/jwt'
 import { UsersModule } from '../users/users.module'
-import { AuthGuard } from './auth.guard'
+import { AuthGuard, ScraperGuard, SuperuserGuard } from './auth.guard'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
-  providers: [AuthService, AuthResolver, AuthGuard],
+  providers: [
+    AuthService,
+    AuthResolver,
+    AuthGuard,
+    SuperuserGuard,
+    ScraperGuard,
+  ],
   imports: [
     ConfigModule,
     JwtModule.registerAsync({
@@ -21,6 +27,6 @@ import { PrismaModule } from '../prisma/prisma.module'
     forwardRef(() => UsersModule),
     PrismaModule,
   ],
-  exports: [AuthGuard, JwtModule],
+  exports: [AuthGuard, SuperuserGuard, ScraperGuard, JwtModule],
 })
 export class AuthModule {}
