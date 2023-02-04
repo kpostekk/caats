@@ -138,6 +138,17 @@ export default function Event() {
         </DataRowContainer>
         <h2 className="text-3xl font-bold">Pochodzenie</h2>
         <DataRowContainer>
+          {event.source.task?.worker ? (
+            <>
+              <DataRow value={['Scraper', event.source.task.worker.alias]} />
+              <DataRow
+                value={[
+                  'Ostatnio widziany',
+                  new Date(event.source.task.worker.lastSeen).toLocaleString(),
+                ]}
+              />
+            </>
+          ) : null}
           <DataRow value={['Identyfikator', event.source.task.id]} />
           <DataRow
             value={[

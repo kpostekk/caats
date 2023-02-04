@@ -20,6 +20,11 @@ fragment DetailedEvent on ScheduleEvent {
       initialHash
       finalHash
       status
+      worker {
+        id
+        alias
+        lastSeen
+      }
     }
   } 
 }

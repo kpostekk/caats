@@ -70,12 +70,10 @@ export type Mutation = {
   createScraper: Scalars['String'];
   createSubscription: Scalars['String'];
   createTasksBulk: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
   updateTaskState: Scalars['Boolean'];
 };
 
@@ -208,6 +206,14 @@ export type ScheduleEvent = {
   type: Scalars['String'];
 };
 
+export type Scraper = {
+  __typename?: 'Scraper';
+  alias: Scalars['String'];
+  id: Scalars['ID'];
+  lastSeen?: Maybe<Scalars['DateTime']>;
+  state: Scalars['String'];
+};
+
 /** Represents a time range. */
 export type SinceUntil = {
   since?: InputMaybe<Scalars['DateTime']>;
@@ -230,6 +236,7 @@ export type StoredTask = {
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
   status: Scalars['String'];
+  worker?: Maybe<Scraper>;
 };
 
 export type Subscription = {
@@ -353,14 +360,14 @@ export type UserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UserGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
 
-export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string } } };
+export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, worker?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } };
 
 export type EventDetailsQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type EventDetailsQuery = { __typename?: 'Query', getEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string } } } | null };
+export type EventDetailsQuery = { __typename?: 'Query', getEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, worker?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } } | null };
 
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
@@ -418,6 +425,11 @@ export const DetailedEventFragmentDoc = `
       initialHash
       finalHash
       status
+      worker {
+        id
+        alias
+        lastSeen
+      }
     }
   }
 }
