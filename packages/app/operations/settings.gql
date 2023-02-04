@@ -11,3 +11,7 @@ query GetCurrentGroups {
 query GetGroupsAutoComplete($search: String!) {
   autocompleteGroups(query: $search)
 }
+
+mutation CreateScraper($name: String) {
+  createScraper(name: $name)
+}

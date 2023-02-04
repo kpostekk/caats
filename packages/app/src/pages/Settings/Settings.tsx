@@ -5,10 +5,12 @@ import {
   HiCog,
   HiEyeOff,
   HiKey,
+  HiScale,
   HiUserGroup,
 } from 'react-icons/hi'
 import { TbBrandGithub } from 'react-icons/tb'
 import { Link, LinkProps, Outlet } from 'react-router-dom'
+import { useAuthStore } from '../../states/auth'
 
 function SettingsLink(props: LinkProps) {
   const isInLocation = false
@@ -21,6 +23,8 @@ function SettingsLink(props: LinkProps) {
 }
 
 export default function Settings() {
+  const isSuperuser = useAuthStore(({ auth }) => auth?.user.isSuperuser)
+
   return (
     <div className="h-full py-4">
       <div className="mx-auto grid h-4/5 max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
@@ -43,6 +47,11 @@ export default function Settings() {
           <SettingsLink to="/app/settings/privacy">
             <HiEyeOff /> Prywatność
           </SettingsLink>
+          {isSuperuser && (
+            <SettingsLink to="/app/settings/super">
+              <HiScale /> Superuser
+            </SettingsLink>
+          )}
           <hr className="m-2 opacity-40" />
           <a
             className="link-hover flex items-center gap-2"

@@ -1,0 +1,13 @@
+query Status {
+  ongoingScrapers {
+    alias
+    lastSeen
+    state
+    currentTask {
+      id
+      createdAt
+      targetDate
+      status
+    }
+  }
+}

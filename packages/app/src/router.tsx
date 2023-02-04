@@ -16,11 +16,13 @@ const SettingsGeneral = lazy(() => import('./pages/Settings/General'))
 const SettingsIcs = lazy(() => import('./pages/Settings/ICS'))
 const SettingsSafety = lazy(() => import('./pages/Settings/Safety'))
 const SettingsPrivacy = lazy(() => import('./pages/Settings/Privacy'))
+const SettingsSuper = lazy(() => import('./pages/Settings/Super'))
 const Schedule = lazy(() => import('./pages/Schedule'))
 const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
 const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
 const Search = lazy(() => import('./pages/Search'))
 const Event = lazy(() => import('./pages/Event'))
+const Status = lazy(() => import('./pages/Status'))
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +75,10 @@ export const router = createBrowserRouter([
                 path: '/app/settings/privacy/',
                 element: <SettingsPrivacy />,
               },
+              {
+                path: '/app/settings/super/',
+                element: <SettingsSuper />,
+              },
             ],
           },
           {
@@ -94,6 +100,10 @@ export const router = createBrowserRouter([
           {
             path: '/app/event/:id/',
             element: <Event />,
+          },
+          {
+            path: '/app/status/',
+            element: <Status />,
           },
         ],
       },

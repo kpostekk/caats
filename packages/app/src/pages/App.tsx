@@ -5,6 +5,7 @@ import {
   HiCalendar,
   HiLogout,
   HiMenu,
+  HiPrinter,
   HiSearch,
   HiStatusOffline,
   HiTemplate,
@@ -15,6 +16,7 @@ import { useAuthStore } from '../states/auth'
 
 export default function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
+  const isSuperuser = useAuthStore(({ auth }) => auth?.user.isSuperuser)
   const networkState = useNetworkState()
 
   return (
@@ -41,6 +43,14 @@ export default function App() {
                   <HiSearch /> Wyszukiwarka
                 </Link>
               </li>
+              {isSuperuser && (
+                <li>
+                  <Link to="/app/status">
+                    <HiPrinter />
+                    Stan botów
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link to="/app/settings">
                   <HiAdjustments />

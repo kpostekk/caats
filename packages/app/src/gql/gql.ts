@@ -19,7 +19,8 @@ const documents = {
     "fragment DetailedEvent on ScheduleEvent {\n  id\n  code\n  subject\n  startsAt\n  endsAt\n  room\n  groups\n  hosts\n  type\n  source {\n    id\n    constantId\n    object\n    createdAt\n    task {\n      id\n      createdAt\n      finishedAt\n      initialHash\n      finalHash\n      status\n      worker {\n        id\n        alias\n        lastSeen\n      }\n    }\n  }\n}\n\nquery EventDetails($id: ID!) {\n  getEvent(id: $id) {\n    ...DetailedEvent\n  }\n}": types.DetailedEventFragmentDoc,
     "mutation Login($code: String!) {\n  authGoogle(code: $code) {\n    accessToken\n    user {\n      name\n      isSuperuser\n      picture\n    }\n  }\n}": types.LoginDocument,
     "query GeneralizedSearch($input: String!) {\n  findByDescription(query: $input) {\n    id\n    startsAt\n    endsAt\n    code\n    subject\n    type\n    room\n    hosts\n    groups\n  }\n}": types.GeneralizedSearchDocument,
-    "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}": types.SetGroupsDocument,
+    "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}\n\nmutation CreateScraper($name: String) {\n  createScraper(name: $name)\n}": types.SetGroupsDocument,
+    "query Status {\n  ongoingScrapers {\n    alias\n    lastSeen\n    state\n    currentTask {\n      id\n      createdAt\n      targetDate\n      status\n    }\n  }\n}": types.StatusDocument,
 };
 
 /**
@@ -49,7 +50,11 @@ export function graphql(source: "query GeneralizedSearch($input: String!) {\n  f
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}"): (typeof documents)["mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}"];
+export function graphql(source: "mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}\n\nmutation CreateScraper($name: String) {\n  createScraper(name: $name)\n}"): (typeof documents)["mutation SetGroups($groups: [String!]!) {\n  setGroups(groups: $groups)\n}\n\nquery GetCurrentGroups {\n  me {\n    groups\n  }\n}\n\nquery GetGroupsAutoComplete($search: String!) {\n  autocompleteGroups(query: $search)\n}\n\nmutation CreateScraper($name: String) {\n  createScraper(name: $name)\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Status {\n  ongoingScrapers {\n    alias\n    lastSeen\n    state\n    currentTask {\n      id\n      createdAt\n      targetDate\n      status\n    }\n  }\n}"): (typeof documents)["query Status {\n  ongoingScrapers {\n    alias\n    lastSeen\n    state\n    currentTask {\n      id\n      createdAt\n      targetDate\n      status\n    }\n  }\n}"];
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.

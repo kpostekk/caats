@@ -38,6 +38,14 @@ export type App = {
   version: Scalars['String'];
 };
 
+export type CurrentTask = {
+  __typename?: 'CurrentTask';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  status: TaskState;
+  targetDate: Scalars['Date'];
+};
+
 export type EventSource = {
   __typename?: 'EventSource';
   constantId: Scalars['String'];
@@ -137,6 +145,7 @@ export type Query = {
   /** @deprecated Use subscription receiveTask instead. */
   getTasks: Array<Task>;
   me: User;
+  ongoingScrapers: Array<WorkingScraper>;
 };
 
 
@@ -299,6 +308,15 @@ export type User = {
   picture?: Maybe<Scalars['URL']>;
 };
 
+export type WorkingScraper = {
+  __typename?: 'WorkingScraper';
+  alias: Scalars['String'];
+  currentTask?: Maybe<CurrentTask>;
+  id: Scalars['ID'];
+  lastSeen: Scalars['DateTime'];
+  state: Scalars['String'];
+};
+
 export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -401,6 +419,18 @@ export type GetGroupsAutoCompleteQueryVariables = Exact<{
 
 
 export type GetGroupsAutoCompleteQuery = { __typename?: 'Query', autocompleteGroups?: Array<string> | null };
+
+export type CreateScraperMutationVariables = Exact<{
+  name?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateScraperMutation = { __typename?: 'Mutation', createScraper: string };
+
+export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StatusQuery = { __typename?: 'Query', ongoingScrapers: Array<{ __typename?: 'WorkingScraper', alias: string, lastSeen: any, state: string, currentTask?: { __typename?: 'CurrentTask', id: string, createdAt: any, targetDate: any, status: TaskState } | null }> };
 
 export const DetailedEventFragmentDoc = `
     fragment DetailedEvent on ScheduleEvent {
@@ -813,5 +843,52 @@ export const useGetGroupsAutoCompleteQuery = <
     useQuery<GetGroupsAutoCompleteQuery, TError, TData>(
       ['GetGroupsAutoComplete', variables],
       fetcher<GetGroupsAutoCompleteQuery, GetGroupsAutoCompleteQueryVariables>(client, GetGroupsAutoCompleteDocument, variables, headers),
+      options
+    );
+export const CreateScraperDocument = `
+    mutation CreateScraper($name: String) {
+  createScraper(name: $name)
+}
+    `;
+export const useCreateScraperMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateScraperMutation, TError, CreateScraperMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateScraperMutation, TError, CreateScraperMutationVariables, TContext>(
+      ['CreateScraper'],
+      (variables?: CreateScraperMutationVariables) => fetcher<CreateScraperMutation, CreateScraperMutationVariables>(client, CreateScraperDocument, variables, headers)(),
+      options
+    );
+export const StatusDocument = `
+    query Status {
+  ongoingScrapers {
+    alias
+    lastSeen
+    state
+    currentTask {
+      id
+      createdAt
+      targetDate
+      status
+    }
+  }
+}
+    `;
+export const useStatusQuery = <
+      TData = StatusQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: StatusQueryVariables,
+      options?: UseQueryOptions<StatusQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<StatusQuery, TError, TData>(
+      variables === undefined ? ['Status'] : ['Status', variables],
+      fetcher<StatusQuery, StatusQueryVariables>(client, StatusDocument, variables, headers),
       options
     );
