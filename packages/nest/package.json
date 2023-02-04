@@ -14,7 +14,6 @@
     "build": "tsc --noEmit && swc src/ -d dist/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "nodemon -w src -e gql,ts --exec \"node -r @swc/register\" src/index.ts",
-    "prestart": "swc src/ -d dist/",
     "start": "node dist",
     "legacy:start": "nest start",
     "legacy:start:dev": "nest start --watch",
