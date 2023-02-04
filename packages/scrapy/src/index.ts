@@ -1,24 +1,52 @@
-import { GraphQLClient } from 'graphql-request'
+import { gql, GraphQLClient } from 'graphql-request'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { getSdk } from './gql/sdk'
 import { Stealer } from './stealer'
+import { createClient, Client } from 'graphql-ws'
+import { AwaitTaskSubscription } from './gql/graphql'
+import { WebSocket } from 'ws'
 
 process.on('SIGINT', () => process.exit(1))
 process.on('SIGTERM', () => process.exit(1))
 
-async function checkForTasks(client: GraphQLClient, rate = 16) {
-  const sdk = getSdk(client)
-  const tasks = await sdk.getTasks()
+async function checkForTasks(
+  wsClient: Client,
+  gqlClient: GraphQLClient,
+  rate = 16
+) {
+  const sdk = getSdk(gqlClient)
+  // const tasks = await sdk.getTasks()
+  const fullTask = await new Promise<AwaitTaskSubscription | null | undefined>(
+    (resolve, reject) =>
+      wsClient.subscribe<AwaitTaskSubscription>(
+        {
+          query: gql`
+            subscription awaitTask {
+              receiveTask {
+                id
+                date
+                hash
+              }
+            }
+          `,
+        },
+        {
+          complete: () => resolve(null),
+          error: (e) => reject(e),
+          next: (data) => resolve(data.data),
+        }
+      )
+  )
 
-  if (tasks.getTasks.length === 0) {
-    return 'no tasks remaining'
-  }
+  // await sdk.updateTaskState({
+  //   id: task.id,
+  // })
+  console.log({ fullTask })
+  if (!fullTask || !fullTask.receiveTask) return
 
-  const task = tasks.getTasks[0]
-  await sdk.updateTaskState({
-    id: task.id,
-  })
+  const task = fullTask.receiveTask
+  console.log({ task })
 
   try {
     const r = await new Stealer(task.date, task.hash ?? undefined, rate).steal()
@@ -36,6 +64,8 @@ async function checkForTasks(client: GraphQLClient, rate = 16) {
     console.error(e)
     await sdk.failTask({ id: task.id }).catch((e) => console.error(e))
     return 'failed'
+  } finally {
+    await wsClient.dispose()
   }
 
   return 'succeeded'
@@ -52,38 +82,56 @@ yargs(hideBin(process.argv))
           type: 'string',
           demandOption: true,
         })
+        .option('token', {
+          type: 'string',
+          demandOption: true,
+        })
         .option('rate', {
           type: 'number',
         }),
-    async ({ api, rate }) => {
-      console.log('Starting Stealer...')
-      const gqlClient = new GraphQLClient(api)
-      const sdk = getSdk(gqlClient)
+    async ({ api, rate, token }) => {
+      const wsUrl = new URL(api)
 
-      console.log(await sdk.getAppVersion())
-      let noTaskMsg = false
+      switch (wsUrl.protocol) {
+        case 'https:':
+          wsUrl.protocol = 'wss:'
+          break
+        case 'http:':
+          wsUrl.protocol = 'ws:'
+          break
+        default:
+          throw new Error('Invalid protocol')
+      }
+
+      const wsClient = createClient({
+        url: wsUrl.toString(),
+        connectionParams: {
+          authorization: `Bearer ${token}`,
+        },
+        webSocketImpl: WebSocket,
+      })
+
+      console.log('Starting Stealer...')
+      const gqlClient = new GraphQLClient(api, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        // fetch,
+      })
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        const disposition = await checkForTasks(gqlClient, rate)
+        const disposition = await checkForTasks(wsClient, gqlClient, rate)
 
         if (disposition === 'skipped') {
           console.log('Task skipped! (╯°□°）╯︵ ┻━┻')
-          await new Promise((r) => setTimeout(r, 250))
-        } else if (disposition === 'no tasks remaining') {
-          if (!noTaskMsg) console.log('No tasks remaining 👈(ﾟヮﾟ👈)')
-          noTaskMsg = true
-          await new Promise((r) => setTimeout(r, 10_000))
+          await new Promise((r) => setTimeout(r, 200))
         } else if (disposition === 'failed') {
           console.log('Task failed! Cooling down... (。﹏。)')
-          await new Promise((r) => setTimeout(r, 30_000))
+          await new Promise((r) => setTimeout(r, 5_000))
         } else {
           console.log('Task succeeded! o((>ω< ))o')
           await new Promise((r) => setTimeout(r, 500))
-        }
-
-        if (disposition !== 'no tasks remaining') {
-          noTaskMsg = false
         }
       }
     }

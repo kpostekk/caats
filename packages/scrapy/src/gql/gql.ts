@@ -13,13 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}": types.GetAppVersionDocument,
+    "query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}\n\nsubscription awaitTask {\n  receiveTask {\n    id\n    date\n    hash\n  }\n}": types.GetAppVersionDocument,
 };
-
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}"): (typeof documents)["query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}"];
 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -32,8 +27,13 @@ export function graphql(source: "query getAppVersion {\n  app {\n    version\n  
  *
  * The query argument is unknown!
  * Please regenerate the types.
-**/
+ */
 export function graphql(source: string): unknown;
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}\n\nsubscription awaitTask {\n  receiveTask {\n    id\n    date\n    hash\n  }\n}"): (typeof documents)["query getAppVersion {\n  app {\n    version\n  }\n}\n\nquery getTasks {\n  getTasks {\n    id\n    date\n    hash\n  }\n}\n\nmutation updateTaskState($id: ID!) {\n  updateTaskState(id: $id, state: RUNNING)\n}\n\nmutation skipTask($id: ID!) {\n  updateTaskState(id: $id, state: SKIPPED)\n}\n\nmutation failTask($id: ID!) {\n  updateTaskState(id: $id, state: FAILED)\n}\n\nmutation finishTask($id: ID!, $results: TaskResult!) {\n  finishTask(id: $id, result: $results)\n}\n\nsubscription awaitTask {\n  receiveTask {\n    id\n    date\n    hash\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
