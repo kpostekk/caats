@@ -40,9 +40,25 @@ input TasksBulkInput {
   offset: Int
 }
 
+type CurrentTask {
+  id: ID!
+  targetDate: Date!
+  createdAt: DateTime!
+  status: TaskState!
+}
+
+type WorkingScraper {
+  id: ID!
+  alias: String!
+  lastSeen: DateTime!
+  state: String!
+  currentTask: CurrentTask
+}
+
 type Query {
   getTasks: [Task!]! @deprecated(reason: "Use subscription receiveTask instead.")
   getTaskCollection(collection: TaskCollection!): [JSON!]!
+  ongoingScrapers: [WorkingScraper!]!
 }
 
 type Mutation {

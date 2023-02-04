@@ -102,4 +102,9 @@ export class SupervisorResolver {
     const [, token] = await this.supervisor.createScraper(user.id, args.name)
     return token
   }
+
+  @Query()
+  ongoingScrapers() {
+    return this.supervisor.getOngoingScrapers()
+  }
 }

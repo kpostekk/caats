@@ -350,4 +350,30 @@ export class SupervisorService implements OnModuleInit {
         throw new Error('Invalid connection status!')
     }
   }
+
+  getOngoingScrapers() {
+    return this.prisma.scraper.findMany({
+      where: {
+        lastSeen: {
+          gte: DateTime.now().minus({ hours: 12 }).toJSDate(),
+        },
+      },
+      select: {
+        id: true,
+        alias: true,
+        lastSeen: true,
+        currentTask: {
+          select: {
+            id: true,
+            targetDate: true,
+            createdAt: true,
+            status: true,
+          },
+        },
+      },
+      orderBy: {
+        lastSeen: 'desc',
+      },
+    })
+  }
 }
