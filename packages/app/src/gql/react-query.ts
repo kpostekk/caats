@@ -67,12 +67,15 @@ export type Mutation = {
   addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
+  createScraper: Scalars['String'];
   createSubscription: Scalars['String'];
   createTasksBulk: Scalars['Boolean'];
+  /** @deprecated Use subscription receiveTask instead. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
+  /** @deprecated Use subscription receiveTask instead. */
   updateTaskState: Scalars['Boolean'];
 };
 
@@ -84,6 +87,11 @@ export type MutationAddGroupArgs = {
 
 export type MutationAuthGoogleArgs = {
   code: Scalars['String'];
+};
+
+
+export type MutationCreateScraperArgs = {
+  name?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -128,6 +136,7 @@ export type Query = {
   /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
   getScheduleUser: Array<ScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
+  /** @deprecated Use subscription receiveTask instead. */
   getTasks: Array<Task>;
   me: User;
 };
@@ -221,6 +230,11 @@ export type StoredTask = {
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
   status: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  receiveTask?: Maybe<Task>;
 };
 
 export type Task = {
