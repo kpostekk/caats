@@ -169,8 +169,8 @@ export class SupervisorService implements OnModuleInit {
         workerId: scraperId,
       },
     })
-    await this.updateScraper(scraperId, 'AWAITING')
-    await this.dispatch()
+    // await this.updateScraper(scraperId, 'AWAITING')
+    // await this.dispatch()
   }
 
   async invalidateCorruptedTasks() {
@@ -329,12 +329,12 @@ export class SupervisorService implements OnModuleInit {
         this.logger.verbose(`Scraper ${scraper.alias} is awaiting for a task.`)
         break
       case 'DISCONNECTED':
-        if (scraper.state === 'BUSY' && scraper.taskId) {
-          await this.prisma.task.update({
-            where: { id: scraper.taskId },
-            data: { status: 'FAILED' },
-          })
-        }
+        // if (scraper.state === 'BUSY' && scraper.taskId) {
+        //   await this.prisma.task.update({
+        //     where: { id: scraper.taskId },
+        //     data: { status: 'FAILED' },
+        //   })
+        // }
 
         await this.prisma.scraper.update({
           where: { id },

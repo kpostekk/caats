@@ -48,7 +48,11 @@ export class BrowserService {
       include: {
         source: {
           include: {
-            task: true,
+            task: {
+              include: {
+                worker: true,
+              },
+            },
           },
         },
       },
@@ -84,7 +88,11 @@ export class BrowserService {
       include: {
         source: {
           include: {
-            task: true,
+            task: {
+              include: {
+                worker: true,
+              },
+            },
           },
         },
       },
@@ -120,7 +128,11 @@ export class BrowserService {
       include: {
         source: {
           include: {
-            task: true,
+            task: {
+              include: {
+                worker: true,
+              },
+            },
           },
         },
       },
@@ -221,7 +233,11 @@ export class BrowserService {
       include: {
         source: {
           include: {
-            task: true,
+            task: {
+              include: {
+                worker: true,
+              },
+            },
           },
         },
       },

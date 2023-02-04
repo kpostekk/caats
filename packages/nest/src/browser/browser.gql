@@ -23,6 +23,13 @@ input HostInput {
   host: String!
 }
 
+type Scraper {
+  id: ID!
+  alias: String!
+  state: String!
+  lastSeen: DateTime
+}
+
 type StoredTask {
   id: ID!
   createdAt: DateTime!
@@ -30,6 +37,7 @@ type StoredTask {
   initialHash: String
   finalHash: String
   status: String!
+  worker: Scraper
 }
 
 type EventSource {
