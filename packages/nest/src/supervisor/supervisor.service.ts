@@ -52,6 +52,22 @@ export class SupervisorService implements OnModuleInit {
   }
 
   async updateTaskState(id: number, state: TaskStatus) {
+    if (state === 'SKIPPED') {
+      this.logger.debug(`Task #${id} skipped.`)
+      const { initialHash } = await this.prisma.task.findFirstOrThrow({
+        where: { id },
+      })
+      const lastSuccess = await this.prisma.task.findFirstOrThrow({
+        where: { finalHash: initialHash, status: 'SUCCESS' },
+        orderBy: { finishedAt: 'desc' },
+      })
+
+      await this.prisma.taskResult.updateMany({
+        where: { taskId: lastSuccess.id },
+        data: { createdAt: new Date() },
+      })
+    }
+
     await this.prisma.task.update({
       where: { id },
       data: {
@@ -100,7 +116,7 @@ export class SupervisorService implements OnModuleInit {
       if (existingResult) {
         await this.prisma.taskResult.update({
           where: { constantId },
-          data: { taskId: id },
+          data: { taskId: id, createdAt: new Date() },
         })
         stats.replaced++
         continue
@@ -362,6 +378,7 @@ export class SupervisorService implements OnModuleInit {
         id: true,
         alias: true,
         lastSeen: true,
+        state: true,
         currentTask: {
           select: {
             id: true,
