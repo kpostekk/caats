@@ -99,6 +99,99 @@ export class BrowserService {
     })
   }
 
+  async findNextUserEvent(id: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id },
+    })
+
+    return this.prisma.timetableEvent.findFirst({
+      where: {
+        OR: [
+          {
+            groups: {
+              hasSome: user.groups,
+            },
+          },
+          {
+            hosts: {
+              has: user.id,
+            },
+          },
+        ],
+        startsAt: {
+          gte: new Date(),
+        },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
+      },
+      orderBy: {
+        startsAt: 'asc',
+      },
+      include: {
+        source: {
+          include: {
+            task: {
+              include: {
+                worker: true,
+              },
+            },
+          },
+        },
+      },
+    })
+  }
+
+  async findCurrentUserEvent(id: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id },
+    })
+
+    return this.prisma.timetableEvent.findFirst({
+      where: {
+        OR: [
+          {
+            groups: {
+              hasSome: user.groups,
+            },
+          },
+          {
+            hosts: {
+              has: user.id,
+            },
+          },
+        ],
+        startsAt: {
+          lte: new Date(),
+        },
+        endsAt: {
+          gte: new Date(),
+        },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
+      },
+      orderBy: {
+        startsAt: 'asc',
+      },
+      include: {
+        source: {
+          include: {
+            task: {
+              include: {
+                worker: true,
+              },
+            },
+          },
+        },
+      },
+    })
+  }
+
   async findByHost(
     host: string,
     sinceUntil?: GqlSinceUntil,

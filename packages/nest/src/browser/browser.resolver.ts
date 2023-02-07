@@ -18,6 +18,18 @@ export class BrowserResolver {
 
   @UseGuards(AuthGuard)
   @Query()
+  async getNextUserEvent(@Context('user') user: User) {
+    return await this.browser.findNextUserEvent(user.id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Query()
+  async getCurrentUserEvent(@Context('user') user: User) {
+    return await this.browser.findCurrentUserEvent(user.id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Query()
   async getScheduleUser(
     @Context('user') user: User,
     @Args('sinceUntil') sinceUntil?: GqlSinceUntil,
