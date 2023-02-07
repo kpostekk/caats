@@ -355,7 +355,7 @@ export type AllEventsSinceQueryVariables = Exact<{
 }>;
 
 
-export type AllEventsSinceQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null, hosts: Array<string> }> };
+export type AllEventsSinceQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null, hosts: Array<string> }> };
 
 export type NextEventsCalQueryVariables = Exact<{
   start: Scalars['DateTime'];
@@ -377,6 +377,13 @@ export type UserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UserGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
+
+export type NextEventQueryVariables = Exact<{
+  now: Scalars['DateTime'];
+}>;
+
+
+export type NextEventQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
 
 export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, worker?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } };
 
@@ -612,6 +619,7 @@ export const useAllNextEventsQuery = <
 export const AllEventsSinceDocument = `
     query AllEventsSince($since: DateTime!) {
   getScheduleUser(sinceUntil: {since: $since}) {
+    id
     startsAt
     endsAt
     subject
@@ -710,6 +718,33 @@ export const useUserGroupsQuery = <
     useQuery<UserGroupsQuery, TError, TData>(
       variables === undefined ? ['UserGroups'] : ['UserGroups', variables],
       fetcher<UserGroupsQuery, UserGroupsQueryVariables>(client, UserGroupsDocument, variables, headers),
+      options
+    );
+export const NextEventDocument = `
+    query NextEvent($now: DateTime!) {
+  getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 1}) {
+    id
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
+  }
+}
+    `;
+export const useNextEventQuery = <
+      TData = NextEventQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: NextEventQueryVariables,
+      options?: UseQueryOptions<NextEventQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<NextEventQuery, TError, TData>(
+      ['NextEvent', variables],
+      fetcher<NextEventQuery, NextEventQueryVariables>(client, NextEventDocument, variables, headers),
       options
     );
 export const EventDetailsDocument = `

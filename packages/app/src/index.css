@@ -5,3 +5,16 @@
 .card-bordered {
   @apply border-primary border-2; 
 }
+
+.progress-white::-moz-progress-bar {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--p) / var(--tw-bg-opacity), 0, 100);
+}
+.progress-white:indeterminate::after {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--p) / var(--tw-bg-opacity), 0, 100);
+}
+.progress-white::-webkit-progress-value {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--p) / var(--tw-bg-opacity), 0, 100);
+}
