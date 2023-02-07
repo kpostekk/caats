@@ -90,7 +90,10 @@ model TimetableEvent {
     groups    String[]
     hosts     String[]
 
-    @@index([startsAt(sort: Asc), code(sort: Asc), groups(sort: Asc)])
+    @@index(startsAt(sort: Asc))
+    @@index(endsAt(sort: Asc))
+    @@index(groups, type: Hash)
+    @@index(hosts, type: Hash)
 }
 
 model IcsSubscriptions {
