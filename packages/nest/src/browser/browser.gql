@@ -86,4 +86,8 @@ type Query {
   getEventHistory(constantId: String!): [ScheduleEvent!]!
 
   findByDescription(query: String!): [ScheduleEvent!]!
+
+  getNextUserEvent: ScheduleEvent
+
+  getCurrentUserEvent: ScheduleEvent
 }

@@ -11,6 +11,7 @@ query AllNextEvents {
 
 query AllEventsSince($since: DateTime!) {
   getScheduleUser(sinceUntil: { since: $since }) {
+    id
     startsAt
     endsAt
     subject
@@ -46,5 +47,17 @@ query NextEventsDash($now: DateTime!, $deadline: DateTime!) {
 query UserGroups {
   me {
     groups
+  }
+}
+
+query NextEvent($now: DateTime!) {
+  getScheduleUser(sinceUntil: { since: $now }, skipTake: { take: 1 }) {
+    id
+    startsAt
+    endsAt
+    code
+    subject
+    type
+    room
   }
 }
