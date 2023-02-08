@@ -1,8 +1,11 @@
 {
   "name": "@caats/app",
   "private": true,
-  "version": "0.6.0-4",
+  "version": "0.7.0-0",
   "author": "Krystian <krystian@postek.eu>",
+  "contributors": [
+    "Izabela Pawlukowska"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
