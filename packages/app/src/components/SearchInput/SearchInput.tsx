@@ -47,7 +47,7 @@ export function SearchInput(props: SearchInputProps) {
   return (
     <div className="form-control h-24 w-full">
       <input
-        className="input-lg mx-auto w-full rounded border-2 border-black shadow"
+        className="input-lg mx-auto w-full rounded-xl border-2 border-black shadow"
         placeholder={`przykładowo: skj smyk wykład`}
         value={inputVal}
         onChange={(e) => setInputVal(e.target.value.trimStart())}

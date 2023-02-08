@@ -30,11 +30,11 @@ export default function Event() {
   if (!id) return null
 
   const client = useGqlClient()
-  const query = useEventDetailsQuery(client, { id })
+  const query = useEventDetailsQuery(client, { id: Number(id) })
 
-  if (!query.data || !query.data.getEvent) return null
+  if (!query.data || !query.data.event) return null
 
-  const event = query.data.getEvent
+  const event = query.data.event
 
   return (
     <div className="container max-w-lg p-2 md:px-0">
@@ -138,13 +138,13 @@ export default function Event() {
         </DataRowContainer>
         <h2 className="text-3xl font-bold">Pochodzenie</h2>
         <DataRowContainer>
-          {event.source.task?.worker ? (
+          {event.source.task?.scraper ? (
             <>
-              <DataRow value={['Scraper', event.source.task.worker.alias]} />
+              <DataRow value={['Scraper', event.source.task.scraper.alias]} />
               <DataRow
                 value={[
                   'Ostatnio widziany',
-                  new Date(event.source.task.worker.lastSeen).toLocaleString(),
+                  new Date(event.source.task.scraper.lastSeen).toLocaleString(),
                 ]}
               />
             </>

@@ -7,7 +7,7 @@ type ScraperStatusWidgetProps = {
 
 function ScraperStatusWidget(props: ScraperStatusWidgetProps) {
   return (
-    <div className="flex rounded border-2 border-black p-2">
+    <div className="flex rounded-xl border-2 border-black p-2">
       {props.scraper.currentTask ? (
         <div className="my-auto mr-4 ml-2 h-3 w-3 rounded-full bg-green-500" />
       ) : props.scraper.state === 'AWAITING' ? (

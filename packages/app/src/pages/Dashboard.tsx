@@ -1,44 +1,93 @@
 import { useAuthStore } from '../states/auth'
 import {
-  useAllEventsSinceQuery,
-  useNextEventQuery,
-  useNextEventsDashQuery,
-  useUserGroupsQuery,
+  SimpleEventFragment,
+  UserQuery,
+  useUserQuery,
 } from '../gql/react-query'
-import { DateTime } from 'luxon'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
-import { useMemo, useState } from 'react'
-import { ScheduleEventRow } from '../components/ScheduleEvent/ScheduleEvent'
 import palmLeafs from '../assets/palm-leafs.png'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
+import { HiCalendar, HiCog, HiExternalLink, HiSearch } from 'react-icons/hi'
+import { Link } from 'react-router-dom'
+import { DateTime } from 'luxon'
 
-function CurrentStatus() {
-  const client = useGqlClient()
+type PrimarySectionEventProps = {
+  simpleEvent: SimpleEventFragment
+}
 
+function PrimarySectionEvent({ simpleEvent }: PrimarySectionEventProps) {
+  return (
+    <>
+      <h3 className="text-2xl font-semibold">
+        {simpleEvent.code}{' '}
+        <span className="text-xl font-medium">
+          {simpleEvent.type}, {simpleEvent.room}
+        </span>
+      </h3>
+      <p className="text-lg">
+        {new Date(simpleEvent.startsAt).toLocaleDateString(undefined, {
+          dateStyle: 'full',
+        })}
+        {', '}
+        {new Date(simpleEvent.startsAt).toLocaleTimeString(undefined, {
+          timeStyle: 'short',
+        })}
+        {' - '}
+        {new Date(simpleEvent.endsAt).toLocaleTimeString(undefined, {
+          timeStyle: 'short',
+        })}
+      </p>
+      <p className="py-4 opacity-80">
+        <Link
+          to={`/app/calendar/${DateTime.fromISO(
+            simpleEvent.startsAt
+          ).toISODate()}`}
+          className="link link-hover"
+        >
+          <HiExternalLink className="mr-2 inline" />
+          Cały plan na ten dzień
+        </Link>
+      </p>
+    </>
+  )
+}
+
+type PrimarySectionProps = {
+  query?: UserQuery
+}
+
+function PrimarySection(props: PrimarySectionProps) {
+  if (!props.query) return null
+
+  if (props.query.user.currentEvent) {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold">Obecne zajęcia</h1>
+        <PrimarySectionEvent simpleEvent={props.query.user.currentEvent} />
+      </div>
+    )
+  } else if (props.query.user.nextEvent) {
+    return (
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold">Kolejne zajęcia</h1>
+        <PrimarySectionEvent simpleEvent={props.query.user.nextEvent} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <h1 className="text-4xl font-bold">Brak zajęć w terminarzu</h1>
+      <p>Możliwe, że potrzeba zaktualizować przypisane grupy.</p>
+    </div>
+  )
 }
 
 export default function Dashboard() {
   // const token = useAuthStore(({ auth }) => auth?.accessToken)
   const name = useAuthStore(({ auth }) => auth?.user.name)
   const client = useGqlClient()
-  const [now, setNow] = useState(DateTime.now())
-
-  //const initalNow = useMemo(() => now, [])
-  //useInterval(() => setNow(DateTime.now()), 1000)
-
-  const events = useNextEventsDashQuery(client, {
-    now: now.minus({ minutes: 25 }).toISO(),
-    deadline: now.endOf('day').toISO(),
-  })
-  const nextEventQuery = useNextEventQuery(client, { now: now.toISO() })
-
-  const nextEvent = useMemo(() => {
-    if (!nextEventQuery.data?.getScheduleUser) return null
-    if (nextEventQuery.data.getScheduleUser.length !== 1) return null
-    return nextEventQuery.data.getScheduleUser[0]
-  }, [nextEventQuery.data?.getScheduleUser])
-
-  const groups = useUserGroupsQuery(client)
+  const userQuery = useUserQuery(client)
 
   return (
     <div className="container max-w-5xl pb-12 md:pb-0">
@@ -61,28 +110,30 @@ export default function Dashboard() {
               </h1>
             </div>
           </div>
-          <div className="min-h-[30vh] rounded-xl bg-black p-6 text-white">
+          <div className="mx-1 min-h-[30vh] rounded-xl bg-black p-6 text-white">
             <UpdatePrompt />
+            {userQuery.isLoading ? (
+              <div className="space-y-4">
+                <div className="h-12 w-full animate-pulse rounded bg-white/20" />
+                <div className="h-6 w-full animate-pulse rounded bg-white/20" />
+                <div className="h-4 w-full animate-pulse rounded bg-white/20" />
+              </div>
+            ) : (
+              <PrimarySection query={userQuery.data} />
+            )}
           </div>
         </div>
-        <div className="col-span-1 space-y-2 px-6 py-2 md:px-0">
-          <h2 className="text-[22pt] font-semibold">Najbliższe zajęcia</h2>
-          <hr />
-          {events.data?.getScheduleUser.map((e, i) => (
-            <ScheduleEventRow
-              key={i}
-              event={e}
-              focused={
-                new Date(e.startsAt) <= new Date() &&
-                new Date(e.endsAt) > new Date()
-              }
-            />
-          ))}
-          {events.data?.getScheduleUser.length === 0 ? (
-            <p className="text-center italic opacity-70">
-              Nie ma więcej zajęć na dziś! 🎉
-            </p>
-          ) : null}
+        <div className="col-span-1 grid grid-cols-1 content-start space-y-2 px-6 py-2 md:px-0">
+          <Link to="/app/calendar" className="btn btn-outline">
+            <HiCalendar className="mr-2" /> Kalendarz
+          </Link>
+          <Link to="/app/search" className="btn btn-outline">
+            <HiSearch className="mr-2" />
+            Wyszukiwarka
+          </Link>
+          <Link to="/app/settings" className="btn btn-outline">
+            <HiCog className="mr-2" /> Ustawienia
+          </Link>
         </div>
       </div>
     </div>

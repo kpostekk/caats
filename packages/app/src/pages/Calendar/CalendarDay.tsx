@@ -4,16 +4,16 @@ import { HiArrowLeft, HiArrowRight, HiCalendar } from 'react-icons/hi'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGqlClient } from '../../components'
 import { ScheduleEventRow } from '../../components/ScheduleEvent/ScheduleEvent'
-import { useAllEventsSinceQuery, useInRangeQuery } from '../../gql/react-query'
+import { useUserEventsQuery } from '../../gql/react-query'
 
 export default function CalendarDay() {
   const { date } = useParams()
   const dt = DateTime.fromISO(date!)
 
   const client = useGqlClient()
-  const events = useInRangeQuery(client, {
-    start: dt.toISO(),
-    end: dt.plus({ days: 1 }).toISO(),
+  const events = useUserEventsQuery(client, {
+    since: dt.toISO(),
+    until: dt.plus({ days: 1 }).toISO(),
   })
 
   return (
@@ -23,12 +23,12 @@ export default function CalendarDay() {
           <h1 className="py-1 text-[20pt] font-bold">
             {dt.toFormat('cccc, d LLLL')}
           </h1>
-          {events.data.getScheduleUser.length === 0 ? (
+          {events.data.user.events.length === 0 ? (
             <p className="select-none italic opacity-80">
               Brak zajęć tego dnia 🎉
             </p>
           ) : null}
-          {events.data.getScheduleUser.map((e, i) => {
+          {events.data.user.events.map((e, i) => {
             return (
               <ScheduleEventRow
                 key={i}

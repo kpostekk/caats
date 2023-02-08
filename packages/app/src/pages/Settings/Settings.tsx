@@ -26,7 +26,7 @@ export default function Settings() {
   const isSuperuser = useAuthStore(({ auth }) => auth?.user.isSuperuser)
 
   return (
-    <div className="h-full py-4">
+    <div className="h-full p-4 md:px-0">
       <div className="mx-auto grid h-4/5 max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
         <div className="card bg-base-content card-bordered col-span-1 space-y-2 p-4 text-white">
           <SettingsLink to="/app/settings">
@@ -60,6 +60,7 @@ export default function Settings() {
           >
             <TbBrandGithub /> Github
           </a>
+          <p className="text-right text-sm opacity-20">v{APP_VERSION}</p>
         </div>
         <div className="card card-bordered p-4 md:col-span-2">
           <Suspense>

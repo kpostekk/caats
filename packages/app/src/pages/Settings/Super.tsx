@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { useGqlClient } from '../../components'
 import { useCreateScraperMutation } from '../../gql/react-query'
+import { useAuthStore } from '../../states/auth'
 
 export default function Settings() {
   const client = useGqlClient()
   const createBotMutation = useCreateScraperMutation(client)
+  const token = useAuthStore(({ auth }) => auth?.accessToken)
+  const [tokenCopied, setTokenCopied] = useState(false)
 
   const [scraperName, setScraperName] = useState('')
 
@@ -42,6 +45,28 @@ export default function Settings() {
         }
       >
         Dodaj
+      </button>
+      <h2>Devtools</h2>
+      <button
+        className="btn btn-outline"
+        onClick={() =>
+          navigator.clipboard.writeText(token).then(() => setTokenCopied(true))
+        }
+      >
+        {!tokenCopied ? 'Skopiuj token' : 'Skopiowano token!'}
+      </button>
+      <button
+        className="btn btn-outline"
+        onClick={() => {
+          localStorage.setItem(
+            'graphiql:headers',
+            JSON.stringify({
+              authorization: `Bearer ${token}`,
+            })
+          )
+        }}
+      >
+        Nadpisz headery graphiql
       </button>
     </div>
   )

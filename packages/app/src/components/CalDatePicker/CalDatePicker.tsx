@@ -1,6 +1,6 @@
 import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
-import { useInRangeQuery } from '../../gql/react-query'
+import { UserBusyDaysQuery } from '../../gql/react-query'
 import { useIsBusy } from '../useBusyDays/useBusyDays'
 import { useGqlClient } from '../useGqlClient/useGqlClient'
 

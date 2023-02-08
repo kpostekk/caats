@@ -1,11 +1,14 @@
 import { DateTime } from 'luxon'
 import { Fragment, useMemo, useState } from 'react'
 import { useGqlClient } from '../components'
-import { AllEventsSinceQuery } from '../gql/graphql'
-import { useAllEventsSinceQuery } from '../gql/react-query'
+import {
+  SimpleEventFragment,
+  useUserEventsAfterQuery,
+  useUserEventsQuery,
+} from '../gql/react-query'
 
 type ScheduleCardProps = {
-  event: AllEventsSinceQuery['getScheduleUser'][0]
+  event: SimpleEventFragment
 }
 
 function ScheduleCard(props: ScheduleCardProps) {
@@ -40,18 +43,16 @@ function ScheduleCard(props: ScheduleCardProps) {
 export default function Schedule() {
   const client = useGqlClient()
   const [now] = useState(DateTime.now().startOf('day'))
-  const allEventsSinceNow = useAllEventsSinceQuery(client, {
+  const allEventsSinceNow = useUserEventsAfterQuery(client, {
     since: now.toISO(),
   })
 
   return (
     <div className="container max-w-3xl space-y-2 py-2">
       {allEventsSinceNow.data ? (
-        allEventsSinceNow.data.getScheduleUser.map((ev, i) => {
+        allEventsSinceNow.data.user.events.map((ev, i) => {
           const prevDate =
-            allEventsSinceNow.data.getScheduleUser[i - 1]?.startsAt.split(
-              'T'
-            )[0]
+            allEventsSinceNow.data.user.events[i - 1]?.startsAt.split('T')[0]
           const currentDate = ev.startsAt.split('T')[0]
 
           const appendDivider =

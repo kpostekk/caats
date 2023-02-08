@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { useEffect } from 'react'
 import { create } from 'zustand'
-import { useBusyDaysQuery } from '../../gql/react-query'
+import { useUserBusyDaysQuery } from '../../gql/react-query'
 import { useGqlClient } from '../useGqlClient/useGqlClient'
 
 type BusyDaysStore = {
@@ -18,13 +18,13 @@ const useBusyDaysStore = create<BusyDaysStore>((set, get) => ({
 
 export function useIsBusy() {
   const client = useGqlClient()
-  const busyDays = useBusyDaysQuery(client)
+  const busyDays = useUserBusyDaysQuery(client)
   const { isBusy, update } = useBusyDaysStore()
 
   useEffect(() => {
     if (busyDays.data) {
       const futureSet = new Set<string>(
-        busyDays.data.getScheduleUser.map(({ startsAt }) =>
+        busyDays.data.user.events.map(({ startsAt }) =>
           DateTime.fromISO(startsAt).toISODate()
         )
       )

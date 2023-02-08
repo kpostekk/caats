@@ -72,6 +72,7 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** @deprecated Field no longer supported */
   addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
@@ -81,6 +82,7 @@ export type Mutation = {
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
+  /** @deprecated Field no longer supported */
   setGroups: Scalars['Boolean'];
   updateTaskState: Scalars['Boolean'];
 };
@@ -130,22 +132,24 @@ export type MutationUpdateTaskStateArgs = {
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
+  /** @deprecated Field no longer supported */
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  event?: Maybe<ScheduleEvent>;
+  events: Array<ScheduleEvent>;
+  /** @deprecated Field no longer supported */
   findByDescription: Array<ScheduleEvent>;
-  getEvent?: Maybe<ScheduleEvent>;
-  getEventHistory: Array<ScheduleEvent>;
+  /** @deprecated Field no longer supported */
   getGroups?: Maybe<Array<Scalars['String']>>;
-  /** Returns all schedule events for the given groups. */
-  getScheduleGroups: Array<ScheduleEvent>;
-  /** Returns all schedule events for the given host. */
-  getScheduleHosts: Array<ScheduleEvent>;
-  /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
-  getScheduleUser: Array<ScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
   /** @deprecated Use subscription receiveTask instead. */
   getTasks: Array<Task>;
+  groups: Array<Scalars['String']>;
   me: User;
   ongoingScrapers: Array<WorkingScraper>;
+  scrapers: Array<Scraper>;
+  sources: Array<EventSource>;
+  tasks: Array<StoredTask>;
+  user: User;
 };
 
 
@@ -154,38 +158,19 @@ export type QueryAutocompleteGroupsArgs = {
 };
 
 
+export type QueryEventArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryEventsArgs = {
+  search?: InputMaybe<ScheduleInput>;
+  targets?: InputMaybe<ScheduleTargets>;
+};
+
+
 export type QueryFindByDescriptionArgs = {
   query: Scalars['String'];
-};
-
-
-export type QueryGetEventArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetEventHistoryArgs = {
-  constantId: Scalars['String'];
-};
-
-
-export type QueryGetScheduleGroupsArgs = {
-  groups: GroupInput;
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
-};
-
-
-export type QueryGetScheduleHostsArgs = {
-  host: HostInput;
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
-};
-
-
-export type QueryGetScheduleUserArgs = {
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
 };
 
 
@@ -213,6 +198,18 @@ export type ScheduleEvent = {
   subject: Scalars['String'];
   /** The type of the event. */
   type: Scalars['String'];
+};
+
+export type ScheduleInput = {
+  since?: InputMaybe<Scalars['DateTime']>;
+  skip?: InputMaybe<Scalars['PositiveInt']>;
+  take?: InputMaybe<Scalars['PositiveInt']>;
+  until?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type ScheduleTargets = {
+  groups?: InputMaybe<Array<Scalars['String']>>;
+  hosts?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type Scraper = {
@@ -244,8 +241,8 @@ export type StoredTask = {
   finishedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
+  scraper?: Maybe<Scraper>;
   status: Scalars['String'];
-  worker?: Maybe<Scraper>;
 };
 
 export type Subscription = {
@@ -295,8 +292,10 @@ export type TasksBulkInput = {
 /** A CaaTS user. */
 export type User = {
   __typename?: 'User';
+  currentEvent?: Maybe<ScheduleEvent>;
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  events: Array<ScheduleEvent>;
   groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
   id: Scalars['ID'];
@@ -304,8 +303,16 @@ export type User = {
   isSuperuser: Scalars['Boolean'];
   /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
+  nextEvent?: Maybe<ScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
+  scrapers: Array<Scraper>;
+};
+
+
+/** A CaaTS user. */
+export type UserEventsArgs = {
+  search?: InputMaybe<ScheduleInput>;
 };
 
 export type WorkingScraper = {
@@ -322,77 +329,54 @@ export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
 
+export type SimpleEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null };
+
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = { __typename?: 'Query', me: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string>, nextEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null } | null, currentEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null } | null } };
 
-export type AllRangeQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserEventsQueryVariables = Exact<{
+  since: Scalars['DateTime'];
+  until: Scalars['DateTime'];
+}>;
 
 
-export type AllRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string }> };
+export type UserEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
 
-export type InRangeQueryVariables = Exact<{
+export type AllEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> } };
+
+export type EventsInRangeQueryVariables = Exact<{
   start: Scalars['DateTime'];
   end: Scalars['DateTime'];
 }>;
 
 
-export type InRangeQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
+export type EventsInRangeQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
 
-export type BusyDaysQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BusyDaysQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any }> };
-
-export type AllNextEventsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllNextEventsQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null }> };
-
-export type AllEventsSinceQueryVariables = Exact<{
+export type UserEventsAfterQueryVariables = Exact<{
   since: Scalars['DateTime'];
 }>;
 
 
-export type AllEventsSinceQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, subject: string, code: string, type: string, room?: string | null, hosts: Array<string> }> };
+export type UserEventsAfterQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
 
-export type NextEventsCalQueryVariables = Exact<{
-  start: Scalars['DateTime'];
-  end: Scalars['DateTime'];
-}>;
+export type UserBusyDaysQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NextEventsCalQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
+export type UserBusyDaysQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, type: string, startsAt: any }> } };
 
-export type NextEventsDashQueryVariables = Exact<{
-  now: Scalars['DateTime'];
-  deadline: Scalars['DateTime'];
-}>;
-
-
-export type NextEventsDashQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
-
-export type UserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UserGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
-
-export type NextEventQueryVariables = Exact<{
-  now: Scalars['DateTime'];
-}>;
-
-
-export type NextEventQuery = { __typename?: 'Query', getScheduleUser: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> };
-
-export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, worker?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } };
+export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } };
 
 export type EventDetailsQueryVariables = Exact<{
-  id: Scalars['ID'];
+  id: Scalars['Int'];
 }>;
 
 
-export type EventDetailsQuery = { __typename?: 'Query', getEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, worker?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } } | null };
+export type EventDetailsQuery = { __typename?: 'Query', event?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } } | null };
 
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
@@ -439,6 +423,18 @@ export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type StatusQuery = { __typename?: 'Query', ongoingScrapers: Array<{ __typename?: 'WorkingScraper', alias: string, lastSeen: any, state: string, currentTask?: { __typename?: 'CurrentTask', id: string, createdAt: any, targetDate: any, status: TaskState } | null }> };
 
+export const SimpleEventFragmentDoc = `
+    fragment SimpleEvent on ScheduleEvent {
+  id
+  code
+  subject
+  startsAt
+  endsAt
+  type
+  hosts
+  room
+}
+    `;
 export const DetailedEventFragmentDoc = `
     fragment DetailedEvent on ScheduleEvent {
   id
@@ -462,7 +458,7 @@ export const DetailedEventFragmentDoc = `
       initialHash
       finalHash
       status
-      worker {
+      scraper {
         id
         alias
         lastSeen
@@ -494,15 +490,21 @@ export const useAppQuery = <
     );
 export const UserDocument = `
     query User {
-  me {
+  user {
     name
     email
     isSuperuser
     picture
     groups
+    nextEvent {
+      ...SimpleEvent
+    }
+    currentEvent {
+      ...SimpleEvent
+    }
   }
 }
-    `;
+    ${SimpleEventFragmentDoc}`;
 export const useUserQuery = <
       TData = UserQuery,
       TError = unknown
@@ -517,239 +519,132 @@ export const useUserQuery = <
       fetcher<UserQuery, UserQueryVariables>(client, UserDocument, variables, headers),
       options
     );
-export const AllRangeDocument = `
-    query AllRange {
-  getScheduleUser {
-    startsAt
-    endsAt
-    code
+export const UserEventsDocument = `
+    query UserEvents($since: DateTime!, $until: DateTime!) {
+  user {
+    events(search: {since: $since, until: $until}) {
+      ...SimpleEvent
+    }
   }
 }
-    `;
-export const useAllRangeQuery = <
-      TData = AllRangeQuery,
+    ${SimpleEventFragmentDoc}`;
+export const useUserEventsQuery = <
+      TData = UserEventsQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables?: AllRangeQueryVariables,
-      options?: UseQueryOptions<AllRangeQuery, TError, TData>,
+      variables: UserEventsQueryVariables,
+      options?: UseQueryOptions<UserEventsQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<AllRangeQuery, TError, TData>(
-      variables === undefined ? ['AllRange'] : ['AllRange', variables],
-      fetcher<AllRangeQuery, AllRangeQueryVariables>(client, AllRangeDocument, variables, headers),
+    useQuery<UserEventsQuery, TError, TData>(
+      ['UserEvents', variables],
+      fetcher<UserEventsQuery, UserEventsQueryVariables>(client, UserEventsDocument, variables, headers),
       options
     );
-export const InRangeDocument = `
-    query InRange($start: DateTime!, $end: DateTime!) {
-  getScheduleUser(sinceUntil: {since: $start, until: $end}) {
-    id
-    startsAt
-    endsAt
-    code
-    subject
-    type
-    room
-    hosts
-    groups
+export const AllEventsDocument = `
+    query AllEvents {
+  user {
+    events {
+      startsAt
+      endsAt
+      code
+      subject
+      type
+      room
+    }
   }
 }
     `;
-export const useInRangeQuery = <
-      TData = InRangeQuery,
+export const useAllEventsQuery = <
+      TData = AllEventsQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables: InRangeQueryVariables,
-      options?: UseQueryOptions<InRangeQuery, TError, TData>,
+      variables?: AllEventsQueryVariables,
+      options?: UseQueryOptions<AllEventsQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<InRangeQuery, TError, TData>(
-      ['InRange', variables],
-      fetcher<InRangeQuery, InRangeQueryVariables>(client, InRangeDocument, variables, headers),
+    useQuery<AllEventsQuery, TError, TData>(
+      variables === undefined ? ['AllEvents'] : ['AllEvents', variables],
+      fetcher<AllEventsQuery, AllEventsQueryVariables>(client, AllEventsDocument, variables, headers),
       options
     );
-export const BusyDaysDocument = `
-    query BusyDays {
-  getScheduleUser {
-    startsAt
+export const EventsInRangeDocument = `
+    query EventsInRange($start: DateTime!, $end: DateTime!) {
+  user {
+    events(search: {since: $start, until: $end}) {
+      ...SimpleEvent
+    }
   }
 }
-    `;
-export const useBusyDaysQuery = <
-      TData = BusyDaysQuery,
+    ${SimpleEventFragmentDoc}`;
+export const useEventsInRangeQuery = <
+      TData = EventsInRangeQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables?: BusyDaysQueryVariables,
-      options?: UseQueryOptions<BusyDaysQuery, TError, TData>,
+      variables: EventsInRangeQueryVariables,
+      options?: UseQueryOptions<EventsInRangeQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<BusyDaysQuery, TError, TData>(
-      variables === undefined ? ['BusyDays'] : ['BusyDays', variables],
-      fetcher<BusyDaysQuery, BusyDaysQueryVariables>(client, BusyDaysDocument, variables, headers),
+    useQuery<EventsInRangeQuery, TError, TData>(
+      ['EventsInRange', variables],
+      fetcher<EventsInRangeQuery, EventsInRangeQueryVariables>(client, EventsInRangeDocument, variables, headers),
       options
     );
-export const AllNextEventsDocument = `
-    query AllNextEvents {
-  getScheduleUser {
-    startsAt
-    endsAt
-    subject
-    code
-    type
-    room
+export const UserEventsAfterDocument = `
+    query UserEventsAfter($since: DateTime!) {
+  user {
+    events(search: {since: $since}) {
+      ...SimpleEvent
+    }
   }
 }
-    `;
-export const useAllNextEventsQuery = <
-      TData = AllNextEventsQuery,
+    ${SimpleEventFragmentDoc}`;
+export const useUserEventsAfterQuery = <
+      TData = UserEventsAfterQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables?: AllNextEventsQueryVariables,
-      options?: UseQueryOptions<AllNextEventsQuery, TError, TData>,
+      variables: UserEventsAfterQueryVariables,
+      options?: UseQueryOptions<UserEventsAfterQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<AllNextEventsQuery, TError, TData>(
-      variables === undefined ? ['AllNextEvents'] : ['AllNextEvents', variables],
-      fetcher<AllNextEventsQuery, AllNextEventsQueryVariables>(client, AllNextEventsDocument, variables, headers),
+    useQuery<UserEventsAfterQuery, TError, TData>(
+      ['UserEventsAfter', variables],
+      fetcher<UserEventsAfterQuery, UserEventsAfterQueryVariables>(client, UserEventsAfterDocument, variables, headers),
       options
     );
-export const AllEventsSinceDocument = `
-    query AllEventsSince($since: DateTime!) {
-  getScheduleUser(sinceUntil: {since: $since}) {
-    id
-    startsAt
-    endsAt
-    subject
-    code
-    type
-    room
-    hosts
+export const UserBusyDaysDocument = `
+    query UserBusyDays {
+  user {
+    events {
+      id
+      code
+      type
+      startsAt
+    }
   }
 }
     `;
-export const useAllEventsSinceQuery = <
-      TData = AllEventsSinceQuery,
+export const useUserBusyDaysQuery = <
+      TData = UserBusyDaysQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables: AllEventsSinceQueryVariables,
-      options?: UseQueryOptions<AllEventsSinceQuery, TError, TData>,
+      variables?: UserBusyDaysQueryVariables,
+      options?: UseQueryOptions<UserBusyDaysQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<AllEventsSinceQuery, TError, TData>(
-      ['AllEventsSince', variables],
-      fetcher<AllEventsSinceQuery, AllEventsSinceQueryVariables>(client, AllEventsSinceDocument, variables, headers),
-      options
-    );
-export const NextEventsCalDocument = `
-    query NextEventsCal($start: DateTime!, $end: DateTime!) {
-  getScheduleUser(sinceUntil: {since: $start, until: $end}) {
-    startsAt
-    endsAt
-    code
-    subject
-    type
-    room
-  }
-}
-    `;
-export const useNextEventsCalQuery = <
-      TData = NextEventsCalQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: NextEventsCalQueryVariables,
-      options?: UseQueryOptions<NextEventsCalQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<NextEventsCalQuery, TError, TData>(
-      ['NextEventsCal', variables],
-      fetcher<NextEventsCalQuery, NextEventsCalQueryVariables>(client, NextEventsCalDocument, variables, headers),
-      options
-    );
-export const NextEventsDashDocument = `
-    query NextEventsDash($now: DateTime!, $deadline: DateTime!) {
-  getScheduleUser(
-    sinceUntil: {since: $now, until: $deadline}
-    skipTake: {take: 4}
-  ) {
-    startsAt
-    endsAt
-    code
-    subject
-    type
-    room
-  }
-}
-    `;
-export const useNextEventsDashQuery = <
-      TData = NextEventsDashQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: NextEventsDashQueryVariables,
-      options?: UseQueryOptions<NextEventsDashQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<NextEventsDashQuery, TError, TData>(
-      ['NextEventsDash', variables],
-      fetcher<NextEventsDashQuery, NextEventsDashQueryVariables>(client, NextEventsDashDocument, variables, headers),
-      options
-    );
-export const UserGroupsDocument = `
-    query UserGroups {
-  me {
-    groups
-  }
-}
-    `;
-export const useUserGroupsQuery = <
-      TData = UserGroupsQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables?: UserGroupsQueryVariables,
-      options?: UseQueryOptions<UserGroupsQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<UserGroupsQuery, TError, TData>(
-      variables === undefined ? ['UserGroups'] : ['UserGroups', variables],
-      fetcher<UserGroupsQuery, UserGroupsQueryVariables>(client, UserGroupsDocument, variables, headers),
-      options
-    );
-export const NextEventDocument = `
-    query NextEvent($now: DateTime!) {
-  getScheduleUser(sinceUntil: {since: $now}, skipTake: {take: 1}) {
-    id
-    startsAt
-    endsAt
-    code
-    subject
-    type
-    room
-  }
-}
-    `;
-export const useNextEventQuery = <
-      TData = NextEventQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: NextEventQueryVariables,
-      options?: UseQueryOptions<NextEventQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<NextEventQuery, TError, TData>(
-      ['NextEvent', variables],
-      fetcher<NextEventQuery, NextEventQueryVariables>(client, NextEventDocument, variables, headers),
+    useQuery<UserBusyDaysQuery, TError, TData>(
+      variables === undefined ? ['UserBusyDays'] : ['UserBusyDays', variables],
+      fetcher<UserBusyDaysQuery, UserBusyDaysQueryVariables>(client, UserBusyDaysDocument, variables, headers),
       options
     );
 export const EventDetailsDocument = `
-    query EventDetails($id: ID!) {
-  getEvent(id: $id) {
+    query EventDetails($id: Int!) {
+  event(id: $id) {
     ...DetailedEvent
   }
 }

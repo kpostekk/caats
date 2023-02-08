@@ -1,30 +1,39 @@
-query AllRange {
-  getScheduleUser {
-    startsAt
-    endsAt
-    code
+query AllEvents {
+  user {
+    events {
+      startsAt
+      endsAt
+      code
+      subject
+      type
+      room
+    }
   }
 }
 
-query InRange($start: DateTime!, $end: DateTime!) {
-  getScheduleUser(sinceUntil: { since: $start, until: $end }) {
-    id
-    startsAt
-    endsAt
-    code
-    subject
-    type
-    room
-    hosts
-    groups
+query EventsInRange($start: DateTime!, $end: DateTime!) {
+  user {
+    events(search: { since: $start, until: $end }) {
+      ...SimpleEvent
+    }
   }
 }
 
-query BusyDays {
-  getScheduleUser {
-    startsAt
-    # endsAt
-    # code
-    # type
+query UserEventsAfter($since: DateTime!) {
+  user {
+    events(search: { since: $since }) {
+      ...SimpleEvent
+    }
+  }
+}
+
+query UserBusyDays {
+  user {
+    events {
+      id
+      code
+      type
+      startsAt
+    }
   }
 }

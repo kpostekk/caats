@@ -1,15 +1,40 @@
 query App {
-	app {
-		version
-	}
+  app {
+    version
+  }
+}
+
+fragment SimpleEvent on ScheduleEvent {
+  id
+  code
+  subject
+  startsAt
+  endsAt
+  type
+  hosts
+  room
 }
 
 query User {
-  me {
-    name,
-    email,
-    isSuperuser,
-    picture,
+  user {
+    name
+    email
+    isSuperuser
+    picture
     groups
+    nextEvent {
+      ...SimpleEvent
+    }
+    currentEvent {
+      ...SimpleEvent
+    }
+  }
+}
+
+query UserEvents($since: DateTime!, $until: DateTime!) {
+  user {
+    events(search: { since: $since, until: $until }) {
+      ...SimpleEvent
+    }
   }
 }

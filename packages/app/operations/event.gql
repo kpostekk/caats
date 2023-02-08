@@ -20,17 +20,17 @@ fragment DetailedEvent on ScheduleEvent {
       initialHash
       finalHash
       status
-      worker {
+      scraper {
         id
         alias
         lastSeen
       }
     }
-  } 
+  }
 }
 
-query EventDetails($id: ID!) {
-  getEvent(id: $id) {
+query EventDetails($id: Int!) {
+  event(id: $id) {
     ...DetailedEvent
   }
 }
