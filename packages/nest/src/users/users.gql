@@ -1,8 +1,9 @@
 type Query {
   me: User!
+  user: User!
 }
 
 type Mutation {
-  addGroup(group: String!): [String!]!
-  setGroups(groups: [String!]!): Boolean!
+  addGroup(group: String!): [String!]! @deprecated
+  setGroups(groups: [String!]!): Boolean! @deprecated
 }

@@ -1,6 +1,18 @@
 scalar DateTime
 scalar PositiveInt
 
+input ScheduleInput {
+  since: DateTime
+  until: DateTime
+  skip: PositiveInt
+  take: PositiveInt
+}
+
+input ScheduleTargets {
+  groups: [String!]
+  hosts: [String!]
+}
+
 "Represents a time range."
 input SinceUntil {
   since: DateTime
@@ -37,7 +49,7 @@ type StoredTask {
   initialHash: String
   finalHash: String
   status: String!
-  worker: Scraper
+  scraper: Scraper
 }
 
 type EventSource {
@@ -69,25 +81,24 @@ type ScheduleEvent {
   source: EventSource!
 }
 
+type User {
+  events(search: ScheduleInput): [ScheduleEvent!]!
+  nextEvent: ScheduleEvent
+  currentEvent: ScheduleEvent
+  scrapers: [Scraper!]!
+}
+
 type Query {
-  "Returns all schedule events for the given user based on theirs preferences. Requires authentication."
-  getScheduleUser(sinceUntil: SinceUntil, skipTake: SkipTake): [ScheduleEvent!]!
-  "Returns all schedule events for the given groups."
-  getScheduleGroups(groups: GroupInput!, sinceUntil: SinceUntil, skipTake: SkipTake): [ScheduleEvent!]!
-  "Returns all schedule events for the given host."
-  getScheduleHosts(host: HostInput!, sinceUntil: SinceUntil, skipTake: SkipTake): [ScheduleEvent!]!
+  events(search: ScheduleInput, targets: ScheduleTargets): [ScheduleEvent!]!
+  event(id: Int!): ScheduleEvent
+  scrapers: [Scraper!]!
+  tasks: [StoredTask!]!
+  sources: [EventSource!]!
+  groups: [String!]!
 
-  getEvent(id: ID!): ScheduleEvent
+  getGroups: [String!] @deprecated
 
-  getGroups: [String!]
+  autocompleteGroups(query: String!): [String!] @deprecated
 
-  autocompleteGroups(query: String!): [String!]
-
-  getEventHistory(constantId: String!): [ScheduleEvent!]!
-
-  findByDescription(query: String!): [ScheduleEvent!]!
-
-  getNextUserEvent: ScheduleEvent
-
-  getCurrentUserEvent: ScheduleEvent
+  findByDescription(query: String!): [ScheduleEvent!]! @deprecated
 }

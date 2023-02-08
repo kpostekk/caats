@@ -1,10 +1,90 @@
 import { Injectable } from '@nestjs/common'
-import { GqlSinceUntil, GqlSkipTake } from '../gql'
+import { User } from '@prisma/client'
+import {
+  GqlScheduleInput,
+  GqlScheduleTargets,
+  GqlSinceUntil,
+  GqlSkipTake,
+} from '../gql'
 import { PrismaService } from '../prisma/prisma.service'
+
+type ScheduleFindOptions = GqlScheduleInput &
+  GqlScheduleTargets & { user?: Pick<User, 'id'> }
 
 @Injectable()
 export class BrowserService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private async returnGroups(options: ScheduleFindOptions) {
+    if (options.user) {
+      return await this.prisma.user.findUniqueOrThrow({
+        where: {
+          id: options.user.id,
+        },
+        select: {
+          groups: true,
+        },
+      })
+    }
+    return { groups: options.groups }
+  }
+
+  async find(options: ScheduleFindOptions) {
+    const { groups } = await this.returnGroups(options)
+
+    const result = await this.prisma.timetableEvent.findMany({
+      where: {
+        startsAt: {
+          gte: options?.since,
+        },
+        endsAt: {
+          lte: options?.until,
+        },
+        groups: {
+          hasSome: groups ?? [],
+        },
+      },
+      skip: options?.skip,
+      take: options?.take,
+      orderBy: {
+        startsAt: 'asc',
+      },
+    })
+    return result
+  }
+
+  async findNext(user: Pick<User, 'id'>) {
+    const { groups } = await this.returnGroups({ user })
+
+    return await this.prisma.timetableEvent.findFirst({
+      where: {
+        startsAt: {
+          gte: new Date(),
+        },
+        groups: {
+          hasSome: groups,
+        },
+      },
+    })
+  }
+
+  async findCurrent(user: Pick<User, 'id'>) {
+    const { groups } = await this.returnGroups({ user })
+
+    return await this.prisma.timetableEvent.findFirst({
+      where: {
+        startsAt: {
+          gte: new Date(),
+        },
+        endsAt: {
+          lt: new Date(),
+        },
+        groups: {
+          hasSome: groups,
+        },
+      },
+    })
+  }
 
   async findByUser(
     id: string,
@@ -323,16 +403,29 @@ export class BrowserService {
       where: {
         id: target,
       },
-      include: {
-        source: {
-          include: {
-            task: {
-              include: {
-                worker: true,
-              },
-            },
-          },
-        },
+    })
+  }
+
+  async getSource(id: number) {
+    return await this.prisma.taskResult.findUnique({
+      where: {
+        id,
+      },
+    })
+  }
+
+  async getTask(id: number) {
+    return await this.prisma.task.findUnique({
+      where: {
+        id,
+      },
+    })
+  }
+
+  async getScraper(id: string) {
+    return await this.prisma.scraper.findUnique({
+      where: {
+        id,
       },
     })
   }

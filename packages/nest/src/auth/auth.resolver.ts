@@ -10,7 +10,7 @@ export class AuthResolver {
   constructor(private readonly auth: AuthService) {}
 
   @Mutation()
-  async authGoogle(@Args('code') code: string): Promise<GqlLoginResponse> {
+  async authGoogle(@Args('code') code: string) {
     const user = await this.auth.loginWithGoogle(code)
     const { accessToken, sessionId } = await this.auth.createSession(user.id)
     return { accessToken, user, sessionId }

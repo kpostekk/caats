@@ -28,6 +28,14 @@ export type GqlApp = {
   version: Scalars['String'];
 };
 
+export type GqlCurrentTask = {
+  __typename?: 'CurrentTask';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  status: GqlTaskState;
+  targetDate: Scalars['Date'];
+};
+
 export type GqlEventSource = {
   __typename?: 'EventSource';
   constantId: Scalars['String'];
@@ -54,18 +62,18 @@ export type GqlLoginResponse = {
 
 export type GqlMutation = {
   __typename?: 'Mutation';
+  /** @deprecated Field no longer supported */
   addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: GqlLoginResponse;
   createScraper: Scalars['String'];
   createSubscription: Scalars['String'];
   createTasksBulk: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
+  /** @deprecated Field no longer supported */
   setGroups: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
   updateTaskState: Scalars['Boolean'];
 };
 
@@ -114,21 +122,24 @@ export type GqlMutationUpdateTaskStateArgs = {
 export type GqlQuery = {
   __typename?: 'Query';
   app?: Maybe<GqlApp>;
+  /** @deprecated Field no longer supported */
   autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  event?: Maybe<GqlScheduleEvent>;
+  events: Array<GqlScheduleEvent>;
+  /** @deprecated Field no longer supported */
   findByDescription: Array<GqlScheduleEvent>;
-  getEvent?: Maybe<GqlScheduleEvent>;
-  getEventHistory: Array<GqlScheduleEvent>;
+  /** @deprecated Field no longer supported */
   getGroups?: Maybe<Array<Scalars['String']>>;
-  /** Returns all schedule events for the given groups. */
-  getScheduleGroups: Array<GqlScheduleEvent>;
-  /** Returns all schedule events for the given host. */
-  getScheduleHosts: Array<GqlScheduleEvent>;
-  /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
-  getScheduleUser: Array<GqlScheduleEvent>;
   getTaskCollection: Array<Scalars['JSON']>;
   /** @deprecated Use subscription receiveTask instead. */
   getTasks: Array<GqlTask>;
+  groups: Array<Scalars['String']>;
   me: GqlUser;
+  ongoingScrapers: Array<GqlWorkingScraper>;
+  scrapers: Array<GqlScraper>;
+  sources: Array<GqlEventSource>;
+  tasks: Array<GqlStoredTask>;
+  user: GqlUser;
 };
 
 
@@ -137,38 +148,19 @@ export type GqlQueryAutocompleteGroupsArgs = {
 };
 
 
+export type GqlQueryEventArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type GqlQueryEventsArgs = {
+  search?: InputMaybe<GqlScheduleInput>;
+  targets?: InputMaybe<GqlScheduleTargets>;
+};
+
+
 export type GqlQueryFindByDescriptionArgs = {
   query: Scalars['String'];
-};
-
-
-export type GqlQueryGetEventArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type GqlQueryGetEventHistoryArgs = {
-  constantId: Scalars['String'];
-};
-
-
-export type GqlQueryGetScheduleGroupsArgs = {
-  groups: GqlGroupInput;
-  sinceUntil?: InputMaybe<GqlSinceUntil>;
-  skipTake?: InputMaybe<GqlSkipTake>;
-};
-
-
-export type GqlQueryGetScheduleHostsArgs = {
-  host: GqlHostInput;
-  sinceUntil?: InputMaybe<GqlSinceUntil>;
-  skipTake?: InputMaybe<GqlSkipTake>;
-};
-
-
-export type GqlQueryGetScheduleUserArgs = {
-  sinceUntil?: InputMaybe<GqlSinceUntil>;
-  skipTake?: InputMaybe<GqlSkipTake>;
 };
 
 
@@ -198,6 +190,26 @@ export type GqlScheduleEvent = {
   type: Scalars['String'];
 };
 
+export type GqlScheduleInput = {
+  since?: InputMaybe<Scalars['DateTime']>;
+  skip?: InputMaybe<Scalars['PositiveInt']>;
+  take?: InputMaybe<Scalars['PositiveInt']>;
+  until?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type GqlScheduleTargets = {
+  groups?: InputMaybe<Array<Scalars['String']>>;
+  hosts?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type GqlScraper = {
+  __typename?: 'Scraper';
+  alias: Scalars['String'];
+  id: Scalars['ID'];
+  lastSeen?: Maybe<Scalars['DateTime']>;
+  state: Scalars['String'];
+};
+
 /** Represents a time range. */
 export type GqlSinceUntil = {
   since?: InputMaybe<Scalars['DateTime']>;
@@ -219,6 +231,7 @@ export type GqlStoredTask = {
   finishedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
+  scraper?: Maybe<GqlScraper>;
   status: Scalars['String'];
 };
 
@@ -267,8 +280,10 @@ export type GqlTasksBulkInput = {
 /** A CaaTS user. */
 export type GqlUser = {
   __typename?: 'User';
+  currentEvent?: Maybe<GqlScheduleEvent>;
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  events: Array<GqlScheduleEvent>;
   groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
   id: Scalars['ID'];
@@ -276,6 +291,23 @@ export type GqlUser = {
   isSuperuser: Scalars['Boolean'];
   /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
+  nextEvent?: Maybe<GqlScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
+  scrapers: Array<GqlScraper>;
+};
+
+
+/** A CaaTS user. */
+export type GqlUserEventsArgs = {
+  search?: InputMaybe<GqlScheduleInput>;
+};
+
+export type GqlWorkingScraper = {
+  __typename?: 'WorkingScraper';
+  alias: Scalars['String'];
+  currentTask?: Maybe<GqlCurrentTask>;
+  id: Scalars['ID'];
+  lastSeen: Scalars['DateTime'];
+  state: Scalars['String'];
 };

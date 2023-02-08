@@ -17,5 +17,5 @@
     },
     "keepClassNames": true
   },
-  "minify": true
+  "minify": false
 }

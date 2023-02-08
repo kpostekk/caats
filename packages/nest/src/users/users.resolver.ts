@@ -15,6 +15,12 @@ export class UsersResolver {
   }
 
   @UseGuards(AuthGuard)
+  @Query()
+  async user(@Context('user') user: User) {
+    return this.users.getUser(user.id)
+  }
+
+  @UseGuards(AuthGuard)
   @Mutation()
   async addGroup(@Context('user') user: User, @Args('group') group: string) {
     const { groups } = await this.users.getUser(user.id)
