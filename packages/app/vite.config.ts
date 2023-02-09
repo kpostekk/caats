@@ -64,15 +64,15 @@ export default defineConfig({
         icons: [
           {
             purpose: 'any',
-            src: 'icon.png',
+            src: 'grumpy.webp',
             sizes: '256x256',
-            type: 'image/png',
+            type: 'image/webp',
           },
           {
             purpose: 'maskable',
-            src: 'icon.png',
+            src: 'grumpy.webp',
             sizes: '256x256',
-            type: 'image/png',
+            type: 'image/webp',
           },
         ],
       },
