@@ -93,7 +93,7 @@ export default function Dashboard() {
     <div className="container max-w-5xl pb-12 md:pb-0">
       <div className="grid grid-cols-1 gap-2 xl:grid-cols-3">
         <div className="col-span-2">
-          <div className="relative overflow-hidden">
+          <div className="relative select-none overflow-hidden">
             <div className="absolute right-0">
               <img
                 style={{

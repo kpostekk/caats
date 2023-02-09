@@ -12,6 +12,9 @@ mutation Login($code: String!) {
     accessToken
     user {
       ...SimpleProfile
+      isSuperuser
+      name
+      picture
     }
   }
 }

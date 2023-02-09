@@ -47,27 +47,31 @@ export default function Settings() {
         Dodaj
       </button>
       <h2>Devtools</h2>
-      <button
-        className="btn btn-outline"
-        onClick={() =>
-          navigator.clipboard.writeText(token).then(() => setTokenCopied(true))
-        }
-      >
-        {!tokenCopied ? 'Skopiuj token' : 'Skopiowano token!'}
-      </button>
-      <button
-        className="btn btn-outline"
-        onClick={() => {
-          localStorage.setItem(
-            'graphiql:headers',
-            JSON.stringify({
-              authorization: `Bearer ${token}`,
-            })
-          )
-        }}
-      >
-        Nadpisz headery graphiql
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          className="btn btn-outline"
+          onClick={() =>
+            navigator.clipboard
+              .writeText(token)
+              .then(() => setTokenCopied(true))
+          }
+        >
+          {!tokenCopied ? 'Skopiuj token' : 'Skopiowano token!'}
+        </button>
+        <button
+          className="btn btn-outline"
+          onClick={() => {
+            localStorage.setItem(
+              'graphiql:headers',
+              JSON.stringify({
+                authorization: `Bearer ${token}`,
+              })
+            )
+          }}
+        >
+          Nadpisz headery graphiql
+        </button>
+      </div>
     </div>
   )
 }

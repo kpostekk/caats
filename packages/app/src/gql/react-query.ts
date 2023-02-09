@@ -387,7 +387,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', id: string, name: string, isSuperuser: boolean, picture?: any | null, groups: Array<string>, email: any } } };
+export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', isSuperuser: boolean, name: string, picture?: any | null, id: string, groups: Array<string>, email: any } } };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -688,6 +688,9 @@ export const LoginDocument = `
     accessToken
     user {
       ...SimpleProfile
+      isSuperuser
+      name
+      picture
     }
   }
 }
