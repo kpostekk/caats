@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { ReactNode } from 'react'
 import { HiChevronDown } from 'react-icons/hi'
 import { useParams } from 'react-router-dom'
@@ -35,17 +36,26 @@ export default function Event() {
   if (!query.data || !query.data.event) return null
 
   const event = query.data.event
+  const isCurrent =
+    new Date(event.endsAt) > new Date() && new Date(event.startsAt) < new Date()
 
   return (
     <div className="container max-w-lg p-2 md:px-0">
       <h1 className="text-5xl font-bold">
-        {event.code} <span className="text-lg">{`(#${event.id})`}</span>
+        <span
+          className={classNames({
+            'text-white bg-black rounded-lg px-1': isCurrent,
+          })}
+        >
+          {event.code}
+        </span>{' '}
+        <span className="text-lg">{`(#${event.id})`}</span>
       </h1>
       <p>{event.subject}</p>
       <div className="space-y-4 py-2">
         <h2 className="text-3xl font-bold">Informacje ogólne</h2>
         <DataRowContainer>
-          <DataRow value={['Typ', event.type]} />
+          <DataRow value={['Rodzaj zajęć', event.type]} />
           <DataRow
             value={[
               'Sala',
