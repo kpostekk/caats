@@ -65,6 +65,9 @@ export class BrowserService {
           hasSome: groups,
         },
       },
+      orderBy: {
+        startsAt: 'asc',
+      },
     })
   }
 
