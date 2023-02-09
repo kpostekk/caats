@@ -1,10 +1,23 @@
+fragment SimpleProfile on User {
+  id
+  name
+  isSuperuser
+  picture
+  groups
+  email
+}
+
 mutation Login($code: String!) {
   authGoogle(code: $code) {
     accessToken
     user {
-      name
-      isSuperuser
-      picture
+      ...SimpleProfile
     }
+  }
+}
+
+query UserProfile {
+  user {
+    ...SimpleProfile
   }
 }

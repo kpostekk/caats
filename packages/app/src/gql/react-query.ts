@@ -189,6 +189,8 @@ export type ScheduleEvent = {
   /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
   id: Scalars['ID'];
+  /** The following event. */
+  next?: Maybe<ScheduleEvent>;
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
   /** The source of the event. */
@@ -378,12 +380,19 @@ export type EventDetailsQueryVariables = Exact<{
 
 export type EventDetailsQuery = { __typename?: 'Query', event?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } } | null };
 
+export type SimpleProfileFragment = { __typename?: 'User', id: string, name: string, isSuperuser: boolean, picture?: any | null, groups: Array<string>, email: any };
+
 export type LoginMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', name: string, isSuperuser: boolean, picture?: any | null } } };
+export type LoginMutation = { __typename?: 'Mutation', authGoogle: { __typename?: 'LoginResponse', accessToken: any, user: { __typename?: 'User', id: string, name: string, isSuperuser: boolean, picture?: any | null, groups: Array<string>, email: any } } };
+
+export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserProfileQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, name: string, isSuperuser: boolean, picture?: any | null, groups: Array<string>, email: any } };
 
 export type GeneralizedSearchQueryVariables = Exact<{
   input: Scalars['String'];
@@ -465,6 +474,16 @@ export const DetailedEventFragmentDoc = `
       }
     }
   }
+}
+    `;
+export const SimpleProfileFragmentDoc = `
+    fragment SimpleProfile on User {
+  id
+  name
+  isSuperuser
+  picture
+  groups
+  email
 }
     `;
 export const AppDocument = `
@@ -668,13 +687,11 @@ export const LoginDocument = `
   authGoogle(code: $code) {
     accessToken
     user {
-      name
-      isSuperuser
-      picture
+      ...SimpleProfile
     }
   }
 }
-    `;
+    ${SimpleProfileFragmentDoc}`;
 export const useLoginMutation = <
       TError = unknown,
       TContext = unknown
@@ -686,6 +703,27 @@ export const useLoginMutation = <
     useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
       ['Login'],
       (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(client, LoginDocument, variables, headers)(),
+      options
+    );
+export const UserProfileDocument = `
+    query UserProfile {
+  user {
+    ...SimpleProfile
+  }
+}
+    ${SimpleProfileFragmentDoc}`;
+export const useUserProfileQuery = <
+      TData = UserProfileQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: UserProfileQueryVariables,
+      options?: UseQueryOptions<UserProfileQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<UserProfileQuery, TError, TData>(
+      variables === undefined ? ['UserProfile'] : ['UserProfile', variables],
+      fetcher<UserProfileQuery, UserProfileQueryVariables>(client, UserProfileDocument, variables, headers),
       options
     );
 export const GeneralizedSearchDocument = `
