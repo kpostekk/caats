@@ -21,7 +21,7 @@ export default function App() {
 
   return (
     <div>
-      <div className="navbar sticky top-0 z-50 bg-black/90 text-white backdrop-blur">
+      <div className="navbar sticky top-0 z-50 bg-black text-white">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
             <button className="btn btn-ghost">
