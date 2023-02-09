@@ -44,6 +44,16 @@ export class AuthGuard implements CanActivate {
         },
       })
       context.user = context.session.user
+
+      // update session expiry
+      await this.prisma.userSession.update({
+        where: {
+          id: sid,
+        },
+        data: {
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        },
+      })
     } catch (e) {
       throw new UnauthorizedException()
     }
@@ -54,11 +64,6 @@ export class AuthGuard implements CanActivate {
 
 @Injectable()
 export class SuperuserGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService
-  ) {}
-
   async canActivate(execCtx: ExecutionContext): Promise<boolean> {
     const context = GqlExecutionContext.create(execCtx).getContext()
 
