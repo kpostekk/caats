@@ -3,6 +3,7 @@ import {
   HiCalendar,
   HiCog,
   HiEyeOff,
+  HiHeart,
   HiKey,
   HiScale,
   HiUserGroup,
@@ -52,6 +53,9 @@ export default function Settings() {
             </SettingsLink>
           )}
           <hr className="m-2 opacity-40" />
+          <SettingsLink to="/app/settings/thanks">
+            <HiHeart /> Podziękowania
+          </SettingsLink>
           <a
             className="link-hover flex items-center gap-2"
             href="https://github.com/kpostekk/caats"
