@@ -1,6 +1,5 @@
-import { forwardRef, Suspense } from 'react'
+import { Suspense } from 'react'
 import {
-  HiBriefcase,
   HiCalendar,
   HiCog,
   HiEyeOff,

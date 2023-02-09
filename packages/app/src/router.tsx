@@ -1,4 +1,3 @@
-import { HiBeaker, HiQuestionMarkCircle } from 'react-icons/hi'
 import { createBrowserRouter } from 'react-router-dom'
 import { Auth } from './Auth'
 import { lazy } from 'react'

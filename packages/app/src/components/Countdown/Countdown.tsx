@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { useCallback, useState } from 'react'
-import { useInterval, useTimeout } from 'react-use'
+import { useInterval } from 'react-use'
 
 export type CountdownProps = {
   countdownTo: Date

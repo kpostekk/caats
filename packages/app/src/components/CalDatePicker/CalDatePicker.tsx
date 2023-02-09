@@ -1,8 +1,6 @@
 import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
-import { UserBusyDaysQuery } from '../../gql/react-query'
 import { useIsBusy } from '../useBusyDays/useBusyDays'
-import { useGqlClient } from '../useGqlClient/useGqlClient'
 
 export type CalDatePickerProps = {
   date: Date

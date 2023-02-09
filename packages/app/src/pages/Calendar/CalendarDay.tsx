@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon'
-import { useCallback } from 'react'
 import { HiArrowLeft, HiArrowRight, HiCalendar } from 'react-icons/hi'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useGqlClient } from '../../components'
 import { ScheduleEventRow } from '../../components/ScheduleEvent/ScheduleEvent'
 import { useUserEventsQuery } from '../../gql/react-query'
