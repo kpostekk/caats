@@ -16,8 +16,7 @@
 | Logowanie i synchronizacja           | ✅         | ❌                | ✅                                     |
 | Wsparcie dla subskrybcji ICS         | ✅         | ✅                | ❌                                     |
 | Dostęp do API                        | ✅ GraphQL | ✅ OpenAPIv3 REST | ❌                                     |
-| Format zapytań                       | GraphQL** | REST             | ViewState*                            |
+| Format zapytań                       | GraphQL   | REST             | ViewState*                            |
 
-> *zaobserwowany stack technologiczny, może się różnić w rzeczywistości
-> 
-> **nie dotyczy subskrypcji ICS
+> *zaobserwowany stack technologiczny - może się różnić w rzeczywistości
+
