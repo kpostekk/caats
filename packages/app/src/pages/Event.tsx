@@ -163,13 +163,17 @@ export default function Event() {
           <DataRow
             value={[
               'Sygnatura początkowa strony źródłowej',
-              event.source.task.initialHash,
+              event.source.task.initialHash ?? (
+                <span className="italic">Nie określono</span>
+              ),
             ]}
           />
           <DataRow
             value={[
               'Sygnatura wynikowa strony źródłowej',
-              event.source.task.initialHash,
+              event.source.task.initialHash ?? (
+                <span className="italic">Nie określono</span>
+              ),
             ]}
           />
           <DataRow
