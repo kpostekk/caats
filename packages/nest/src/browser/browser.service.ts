@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { User } from '@prisma/client'
+import { TimetableEvent, User } from '@prisma/client'
 import {
   GqlScheduleInput,
   GqlScheduleTargets,
@@ -73,14 +73,15 @@ export class BrowserService {
 
   async findCurrent(user: Pick<User, 'id'>) {
     const { groups } = await this.returnGroups({ user })
+    const now = new Date()
 
     return await this.prisma.timetableEvent.findFirst({
       where: {
         startsAt: {
-          gte: new Date(),
+          lte: now,
         },
         endsAt: {
-          lt: new Date(),
+          gt: now,
         },
         groups: {
           hasSome: groups,
@@ -89,6 +90,35 @@ export class BrowserService {
     })
   }
 
+  async findNextToEvent(
+    user: Pick<User, 'id'>,
+    event: Pick<TimetableEvent, 'id'>
+  ) {
+    const { groups } = await this.returnGroups({ user })
+    const relative = await this.prisma.timetableEvent.findUniqueOrThrow({
+      where: {
+        id: event.id,
+      },
+    })
+
+    return await this.prisma.timetableEvent.findFirst({
+      where: {
+        startsAt: {
+          gte: relative.endsAt,
+        },
+        groups: {
+          hasSome: groups,
+        },
+      },
+      orderBy: {
+        startsAt: 'asc',
+      },
+    })
+  }
+
+  /**
+   * @deprecated
+   */
   async findByUser(
     id: string,
     sinceUntil?: GqlSinceUntil,
@@ -142,6 +172,9 @@ export class BrowserService {
     })
   }
 
+  /**
+   * @deprecated
+   */
   async findByGroups(
     groups: string[],
     sinceUntil?: GqlSinceUntil,
@@ -182,6 +215,9 @@ export class BrowserService {
     })
   }
 
+  /**
+   * @deprecated
+   */
   async findNextUserEvent(id: string) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id },
@@ -227,6 +263,9 @@ export class BrowserService {
     })
   }
 
+  /**
+   * @deprecated
+   */
   async findCurrentUserEvent(id: string) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id },
@@ -275,6 +314,9 @@ export class BrowserService {
     })
   }
 
+  /**
+   * @deprecated
+   */
   async findByHost(
     host: string,
     sinceUntil?: GqlSinceUntil,

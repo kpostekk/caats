@@ -1,5 +1,12 @@
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql'
-import { TimetableEvent } from '@prisma/client'
+import {
+  Args,
+  Context,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql'
+import { TimetableEvent, User } from '@prisma/client'
 import { GqlQueryEventArgs } from '../../gql'
 import { BrowserService } from '../browser.service'
 
@@ -8,8 +15,13 @@ export class ScheduleEventResolver {
   constructor(private readonly browser: BrowserService) {}
 
   @ResolveField()
-  async source(@Parent() event: TimetableEvent) {
-    return await this.browser.getSource(event.sourceId)
+  source(@Parent() event: TimetableEvent) {
+    return this.browser.getSource(event.sourceId)
+  }
+
+  @ResolveField()
+  next(@Context('user') user: User, @Parent() event: TimetableEvent) {
+    return this.browser.findNextToEvent(user, event)
   }
 
   @Query()

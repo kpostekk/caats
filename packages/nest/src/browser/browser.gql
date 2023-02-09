@@ -79,6 +79,8 @@ type ScheduleEvent {
   groups: [String!]!
   "The source of the event."
   source: EventSource!
+  "The following event."
+  next: ScheduleEvent
 }
 
 type User {
