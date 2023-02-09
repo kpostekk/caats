@@ -44,15 +44,11 @@ type RenderDayProps = {
 }
 
 function CalDate(props: RenderDayProps) {
-  const isBusy = useIsBusy()
-  // const { data } = useInRangeQuery(client, {
-  //   start: props.date.startOf('day').toISO(),
-  //   end: props.date.endOf('day').toISO(),
-  // })
+  const [isBusy, busyDays] = useIsBusy()
 
   const busy = useMemo(
     () => isBusy(props.date.toISODate()),
-    [props.date, isBusy]
+    [props.date, isBusy, busyDays]
   )
 
   return (

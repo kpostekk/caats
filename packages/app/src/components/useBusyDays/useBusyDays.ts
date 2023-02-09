@@ -18,19 +18,19 @@ const useBusyDaysStore = create<BusyDaysStore>((set, get) => ({
 
 export function useIsBusy() {
   const client = useGqlClient()
-  const busyDays = useUserBusyDaysQuery(client)
-  const { isBusy, update } = useBusyDaysStore()
+  const busyDaysQuery = useUserBusyDaysQuery(client)
+  const { isBusy, update, busyDays } = useBusyDaysStore()
 
   useEffect(() => {
-    if (busyDays.data) {
+    if (busyDaysQuery.data) {
       const futureSet = new Set<string>(
-        busyDays.data.user.events.map(({ startsAt }) =>
+        busyDaysQuery.data.user.events.map(({ startsAt }) =>
           DateTime.fromISO(startsAt).toISODate()
         )
       )
       update(futureSet)
     }
-  }, [busyDays.data, update])
+  }, [busyDaysQuery.data, update])
 
-  return isBusy
+  return [isBusy, busyDays] as const
 }
