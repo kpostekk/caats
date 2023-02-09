@@ -21,8 +21,9 @@ export default defineConfig({
       codegen({
         config: {
           overwrite: true,
+          silent: true,
           schema: '../nest/src/**/*.gql',
-          documents: ['src/**/*.tsx', 'operations/*.gql'],
+          documents: ['operations/*.gql'],
           //emitLegacyCommonJSImports: false,
           generates: {
             'src/gql/': {
@@ -37,6 +38,12 @@ export default defineConfig({
               ],
               config: {
                 fetcher: 'graphql-request',
+                scalars: {
+                  DateTime: 'string',
+                  Date: 'string',
+                  Time: 'string',
+                  JSON: 'Record<string, unknown>',
+                },
               },
             },
           },

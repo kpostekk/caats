@@ -10,6 +10,8 @@ import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 import { HiCalendar, HiCog, HiExternalLink, HiSearch } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
+import { AnimatedCountdown } from '../components/AnimatedCountdown/AnimatedCountdown'
+import { useMemo } from 'react'
 
 type PrimarySectionEventProps = {
   simpleEvent: SimpleEventFragment
@@ -57,13 +59,64 @@ type PrimarySectionProps = {
 }
 
 function PrimarySection(props: PrimarySectionProps) {
+  const isVacation = useMemo(() => {
+    if (!props.query?.user.nextEvent) return false // if there is no next event return false (probably loading)
+    if (props.query.user.currentEvent) return false // if there is current event return false (that means you are not on vacation)
+    if (!props.query.user.nextEvent?.previous) return true // if there is no previous event return true (that means next will be first event)
+    if (
+      DateTime.fromISO(props.query.user.nextEvent?.startsAt)
+        .diffNow()
+        .as('days') < 1.5
+    ) {
+      return false
+    }
+
+    const diff = DateTime.fromISO(props.query.user.nextEvent?.startsAt).diff(
+      DateTime.fromISO(props.query.user.nextEvent?.previous?.endsAt),
+      'days'
+    )
+    return diff.days > 7 && diff.isValid
+  }, [props.query])
+
   if (!props.query) return null
+
+  if (isVacation) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">
+          Wracasz na uczelnię za{' '}
+          {DateTime.fromISO(props.query.user.nextEvent!.startsAt)
+            .startOf('day')
+            .diffNow()
+            .shiftTo('days', 'hours')
+            .normalize()
+            .toHuman({ unitDisplay: 'short', maximumFractionDigits: 0 })}
+        </h2>
+        <p className="italic opacity-50">
+          Now relax, you deserve it. That's an order.
+        </p>
+        <p className="link opacity-50">
+          <Link
+            to={`/app/calendar/${DateTime.fromISO(
+              props.query.user.nextEvent!.startsAt
+            ).toISODate()}`}
+          >
+            Jednak jeżeli potrzebujesz planu kliknij tutaj.
+          </Link>
+        </p>
+      </div>
+    )
+  }
 
   if (props.query.user.currentEvent) {
     return (
       <div className="space-y-2">
         <h1 className="text-4xl font-bold">Obecne zajęcia</h1>
         <PrimarySectionEvent simpleEvent={props.query.user.currentEvent} />
+        <p>Pozostało</p>
+        <AnimatedCountdown
+          target={new Date(props.query.user.currentEvent.endsAt)}
+        />
       </div>
     )
   } else if (props.query.user.nextEvent) {
@@ -110,7 +163,7 @@ export default function Dashboard() {
               </h1>
             </div>
           </div>
-          <div className="mx-1 min-h-[30vh] rounded-xl bg-black p-6 text-white">
+          <div className="mx-1 h-[30vh] min-h-[310px] rounded-xl bg-black p-6 text-white">
             <UpdatePrompt />
             {userQuery.isLoading ? (
               <div className="space-y-4">

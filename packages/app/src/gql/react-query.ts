@@ -21,10 +21,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: any;
-  DateTime: any;
+  Date: string;
+  DateTime: string;
   EmailAddress: any;
-  JSON: any;
+  JSON: Record<string, unknown>;
   JWT: any;
   PositiveInt: any;
   URL: any;
@@ -191,6 +191,8 @@ export type ScheduleEvent = {
   id: Scalars['ID'];
   /** The following event. */
   next?: Maybe<ScheduleEvent>;
+  /** The previous event. */
+  previous?: Maybe<ScheduleEvent>;
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
   /** The source of the event. */
@@ -331,12 +333,12 @@ export type AppQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AppQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
 
-export type SimpleEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null };
+export type SimpleEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string>, nextEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null } | null, currentEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null } | null } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', name: string, email: any, isSuperuser: boolean, picture?: any | null, groups: Array<string>, nextEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null, previous?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null } | null } | null, currentEvent?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null } | null } };
 
 export type UserEventsQueryVariables = Exact<{
   since: Scalars['DateTime'];
@@ -344,12 +346,12 @@ export type UserEventsQueryVariables = Exact<{
 }>;
 
 
-export type UserEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
+export type UserEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null }> } };
 
 export type AllEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null }> } };
+export type AllEventsQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', startsAt: string, endsAt: string, code: string, subject: string, type: string, room?: string | null }> } };
 
 export type EventsInRangeQueryVariables = Exact<{
   start: Scalars['DateTime'];
@@ -357,28 +359,28 @@ export type EventsInRangeQueryVariables = Exact<{
 }>;
 
 
-export type EventsInRangeQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
+export type EventsInRangeQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null }> } };
 
 export type UserEventsAfterQueryVariables = Exact<{
   since: Scalars['DateTime'];
 }>;
 
 
-export type UserEventsAfterQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, type: string, hosts: Array<string>, room?: string | null }> } };
+export type UserEventsAfterQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, type: string, hosts: Array<string>, room?: string | null }> } };
 
 export type UserBusyDaysQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserBusyDaysQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, type: string, startsAt: any }> } };
+export type UserBusyDaysQuery = { __typename?: 'Query', user: { __typename?: 'User', events: Array<{ __typename?: 'ScheduleEvent', id: string, code: string, type: string, startsAt: string }> } };
 
-export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } };
+export type DetailedEventFragment = { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: Record<string, unknown>, createdAt: string, task: { __typename?: 'StoredTask', id: string, createdAt: string, finishedAt?: string | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: string | null } | null } } };
 
 export type EventDetailsQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type EventDetailsQuery = { __typename?: 'Query', event?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: any, endsAt: any, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: any, createdAt: any, task: { __typename?: 'StoredTask', id: string, createdAt: any, finishedAt?: any | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: any | null } | null } } } | null };
+export type EventDetailsQuery = { __typename?: 'Query', event?: { __typename?: 'ScheduleEvent', id: string, code: string, subject: string, startsAt: string, endsAt: string, room?: string | null, groups: Array<string>, hosts: Array<string>, type: string, source: { __typename?: 'EventSource', id: string, constantId: string, object: Record<string, unknown>, createdAt: string, task: { __typename?: 'StoredTask', id: string, createdAt: string, finishedAt?: string | null, initialHash?: string | null, finalHash?: string | null, status: string, scraper?: { __typename?: 'Scraper', id: string, alias: string, lastSeen?: string | null } | null } } } | null };
 
 export type SimpleProfileFragment = { __typename?: 'User', id: string, name: string, isSuperuser: boolean, picture?: any | null, groups: Array<string>, email: any };
 
@@ -399,7 +401,7 @@ export type GeneralizedSearchQueryVariables = Exact<{
 }>;
 
 
-export type GeneralizedSearchQuery = { __typename?: 'Query', findByDescription: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: any, endsAt: any, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
+export type GeneralizedSearchQuery = { __typename?: 'Query', findByDescription: Array<{ __typename?: 'ScheduleEvent', id: string, startsAt: string, endsAt: string, code: string, subject: string, type: string, room?: string | null, hosts: Array<string>, groups: Array<string> }> };
 
 export type SetGroupsMutationVariables = Exact<{
   groups: Array<Scalars['String']> | Scalars['String'];
@@ -430,7 +432,7 @@ export type CreateScraperMutation = { __typename?: 'Mutation', createScraper: st
 export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StatusQuery = { __typename?: 'Query', ongoingScrapers: Array<{ __typename?: 'WorkingScraper', alias: string, lastSeen: any, state: string, currentTask?: { __typename?: 'CurrentTask', id: string, createdAt: any, targetDate: any, status: TaskState } | null }> };
+export type StatusQuery = { __typename?: 'Query', ongoingScrapers: Array<{ __typename?: 'WorkingScraper', alias: string, lastSeen: string, state: string, currentTask?: { __typename?: 'CurrentTask', id: string, createdAt: string, targetDate: string, status: TaskState } | null }> };
 
 export const SimpleEventFragmentDoc = `
     fragment SimpleEvent on ScheduleEvent {
@@ -517,6 +519,9 @@ export const UserDocument = `
     groups
     nextEvent {
       ...SimpleEvent
+      previous {
+        ...SimpleEvent
+      }
     }
     currentEvent {
       ...SimpleEvent

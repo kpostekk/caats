@@ -21,13 +21,13 @@ export default function App() {
 
   return (
     <div>
-      <div className="navbar border-b-base-200 bg-base-100/75 sticky top-0 z-50 border-b backdrop-blur-sm">
+      <div className="navbar sticky top-0 z-50 bg-black/90 text-white backdrop-blur">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
             <button className="btn btn-ghost">
               <HiMenu />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 text-black shadow-xl">
               <li>
                 <Link to="/app">
                   <HiTemplate /> Kokpit
@@ -81,7 +81,7 @@ export default function App() {
             <button className="btn btn-ghost btn-square aspect-square rounded-lg">
               <img className="w-8 rounded-md" src={picture ?? undefined} />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 text-black shadow-xl">
               <li>
                 <Link to="/logout/">
                   <HiLogout /> Wyloguj się

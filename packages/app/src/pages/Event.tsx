@@ -133,7 +133,10 @@ export default function Event() {
               </div>
               <div className="collapse-content space-y-2">
                 {Object.entries<{ value: string; humanKey: string }>(
-                  event.source.object
+                  event.source.object as Record<
+                    string,
+                    { value: string; humanKey: string }
+                  >
                 ).map(([key, { value, humanKey }]) => (
                   <div key={key}>
                     <p className="text-xs italic opacity-70">({key})</p>
@@ -154,7 +157,9 @@ export default function Event() {
               <DataRow
                 value={[
                   'Ostatnio widziany',
-                  new Date(event.source.task.scraper.lastSeen).toLocaleString(),
+                  new Date(
+                    event.source.task.scraper.lastSeen!
+                  ).toLocaleString(),
                 ]}
               />
             </>
@@ -185,7 +190,7 @@ export default function Event() {
           <DataRow
             value={[
               'Wykonano',
-              new Date(event.source.task.finishedAt).toLocaleString(),
+              new Date(event.source.task.finishedAt!).toLocaleString(),
             ]}
           />
         </DataRowContainer>

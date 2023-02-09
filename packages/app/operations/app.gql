@@ -24,6 +24,9 @@ query User {
     groups
     nextEvent {
       ...SimpleEvent
+      previous {
+        ...SimpleEvent
+      }
     }
     currentEvent {
       ...SimpleEvent
