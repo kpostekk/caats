@@ -24,6 +24,11 @@ export class ScheduleEventResolver {
     return this.browser.findNextToEvent(user, event)
   }
 
+  @ResolveField()
+  previous(@Context('user') user: User, @Parent() event: TimetableEvent) {
+    return this.browser.findPreviousToNext(user, event)
+  }
+
   @Query()
   event(@Args() args: GqlQueryEventArgs) {
     return this.browser.getEvent(args.id)

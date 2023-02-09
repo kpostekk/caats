@@ -92,19 +92,14 @@ export class BrowserService {
 
   async findNextToEvent(
     user: Pick<User, 'id'>,
-    event: Pick<TimetableEvent, 'id'>
+    event: Pick<TimetableEvent, 'endsAt'>
   ) {
     const { groups } = await this.returnGroups({ user })
-    const relative = await this.prisma.timetableEvent.findUniqueOrThrow({
-      where: {
-        id: event.id,
-      },
-    })
 
     return await this.prisma.timetableEvent.findFirst({
       where: {
         startsAt: {
-          gte: relative.endsAt,
+          gt: event.endsAt,
         },
         groups: {
           hasSome: groups,
@@ -112,6 +107,27 @@ export class BrowserService {
       },
       orderBy: {
         startsAt: 'asc',
+      },
+    })
+  }
+
+  async findPreviousToNext(
+    user: Pick<User, 'id'>,
+    event: Pick<TimetableEvent, 'startsAt'>
+  ) {
+    const { groups } = await this.returnGroups({ user })
+
+    return await this.prisma.timetableEvent.findFirst({
+      where: {
+        startsAt: {
+          lt: event.startsAt,
+        },
+        groups: {
+          hasSome: groups,
+        },
+      },
+      orderBy: {
+        startsAt: 'desc',
       },
     })
   }

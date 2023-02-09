@@ -81,6 +81,8 @@ type ScheduleEvent {
   source: EventSource!
   "The following event."
   next: ScheduleEvent
+  "The previous event."
+  previous: ScheduleEvent
 }
 
 type User {
