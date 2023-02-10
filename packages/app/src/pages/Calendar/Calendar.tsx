@@ -29,7 +29,7 @@ export default function Calendar() {
   const [direction, setDirection] = useState(0)
   const addMonth = useCallback(
     (amount: number) => {
-      setDirection(-amount)
+      setDirection(amount)
       setNow(DateTime.fromJSDate(now).plus({ months: amount }).toJSDate())
     },
     [setNow, now]
