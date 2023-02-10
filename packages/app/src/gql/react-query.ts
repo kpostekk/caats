@@ -82,7 +82,6 @@ export type Mutation = {
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
-  /** @deprecated Field no longer supported */
   setGroups: Scalars['Boolean'];
   updateTaskState: Scalars['Boolean'];
 };
