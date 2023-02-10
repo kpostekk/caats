@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { LoginGoogle } from '../components/LoginGoogle/LoginGoogle'
 import { useAuthStore } from '../states/auth'
 
@@ -15,6 +16,11 @@ export default function Logout() {
           <h2>Możesz się wciąż zalogować ponownie</h2>
           <div className="w-72">
             <LoginGoogle />
+          </div>
+          <div className="mt-2 w-72">
+            <Link className="btn" to="/">
+              powrót do strony głównej
+            </Link>
           </div>
         </div>
       </div>

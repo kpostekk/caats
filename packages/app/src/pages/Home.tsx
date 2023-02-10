@@ -26,6 +26,7 @@ export default function Home() {
           <h1 className="select-none text-6xl font-extrabold">CaaTS</h1>
           <p className="my-2 text-xl font-semibold">
             Cats as a Timetable Service
+            <img src="/grumpyicon.webp" className="mx-4 inline w-8" />
           </p>
           <Suspense>
             <AppVersion />
@@ -89,28 +90,7 @@ export default function Home() {
             </p>
           </div>
           <div className="max-w-md space-y-2 text-sm opacity-40">
-            <p>
-              Coded and designed by{' '}
-              <a className="link" href="https://github.com/aleksandra-indulska">
-                Krystian Postek
-              </a>
-              .
-            </p>
-            <p>
-              Thanks to{' '}
-              <a className="link" href="https://github.com/aleksandra-indulska">
-                Aleksandra Indulska
-              </a>{' '}
-              for scraper performance improvements, security advisories and
-              project consulting.
-            </p>
-            <p>
-              Thanks to{' '}
-              <a className="link" href="https://github.com/rafalopilowski1">
-                Rafał Opiłowski
-              </a>{' '}
-              for his contribution to Altapi, which is a base for this project.
-            </p>
+            <p>Consider leaving a star on the github</p>
           </div>
         </div>
       </footer>
