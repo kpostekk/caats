@@ -45,8 +45,6 @@ export class BrowserResolver {
       (args.filter[5][0] ?? '') +
       '$'
 
-    console.log(generatedRegexString)
-
     try {
       const groups = await this.prisma.$queryRaw<
         {
