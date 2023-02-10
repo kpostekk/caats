@@ -82,28 +82,24 @@ function PrimarySection(props: PrimarySectionProps) {
 
   if (isVacation) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">
-          Wracasz na uczelnię za{' '}
-          {DateTime.fromISO(props.query.user.nextEvent!.startsAt)
-            .startOf('day')
-            .diffNow()
-            .shiftTo('days', 'hours')
-            .normalize()
-            .toHuman({ unitDisplay: 'short', maximumFractionDigits: 0 })}
-        </h2>
-        <p className="italic opacity-50">
-          Now relax, you deserve it. That's an order.
-        </p>
-        <p className="link opacity-50">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold">
           <Link
+            className="link link-hover"
             to={`/app/calendar/${DateTime.fromISO(
               props.query.user.nextEvent!.startsAt
             ).toISODate()}`}
           >
-            Jednak jeżeli potrzebujesz planu kliknij tutaj.
+            {'Wracasz na uczelnię za '}
+            {DateTime.fromISO(props.query.user.nextEvent!.startsAt)
+              .startOf('day')
+              .diffNow()
+              .shiftTo('days', 'hours')
+              .normalize()
+              .toHuman({ unitDisplay: 'short', maximumFractionDigits: 0 })}
           </Link>
-        </p>
+        </h2>
+        <p className="italic">Now relax, you deserve it. That's an order.</p>
       </div>
     )
   }
