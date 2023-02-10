@@ -1,41 +1,48 @@
-import { useState } from 'react'
-import { InputList } from '../../components/InputList/InputList'
 import { useGqlClient } from '../../components/useGqlClient/useGqlClient'
 import {
+  useFindGroupsQuery,
   useSetGroupsMutation,
-  useGetCurrentGroupsQuery,
+  useUserQuery,
 } from '../../gql/react-query'
-import { useDebounce, useList } from 'react-use'
+import { useList, useSet } from 'react-use'
 import { ItemSelector } from '../../components/ItemSelector/ItemSelector'
+import { InputSelector } from '../../components/InputSelector/InputSelector'
+import { useEffect } from 'react'
+import { useAuthStore } from '../../states/auth'
 
 export default function SettingsGroups() {
   const client = useGqlClient()
-  const [groups, setGroups] = useState<string[]>([])
-  useGetCurrentGroupsQuery(
-    client,
-    {},
-    {
-      onSuccess: ({ me: { groups } }) => setGroups(groups),
-    }
-  )
-  const mutateGroups = useSetGroupsMutation(client)
-
-  useDebounce(
-    () => {
-      mutateGroups.mutate({ groups })
-    },
-    200,
-    [groups]
-  )
-
+  const userQuery = useUserQuery(client)
   const [elements, { updateAt }] = useList<string[]>([])
+  const setGroupsMutation = useSetGroupsMutation(client, {
+    onSuccess: () => {
+      userQuery.refetch()
+    },
+  })
+  const groupsQuery = useFindGroupsQuery(
+    client,
+    { search: elements },
+    { enabled: false }
+  )
+  const [selectedGroups, { toggle, has }] = useSet<string>()
+
+  useEffect(() => {
+    if (!elements.length) return
+    for (const section of elements.slice(0, 6)) {
+      if (section.length === 0) return
+    }
+
+    groupsQuery.refetch()
+  }, [elements])
 
   return (
     <div className="prose">
       {/* <MutationResponse mutation={mutateGroups} /> */}
       <h2>Grupy</h2>
+      <h3>Twoje aktualne grupy</h3>
+      <p>{String(userQuery.data?.user.groups)}</p>
       <h3>Zmień grupy</h3>
-      <p>
+      {/* <div>
         Regex:
         <pre>
           {'^'}
@@ -45,10 +52,10 @@ export default function SettingsGroups() {
             '[.]' +
             `(${(elements[4] ?? []).join('|')})`}
           {' (-|(OB[.])?[A-Z]+|[A-Z]_[A-Z]+) [0-9]+[a-z]' +
-            (elements[5][0] ?? '') +
+            (elements[5]?.[0] ?? '') +
             '$'}
         </pre>
-      </p>
+      </div> */}
       <h4>Lokalizacja</h4>
       <ItemSelector
         items={['W', 'G', 'B']}
@@ -98,6 +105,33 @@ export default function SettingsGroups() {
         onChange={(v) => updateAt(5, v.map(String))}
         singleSelect
       />
+      <h4>Numery grup</h4>
+      <p>Przykładowe numery: 17c, 1w, 128l</p>
+      <InputSelector onChange={(v) => updateAt(6, v)} />
+      <h4>Sugerowane grupy</h4>
+      <div className="space-y-4 pl-4">
+        {groupsQuery.data?.groups.map((group) => (
+          <div className="flex list-none items-center gap-2" key={group}>
+            <input
+              className="checkbox"
+              type="checkbox"
+              checked={has(group)}
+              onChange={() => toggle(group)}
+            />
+            {group}
+          </div>
+        ))}
+      </div>
+      <button
+        className="btn my-4"
+        onClick={() =>
+          setGroupsMutation.mutate({
+            groups: Array.from(selectedGroups),
+          })
+        }
+      >
+        {setGroupsMutation.isLoading ? 'Zapisywanie' : 'Zapisz'}
+      </button>
     </div>
   )
 }

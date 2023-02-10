@@ -178,6 +178,11 @@ export type QueryGetTaskCollectionArgs = {
   collection: TaskCollection;
 };
 
+
+export type QueryGroupsArgs = {
+  filter?: InputMaybe<Array<Array<Scalars['String']>>>;
+};
+
 /** Represents a schedule event. */
 export type ScheduleEvent = {
   __typename?: 'ScheduleEvent';
@@ -428,6 +433,13 @@ export type CreateScraperMutationVariables = Exact<{
 
 
 export type CreateScraperMutation = { __typename?: 'Mutation', createScraper: string };
+
+export type FindGroupsQueryVariables = Exact<{
+  search: Array<Array<Scalars['String']> | Scalars['String']> | Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type FindGroupsQuery = { __typename?: 'Query', groups: Array<string> };
 
 export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -837,6 +849,25 @@ export const useCreateScraperMutation = <
     useMutation<CreateScraperMutation, TError, CreateScraperMutationVariables, TContext>(
       ['CreateScraper'],
       (variables?: CreateScraperMutationVariables) => fetcher<CreateScraperMutation, CreateScraperMutationVariables>(client, CreateScraperDocument, variables, headers)(),
+      options
+    );
+export const FindGroupsDocument = `
+    query FindGroups($search: [[String!]!]!) {
+  groups(filter: $search)
+}
+    `;
+export const useFindGroupsQuery = <
+      TData = FindGroupsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: FindGroupsQueryVariables,
+      options?: UseQueryOptions<FindGroupsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<FindGroupsQuery, TError, TData>(
+      ['FindGroups', variables],
+      fetcher<FindGroupsQuery, FindGroupsQueryVariables>(client, FindGroupsDocument, variables, headers),
       options
     );
 export const StatusDocument = `

@@ -15,3 +15,7 @@ query GetGroupsAutoComplete($search: String!) {
 mutation CreateScraper($name: String) {
   createScraper(name: $name)
 }
+
+query FindGroups($search: [[String!]!]!) {
+ groups(filter: $search)
+}
