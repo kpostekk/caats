@@ -98,7 +98,7 @@ type Query {
   scrapers: [Scraper!]!
   tasks: [StoredTask!]!
   sources: [EventSource!]!
-  groups: [String!]!
+  groups(filter: [[String!]!]): [String!]!
 
   getGroups: [String!] @deprecated
 

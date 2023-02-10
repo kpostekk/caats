@@ -168,6 +168,11 @@ export type GqlQueryGetTaskCollectionArgs = {
   collection: GqlTaskCollection;
 };
 
+
+export type GqlQueryGroupsArgs = {
+  filter?: InputMaybe<Array<Array<Scalars['String']>>>;
+};
+
 /** Represents a schedule event. */
 export type GqlScheduleEvent = {
   __typename?: 'ScheduleEvent';
@@ -179,6 +184,10 @@ export type GqlScheduleEvent = {
   /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
   id: Scalars['ID'];
+  /** The following event. */
+  next?: Maybe<GqlScheduleEvent>;
+  /** The previous event. */
+  previous?: Maybe<GqlScheduleEvent>;
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
   /** The source of the event. */

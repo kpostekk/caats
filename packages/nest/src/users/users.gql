@@ -5,5 +5,5 @@ type Query {
 
 type Mutation {
   addGroup(group: String!): [String!]! @deprecated
-  setGroups(groups: [String!]!): Boolean! @deprecated
+  setGroups(groups: [String!]!): Boolean!
 }
