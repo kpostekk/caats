@@ -58,76 +58,117 @@ type PrimarySectionProps = {
   query?: UserQuery
 }
 
-function PrimarySection(props: PrimarySectionProps) {
+function useIsVacation(query?: UserQuery) {
   const isVacation = useMemo(() => {
-    if (!props.query?.user.nextEvent) return false // if there is no next event return false (probably loading)
-    if (props.query.user.currentEvent) return false // if there is current event return false (that means you are not on vacation)
-    if (!props.query.user.nextEvent?.previous) return true // if there is no previous event return true (that means next will be first event)
+    if (!query?.user.nextEvent) return false // if there is no next event return false (probably loading)
+    if (query.user.currentEvent) return false // if there is current event return false (that means you are not on vacation)
+    if (!query.user.nextEvent?.previous) return true // if there is no previous event return true (that means next will be first event)
     if (
-      DateTime.fromISO(props.query.user.nextEvent?.startsAt)
-        .diffNow()
-        .as('days') < 1.5
+      DateTime.fromISO(query.user.nextEvent?.startsAt).diffNow().as('days') <
+      1.5
     ) {
       return false
     }
 
-    const diff = DateTime.fromISO(props.query.user.nextEvent?.startsAt).diff(
-      DateTime.fromISO(props.query.user.nextEvent?.previous?.endsAt),
+    const diff = DateTime.fromISO(query.user.nextEvent?.startsAt).diff(
+      DateTime.fromISO(query.user.nextEvent?.previous?.endsAt),
       'days'
     )
     return diff.days > 7 && diff.isValid
-  }, [props.query])
+  }, [query])
+  return isVacation
+}
+
+function PrimarySectionVacation(props: PrimarySectionProps) {
+  if (!props.query || !props.query.user.nextEvent) return null
+
+  return (
+    <div className="space-y-2">
+      <h2 className="text-2xl font-semibold">
+        <Link
+          className="link link-hover"
+          to={`/app/calendar/${DateTime.fromISO(
+            props.query.user.nextEvent.startsAt
+          ).toISODate()}`}
+        >
+          {'Wracasz na uczelnię za '}
+          {DateTime.fromISO(props.query.user.nextEvent.startsAt)
+            .startOf('day')
+            .diffNow()
+            .shiftTo('days', 'hours')
+            .normalize()
+            .toHuman({ unitDisplay: 'short', maximumFractionDigits: 0 })}
+        </Link>
+      </h2>
+      <p className="italic">Now relax, you deserve it. That's an order.</p>
+    </div>
+  )
+}
+
+function PrimarySectionCurrentEvent(props: PrimarySectionProps) {
+  if (!props.query || !props.query.user.currentEvent) return null
+
+  return (
+    <div className="space-y-2">
+      <h1 className="text-4xl font-bold">Obecne zajęcia</h1>
+      <PrimarySectionEvent simpleEvent={props.query.user.currentEvent} />
+      <p>Pozostało</p>
+      <AnimatedCountdown
+        target={new Date(props.query.user.currentEvent.endsAt)}
+      />
+    </div>
+  )
+}
+
+function PrimarySectionNextEvent(props: PrimarySectionProps) {
+  if (!props.query || !props.query.user.nextEvent) return null
+
+  return (
+    <div className="space-y-2">
+      <h1 className="text-4xl font-bold">Kolejne zajęcia</h1>
+      <PrimarySectionEvent simpleEvent={props.query.user.nextEvent} />
+    </div>
+  )
+}
+
+function PrimarySection(props: PrimarySectionProps) {
+  const isVacation = useIsVacation(props.query)
 
   if (!props.query) return null
 
   if (isVacation) {
-    return (
-      <div className="space-y-2">
-        <h2 className="text-2xl font-semibold">
-          <Link
-            className="link link-hover"
-            to={`/app/calendar/${DateTime.fromISO(
-              props.query.user.nextEvent!.startsAt
-            ).toISODate()}`}
-          >
-            {'Wracasz na uczelnię za '}
-            {DateTime.fromISO(props.query.user.nextEvent!.startsAt)
-              .startOf('day')
-              .diffNow()
-              .shiftTo('days', 'hours')
-              .normalize()
-              .toHuman({ unitDisplay: 'short', maximumFractionDigits: 0 })}
-          </Link>
-        </h2>
-        <p className="italic">Now relax, you deserve it. That's an order.</p>
-      </div>
-    )
+    return <PrimarySectionVacation {...props} />
   }
 
   if (props.query.user.currentEvent) {
-    return (
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Obecne zajęcia</h1>
-        <PrimarySectionEvent simpleEvent={props.query.user.currentEvent} />
-        <p>Pozostało</p>
-        <AnimatedCountdown
-          target={new Date(props.query.user.currentEvent.endsAt)}
-        />
-      </div>
-    )
-  } else if (props.query.user.nextEvent) {
-    return (
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Kolejne zajęcia</h1>
-        <PrimarySectionEvent simpleEvent={props.query.user.nextEvent} />
-      </div>
-    )
+    return <PrimarySectionCurrentEvent {...props} />
+  }
+
+  if (props.query.user.nextEvent) {
+    return <PrimarySectionNextEvent {...props} />
   }
 
   return (
     <div className="space-y-2">
       <h1 className="text-4xl font-bold">Brak zajęć w terminarzu</h1>
       <p>Możliwe, że potrzeba zaktualizować przypisane grupy.</p>
+    </div>
+  )
+}
+
+function DashboardButtons() {
+  return (
+    <div className="col-span-1 grid grid-cols-1 content-start space-y-2 px-6 py-2 md:px-0">
+      <Link to="/app/calendar" className="btn btn-outline">
+        <HiCalendar className="mr-2" /> Kalendarz
+      </Link>
+      <Link to="/app/search" className="btn btn-outline">
+        <HiSearch className="mr-2" />
+        Wyszukiwarka
+      </Link>
+      <Link to="/app/settings" className="btn btn-outline">
+        <HiCog className="mr-2" /> Ustawienia
+      </Link>
     </div>
   )
 }
@@ -172,18 +213,7 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-        <div className="col-span-1 grid grid-cols-1 content-start space-y-2 px-6 py-2 md:px-0">
-          <Link to="/app/calendar" className="btn btn-outline">
-            <HiCalendar className="mr-2" /> Kalendarz
-          </Link>
-          <Link to="/app/search" className="btn btn-outline">
-            <HiSearch className="mr-2" />
-            Wyszukiwarka
-          </Link>
-          <Link to="/app/settings" className="btn btn-outline">
-            <HiCog className="mr-2" /> Ustawienia
-          </Link>
-        </div>
+        <DashboardButtons />
       </div>
     </div>
   )
