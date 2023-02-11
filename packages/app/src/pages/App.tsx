@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react'
-import { Suspense } from 'react'
+import { ReactNode, Suspense } from 'react'
 import {
   HiAdjustments,
   HiCalendar,
@@ -10,13 +10,67 @@ import {
   HiStatusOffline,
   HiTemplate,
 } from 'react-icons/hi'
+import { IconType } from 'react-icons/lib'
 import { Link, Outlet } from 'react-router-dom'
 import { useNetworkState } from 'react-use'
 import { useAuthStore } from '../states/auth'
 
+type RenderableLink = {
+  label: string
+  icon?: IconType
+  to: string
+}
+
+type RenderLinksProps = {
+  links: RenderableLink[]
+  renderAs?: (link: RenderableLink, renderedLink: ReactNode) => ReactNode
+}
+
+function RenderLinks(props: RenderLinksProps) {
+  return (
+    <>
+      {props.links.map((link) => {
+        const renderedLink = (
+          <Link to={link.to}>
+            {link.icon && <link.icon />}
+            {link.label}
+          </Link>
+        )
+        return props.renderAs
+          ? props.renderAs(link, renderedLink)
+          : renderedLink
+      })}
+    </>
+  )
+}
+
+const links = [
+  {
+    label: 'Kokpit',
+    icon: HiTemplate,
+    to: '/app',
+  },
+  {
+    label: 'Kalendarz',
+    icon: HiCalendar,
+    to: '/app/calendar',
+  },
+  {
+    label: 'Wyszukiwarka',
+    icon: HiSearch,
+    to: '/app/search',
+  },
+  {
+    label: 'Ustawienia',
+    icon: HiAdjustments,
+    to: '/app/settings',
+  },
+]
+
 export default function App() {
   const picture = useAuthStore(({ auth }) => auth?.user.picture)
   const isSuperuser = useAuthStore(({ auth }) => auth?.user.isSuperuser)
+  const who = useAuthStore(({ auth }) => auth?.user.name)
   const networkState = useNetworkState()
 
   return (
@@ -28,35 +82,18 @@ export default function App() {
               <HiMenu />
             </button>
             <ul className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 text-black shadow-xl">
-              <li>
-                <Link to="/app">
-                  <HiTemplate /> Kokpit
-                </Link>
-              </li>
-              <li>
-                <Link to="/app/calendar">
-                  <HiCalendar /> Kalendarz
-                </Link>
-              </li>
-              <li>
-                <Link to="/app/search">
-                  <HiSearch /> Wyszukiwarka
-                </Link>
-              </li>
               {isSuperuser && (
-                <li>
-                  <Link to="/app/status">
-                    <HiPrinter />
-                    Stan botów
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link to="/app/status">
+                      <HiPrinter />
+                      Stan botów
+                    </Link>
+                  </li>
+                  <hr />
+                </>
               )}
-              <li>
-                <Link to="/app/settings">
-                  <HiAdjustments />
-                  Ustawienia
-                </Link>
-              </li>
+              <RenderLinks links={links} renderAs={(_, r) => <li>{r}</li>} />
             </ul>
           </div>
         </div>
@@ -81,7 +118,9 @@ export default function App() {
             <button className="btn btn-ghost btn-square aspect-square rounded-lg">
               <img className="w-8 rounded-md" src={picture ?? undefined} />
             </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 p-2 text-black shadow-xl">
+            <ul className="dropdown-content menu bg-base-100 rounded-box w-44 space-y-1 p-2 text-black shadow-xl">
+              <li className="select-none px-4 py-1 opacity-50">{who}</li>
+              <hr />
               <li>
                 <Link to="/logout/">
                   <HiLogout /> Wyloguj się
