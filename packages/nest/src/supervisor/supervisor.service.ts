@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { ConnectionStatus, TaskStatus } from '@prisma/client'
+import { ConnectionStatus, Task, TaskStatus } from '@prisma/client'
 import { DateTime } from 'luxon'
 import { ParserService } from './parser/parser.service'
 import { Cron, CronExpression } from '@nestjs/schedule'
@@ -79,6 +79,71 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
+  /**
+   * Processes result from scraper (a string with html payload), validates it and inserts into database.
+   *
+   * @returns on of the following: `replaced` (found data with the same constantId), `dropped` (invalid or unsupported payload) or `inserted``
+   */
+  private async processResult(
+    result: string,
+    task: Pick<Task, 'id' | 'targetDate'>
+  ) {
+    const candidate = this.parser.htmlToRawObject(result)
+
+    // if constantId is already in use, reassign it to the new task
+    const constantId = createHash('sha1')
+      .update(JSON.stringify(candidate))
+      .update(task.targetDate.getTime().toString())
+      .digest('hex')
+      .slice(0, 16)
+
+    const existingResult = await this.prisma.taskResult.findFirst({
+      where: { constantId },
+    })
+
+    if (existingResult) {
+      await this.prisma.taskResult.update({
+        where: { constantId },
+        data: { taskId: task.id, createdAt: new Date() },
+      })
+      return 'replaced'
+    }
+
+    // otherwise, create a new task result and event
+    const newTaskResult = await this.prisma.taskResult.create({
+      data: {
+        constantId,
+        taskId: task.id,
+        object: candidate,
+      },
+    })
+
+    if (
+      candidate.ctl06_TypZajecLabel?.value !== 'Wykład' &&
+      candidate.ctl06_TypZajecLabel?.value !== 'Ćwiczenia'
+    ) {
+      return 'dropped'
+    }
+
+    const evBody = this.parser.convertRawObjectToEvent(
+      newTaskResult.id,
+      candidate as Record<string, { value?: string; humanKey: string }>
+    )
+
+    await this.prisma.timetableEvent.create({
+      data: evBody,
+    })
+
+    return 'inserted'
+  }
+
+  /**
+   * A main handle for storing incoming raw payloads from scrappers.
+   * @param id id of the task done by scrapper
+   * @param hash hash of the initial page, used later to find updates/changes
+   * @param results array of scraped html payloads provided by scraper
+   * @param scraperId id of the scraper
+   */
   async storeTaskResult(
     id: number,
     hash: string,
@@ -100,54 +165,8 @@ export class SupervisorService implements OnModuleInit {
     this.logger.debug(`Processing result of task #${task.id}...`)
 
     for (const result of results) {
-      const candidate = this.parser.htmlToRawObject(result)
-
-      // if constantId is already in use, reassign it to the new task
-      const constantId = createHash('sha1')
-        .update(JSON.stringify(candidate))
-        .update(task.targetDate.getTime().toString())
-        .digest('hex')
-        .slice(0, 16)
-
-      const existingResult = await this.prisma.taskResult.findFirst({
-        where: { constantId },
-      })
-
-      if (existingResult) {
-        await this.prisma.taskResult.update({
-          where: { constantId },
-          data: { taskId: id, createdAt: new Date() },
-        })
-        stats.replaced++
-        continue
-      }
-
-      // otherwise, create a new task result and event
-      const newTaskResult = await this.prisma.taskResult.create({
-        data: {
-          constantId,
-          taskId: id,
-          object: candidate,
-        },
-      })
-
-      if (
-        candidate.ctl06_TypZajecLabel?.value !== 'Wykład' &&
-        candidate.ctl06_TypZajecLabel?.value !== 'Ćwiczenia'
-      ) {
-        stats.dropped++
-        continue
-      }
-
-      const evBody = this.parser.convertRawObjectToEvent(
-        newTaskResult.id,
-        candidate as Record<string, { value?: string; humanKey: string }>
-      )
-
-      await this.prisma.timetableEvent.create({
-        data: evBody,
-      })
-      stats.inserted++
+      const resultDescription = await this.processResult(result, task)
+      stats[resultDescription]++
     }
 
     const end = DateTime.now()
@@ -185,11 +204,12 @@ export class SupervisorService implements OnModuleInit {
         workerId: scraperId,
       },
     })
-    // await this.updateScraper(scraperId, 'AWAITING')
-    // await this.dispatch()
   }
 
-  async invalidateCorruptedTasks() {
+  /**
+   * Removes redundant or dangling entries from the database.
+   */
+  private async invalidateCorruptedTasks() {
     await this.prisma.$transaction([
       this.prisma.task.updateMany({
         where: { status: 'PENDING' },
@@ -205,6 +225,9 @@ export class SupervisorService implements OnModuleInit {
     ])
   }
 
+  /**
+   * Creates many task for scrapers.
+   */
   async createTasks(forwardDays = 30, backwardDays = 7) {
     const initialDate = DateTime.local({ zone: 'UTC' })
       .startOf('day')
@@ -233,6 +256,9 @@ export class SupervisorService implements OnModuleInit {
     return true
   }
 
+  /**
+   * Dispatches tasks to scrapers based on their availability. If scraper or task wasn't found nothing will happen.
+   */
   async dispatch() {
     const tasksLeft = await this.prisma.task.count({
       where: { status: 'PENDING' },
@@ -295,19 +321,6 @@ export class SupervisorService implements OnModuleInit {
     })
   }
 
-  getHistoricalTasks() {
-    return this.prisma.task.findMany({
-      where: {
-        OR: [
-          { status: 'OUTDATED' },
-          { status: 'SUCCESS' },
-          { status: 'SKIPPED' },
-        ],
-      },
-      orderBy: { targetDate: 'desc' },
-    })
-  }
-
   async createScraper(ownerId: string, alias?: string) {
     if (!alias) alias = randAnimal()
 
@@ -328,6 +341,9 @@ export class SupervisorService implements OnModuleInit {
     return [newScraper, accessToken]
   }
 
+  /**
+   * Updates scraper status (availability). This shouldn't be called by users!
+   */
   async updateScraper(id: string, connStatus: ConnectionStatus) {
     const scraper = await this.prisma.scraper.findUniqueOrThrow({
       where: { id },
