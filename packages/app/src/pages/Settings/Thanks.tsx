@@ -33,7 +33,7 @@ export default function Thanks() {
       <h2 className="text-2xl font-bold">Podziękowania</h2>
       <ThanksFor
         who="Izabela Pawlukowska"
-        what="Podziękowania za design aplikacji oraz dobór grafik."
+        what="Podziękowania za design aplikacji, UX review, dobór grafik oraz wsparcie przy projektowaniu UI."
         links={[
           [
             'Linked in',
@@ -43,7 +43,7 @@ export default function Thanks() {
       />
       <ThanksFor
         who="Aleksandra Indulska"
-        what="Podziękowania za optymalizacje scrapowania i przetwarzania danych oraz UX review."
+        what="Podziękowania za optymalizacje scrapowania i przetwarzania danych oraz UX/UI review."
         links={[
           ['Linked in', 'https://www.linkedin.com/in/aleksandra-indulska/'],
         ]}
