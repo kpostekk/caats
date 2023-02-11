@@ -72,8 +72,6 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** @deprecated Field no longer supported */
-  addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
   createScraper: Scalars['String'];
@@ -84,11 +82,6 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
   updateTaskState: Scalars['Boolean'];
-};
-
-
-export type MutationAddGroupArgs = {
-  group: Scalars['String'];
 };
 
 
@@ -131,29 +124,15 @@ export type MutationUpdateTaskStateArgs = {
 export type Query = {
   __typename?: 'Query';
   app?: Maybe<App>;
-  /** @deprecated Field no longer supported */
-  autocompleteGroups?: Maybe<Array<Scalars['String']>>;
   event?: Maybe<ScheduleEvent>;
   events: Array<ScheduleEvent>;
-  /** @deprecated Field no longer supported */
   findByDescription: Array<ScheduleEvent>;
-  /** @deprecated Field no longer supported */
-  getGroups?: Maybe<Array<Scalars['String']>>;
-  getTaskCollection: Array<Scalars['JSON']>;
-  /** @deprecated Use subscription receiveTask instead. */
-  getTasks: Array<Task>;
   groups: Array<Scalars['String']>;
-  me: User;
   ongoingScrapers: Array<WorkingScraper>;
   scrapers: Array<Scraper>;
   sources: Array<EventSource>;
   tasks: Array<StoredTask>;
   user: User;
-};
-
-
-export type QueryAutocompleteGroupsArgs = {
-  query: Scalars['String'];
 };
 
 
@@ -170,11 +149,6 @@ export type QueryEventsArgs = {
 
 export type QueryFindByDescriptionArgs = {
   query: Scalars['String'];
-};
-
-
-export type QueryGetTaskCollectionArgs = {
-  collection: TaskCollection;
 };
 
 
@@ -417,14 +391,7 @@ export type SetGroupsMutation = { __typename?: 'Mutation', setGroups: boolean };
 export type GetCurrentGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentGroupsQuery = { __typename?: 'Query', me: { __typename?: 'User', groups: Array<string> } };
-
-export type GetGroupsAutoCompleteQueryVariables = Exact<{
-  search: Scalars['String'];
-}>;
-
-
-export type GetGroupsAutoCompleteQuery = { __typename?: 'Query', autocompleteGroups?: Array<string> | null };
+export type GetCurrentGroupsQuery = { __typename?: 'Query', user: { __typename?: 'User', groups: Array<string> } };
 
 export type CreateScraperMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -794,7 +761,7 @@ export const useSetGroupsMutation = <
     );
 export const GetCurrentGroupsDocument = `
     query GetCurrentGroups {
-  me {
+  user {
     groups
   }
 }
@@ -811,25 +778,6 @@ export const useGetCurrentGroupsQuery = <
     useQuery<GetCurrentGroupsQuery, TError, TData>(
       variables === undefined ? ['GetCurrentGroups'] : ['GetCurrentGroups', variables],
       fetcher<GetCurrentGroupsQuery, GetCurrentGroupsQueryVariables>(client, GetCurrentGroupsDocument, variables, headers),
-      options
-    );
-export const GetGroupsAutoCompleteDocument = `
-    query GetGroupsAutoComplete($search: String!) {
-  autocompleteGroups(query: $search)
-}
-    `;
-export const useGetGroupsAutoCompleteQuery = <
-      TData = GetGroupsAutoCompleteQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: GetGroupsAutoCompleteQueryVariables,
-      options?: UseQueryOptions<GetGroupsAutoCompleteQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<GetGroupsAutoCompleteQuery, TError, TData>(
-      ['GetGroupsAutoComplete', variables],
-      fetcher<GetGroupsAutoCompleteQuery, GetGroupsAutoCompleteQueryVariables>(client, GetGroupsAutoCompleteDocument, variables, headers),
       options
     );
 export const CreateScraperDocument = `

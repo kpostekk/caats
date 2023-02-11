@@ -29,11 +29,6 @@ import { SupervisorService } from './supervisor.service'
 export class SupervisorResolver {
   constructor(private readonly supervisor: SupervisorService) {}
 
-  @Query()
-  async getTasks(): Promise<GqlTask[]> {
-    return []
-  }
-
   @UseGuards(ScraperGuard)
   @Mutation()
   async updateTaskState(
@@ -53,17 +48,6 @@ export class SupervisorResolver {
   ) {
     await this.supervisor.storeTaskResult(id, hash, result, scraper?.id)
     return true
-  }
-
-  @Query()
-  async getTaskCollection(
-    @Args() { collection }: GqlQueryGetTaskCollectionArgs
-  ) {
-    if (collection === 'HISTORICAL') {
-      return await this.supervisor.getHistoricalTasks()
-    } else if (collection === 'QUEUE') {
-      return await this.supervisor.getPendingTasks()
-    }
   }
 
   @UseGuards(AuthGuard, SuperuserGuard)

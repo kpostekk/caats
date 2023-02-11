@@ -10,24 +10,8 @@ export class UsersResolver {
 
   @UseGuards(AuthGuard)
   @Query()
-  async me(@Context('user') user: User) {
-    return this.users.getUser(user.id)
-  }
-
-  @UseGuards(AuthGuard)
-  @Query()
   async user(@Context('user') user: User) {
     return this.users.getUser(user.id)
-  }
-
-  @UseGuards(AuthGuard)
-  @Mutation()
-  async addGroup(@Context('user') user: User, @Args('group') group: string) {
-    const { groups } = await this.users.getUser(user.id)
-    if (groups.includes(group)) return groups
-
-    await this.users.updateUser(user.id, { groups: [...groups, group] })
-    return [...groups, group]
   }
 
   @UseGuards(AuthGuard)

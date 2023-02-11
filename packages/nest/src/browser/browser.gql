@@ -100,9 +100,5 @@ type Query {
   sources: [EventSource!]!
   groups(filter: [[String!]!]): [String!]!
 
-  getGroups: [String!] @deprecated
-
-  autocompleteGroups(query: String!): [String!] @deprecated
-
-  findByDescription(query: String!): [ScheduleEvent!]! @deprecated
+  findByDescription(query: String!): [ScheduleEvent!]!
 }

@@ -56,8 +56,6 @@ type WorkingScraper {
 }
 
 type Query {
-  getTasks: [Task!]! @deprecated(reason: "Use subscription receiveTask instead.")
-  getTaskCollection(collection: TaskCollection!): [JSON!]!
   ongoingScrapers: [WorkingScraper!]!
 }
 

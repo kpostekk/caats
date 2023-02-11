@@ -11,16 +11,6 @@ export class BrowserResolver {
   ) {}
 
   @Query()
-  getGroups() {
-    return this.browser.getGroupsList()
-  }
-
-  @Query()
-  autocompleteGroups(@Args('query') query: string) {
-    return this.browser.autocompleteGroups(query)
-  }
-
-  @Query()
   findByDescription(@Args('query') query: string) {
     return this.browser.findByDescription(query)
   }
@@ -28,7 +18,13 @@ export class BrowserResolver {
   @Query()
   async groups(@Args() args: GqlQueryGroupsArgs) {
     if (!args.filter) {
-      return this.browser.getGroupsList()
+      const groups = await this.prisma.$queryRaw<
+        {
+          group: string
+        }[]
+      >`SELECT DISTINCT unnest(groups) as "group" FROM "TimetableEvent"`
+
+      return groups.map((v) => v.group)
     }
 
     const generatedRegexString =

@@ -3,13 +3,9 @@ mutation SetGroups($groups: [String!]!) {
 }
 
 query GetCurrentGroups {
-  me {
+  user {
     groups
   }
-}
-
-query GetGroupsAutoComplete($search: String!) {
-  autocompleteGroups(query: $search)
 }
 
 mutation CreateScraper($name: String) {
