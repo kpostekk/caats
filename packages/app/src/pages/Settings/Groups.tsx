@@ -9,6 +9,7 @@ import { ItemSelector } from '../../components/ItemSelector/ItemSelector'
 import { InputSelector } from '../../components/InputSelector/InputSelector'
 import { useEffect } from 'react'
 import { useAuthStore } from '../../states/auth'
+import { HiCog } from 'react-icons/hi'
 
 export default function SettingsGroups() {
   const client = useGqlClient()
@@ -37,25 +38,19 @@ export default function SettingsGroups() {
 
   return (
     <div className="prose">
-      {/* <MutationResponse mutation={mutateGroups} /> */}
       <h2>Grupy</h2>
       <h3>Twoje aktualne grupy</h3>
-      <p>{String(userQuery.data?.user.groups)}</p>
+      <div className="flex flex-wrap gap-1 p-2">
+        {userQuery.data?.user.groups.map((group) => (
+          <div
+            key={group}
+            className="rounded-lg border-2 border-black px-4 py-1"
+          >
+            <span className="font-semibold">{group}</span>
+          </div>
+        ))}
+      </div>
       <h3>Zmień grupy</h3>
-      {/* <div>
-        Regex:
-        <pre>
-          {'^'}
-          {elements.slice(0, 3).map((v) => `[${v.join('')}]`)}
-          {' ' +
-            `(${(elements[3] ?? []).join('|')})` +
-            '[.]' +
-            `(${(elements[4] ?? []).join('|')})`}
-          {' (-|(OB[.])?[A-Z]+|[A-Z]_[A-Z]+) [0-9]+[a-z]' +
-            (elements[5]?.[0] ?? '') +
-            '$'}
-        </pre>
-      </div> */}
       <h4>Lokalizacja</h4>
       <ItemSelector
         items={['W', 'G', 'B']}
@@ -130,7 +125,11 @@ export default function SettingsGroups() {
           })
         }
       >
-        {setGroupsMutation.isLoading ? 'Zapisywanie' : 'Zapisz'}
+        {setGroupsMutation.isLoading ? (
+          <HiCog className="animate-spin" />
+        ) : (
+          'Zapisz'
+        )}
       </button>
     </div>
   )
