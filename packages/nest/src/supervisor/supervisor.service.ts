@@ -120,15 +120,36 @@ export class SupervisorService implements OnModuleInit {
 
     if (
       candidate.ctl06_TypZajecLabel?.value !== 'Wykład' &&
-      candidate.ctl06_TypZajecLabel?.value !== 'Ćwiczenia'
+      candidate.ctl06_TypZajecLabel?.value !== 'Ćwiczenia' &&
+      candidate.ctl06_TypRezerwacjiLabel?.value !== 'egzamin'
     ) {
       return 'dropped'
     }
 
-    const evBody = this.parser.convertRawObjectToEvent(
-      newTaskResult.id,
-      candidate as Record<string, { value?: string; humanKey: string }>
-    )
+    if (candidate.ctl06_TypRezerwacjiLabel?.value === 'egzamin') {
+      const nonEmptyKeys = [
+        'ctl06_GrupyStudenckieLabel',
+        'ctl06_KodyPrzedmiotowLabel',
+        'ctl06_NazwyPrzedmiotowLabel',
+      ]
+
+      for (const key of nonEmptyKeys) {
+        if (candidate[key].value === '---' || !candidate[key].value) {
+          return 'dropped'
+        }
+      }
+    }
+
+    const evBody =
+      candidate.ctl06_TypRezerwacjiLabel?.value === 'egzamin'
+        ? this.parser.convertRawObjectReservationToEvent(
+            newTaskResult.id,
+            candidate as Record<string, { value?: string; humanKey: string }>
+          )
+        : this.parser.convertRawObjectToEvent(
+            newTaskResult.id,
+            candidate as Record<string, { value?: string; humanKey: string }>
+          )
 
     await this.prisma.timetableEvent.create({
       data: evBody,

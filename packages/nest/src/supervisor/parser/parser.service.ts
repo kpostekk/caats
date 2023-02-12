@@ -51,10 +51,10 @@ export class ParserService {
     ).toJSDate()
 
     return {
-      code: code.value,
-      subject: name.value,
+      code: code.value, // source changed
+      subject: name.value, // source changed
       room: room?.value,
-      groups: groupsString?.value.split(', '),
+      groups: groupsString?.value.split(', '), // changed
       hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),
       type: type.value,
       startsAt,
@@ -67,5 +67,43 @@ export class ParserService {
     return DateTime.fromFormat(`${dateRaw} ${timeRaw}`, 'dd.MM.yyyy HH:mm:ss', {
       zone: 'Europe/Warsaw',
     })
+  }
+
+  convertRawObjectReservationToEvent(
+    sourceId: number,
+    rawObject: Record<string, { value?: string; humanKey: string }>
+  ) {
+    const {
+      ctl06_DataZajecLabel: date,
+      ctl06_GodzRozpLabel: timeStart,
+      ctl06_GodzZakonLabel: timeEnd,
+      ctl06_OsobaRezerwujacaLabel: hostsString,
+      ctl06_SalaLabel: room,
+      // ctl06_TypZajecLabel: type,
+      ctl06_KodyPrzedmiotowLabel: code,
+      ctl06_NazwyPrzedmiotowLabel: name,
+      ctl06_GrupyStudenckieLabel: groupsString,
+    } = rawObject
+
+    const startsAt = this.combineStringsToDateTime(
+      timeStart.value,
+      date.value
+    ).toJSDate()
+    const endsAt = this.combineStringsToDateTime(
+      timeEnd.value,
+      date.value
+    ).toJSDate()
+
+    return {
+      code: code.value, // source changed
+      subject: name.value, // source changed
+      room: room?.value,
+      groups: groupsString?.value.split(', '), // changed
+      hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),
+      type: 'Egzamin',
+      startsAt,
+      endsAt,
+      sourceId,
+    }
   }
 }

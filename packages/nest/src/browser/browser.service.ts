@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { TimetableEvent, User } from '@prisma/client'
-import {
-  GqlScheduleInput,
-  GqlScheduleTargets,
-  GqlSinceUntil,
-  GqlSkipTake,
-} from '../gql'
+import { GqlScheduleInput, GqlScheduleTargets } from '../gql'
 import { PrismaService } from '../prisma/prisma.service'
 
 type ScheduleFindOptions = GqlScheduleInput &
@@ -160,13 +155,13 @@ export class BrowserService {
           in: events.map((e) => e.id),
         },
       },
-      include: {
-        source: {
-          include: {
-            task: true,
-          },
-        },
-      },
+      // include: {
+      //   source: {
+      //     include: {
+      //       task: true,
+      //     },
+      //   },
+      // },
     })
   }
 
