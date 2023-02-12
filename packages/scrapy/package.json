@@ -32,6 +32,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "got": "11",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",

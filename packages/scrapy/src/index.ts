@@ -6,6 +6,7 @@ import { Stealer } from './stealer'
 import { createClient, Client } from 'graphql-ws'
 import { AwaitTaskSubscription } from './gql/graphql'
 import { WebSocket } from 'ws'
+import 'dotenv/config'
 
 process.on('SIGINT', () => process.exit(1))
 process.on('SIGTERM', () => process.exit(1))
@@ -84,13 +85,16 @@ yargs(hideBin(process.argv))
         })
         .option('token', {
           type: 'string',
-          demandOption: true,
+          // demandOption: true,
         })
         .option('rate', {
           type: 'number',
         }),
     async ({ api, rate, token }) => {
       const wsUrl = new URL(api)
+
+      const usedToken = token ?? process.env.TOKEN
+      if (!usedToken) throw new Error('Token not provided!')
 
       switch (wsUrl.protocol) {
         case 'https:':
@@ -106,7 +110,7 @@ yargs(hideBin(process.argv))
       const wsClient = createClient({
         url: wsUrl.toString(),
         connectionParams: {
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${usedToken}`,
         },
         webSocketImpl: WebSocket,
       })
@@ -114,7 +118,7 @@ yargs(hideBin(process.argv))
       console.log('Starting Stealer...')
       const gqlClient = new GraphQLClient(api, {
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${usedToken}`,
         },
         // fetch,
       })
