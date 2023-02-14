@@ -1,4 +1,4 @@
-name: Run jest with coverage
+name: Jest tests (w/ coverage)
 
 on:
   push:
