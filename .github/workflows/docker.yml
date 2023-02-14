@@ -34,3 +34,5 @@ jobs:
           target: application
           tags: |
             ghcr.io/kpostekk/caats:latest
+          build-args:
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
