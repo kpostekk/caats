@@ -85,6 +85,20 @@ export class AppModule implements OnModuleInit {
         version: '1.0.0',
         description: 'A REST API translation for GraphQL requests.',
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     })
     sofaLogger.log('Created Open API document')
 
@@ -100,6 +114,7 @@ export class AppModule implements OnModuleInit {
           })
           sofaLogger.log(`Mapped {/api${info.path}, ${info.method}} route`)
         },
+        ignore: ['Query.user.events'],
       })
     )
 
