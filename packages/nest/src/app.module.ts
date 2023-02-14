@@ -1,4 +1,4 @@
-import { Inject, Module, OnModuleInit } from '@nestjs/common'
+import { Inject, Logger, Module, OnModuleInit } from '@nestjs/common'
 import { GraphQLModule, GraphQLSchemaHost } from '@nestjs/graphql'
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius'
 import { join } from 'path'
@@ -72,6 +72,9 @@ export class AppModule implements OnModuleInit {
   onModuleInit(): void {
     if (!this.httpAdapterHost) return
 
+    const sofaLogger = new Logger('SOFA', { timestamp: true })
+    sofaLogger.log('Initializing SOFA')
+
     const { httpAdapter } = this.httpAdapterHost
     const { schema } = this.schemaHost
 
@@ -83,6 +86,7 @@ export class AppModule implements OnModuleInit {
         description: 'A REST API translation for GraphQL requests.',
       },
     })
+    sofaLogger.log('Created Open API document')
 
     // convert GraphQL API to REST using SOFA
     httpAdapter.use(
@@ -94,11 +98,10 @@ export class AppModule implements OnModuleInit {
           openApi.addRoute(info, {
             basePath: '/api',
           })
+          sofaLogger.log(`Mapped {/api${info.path}, ${info.method}} route`)
         },
       })
     )
-
-    console.log(openApi.get())
 
     const fastifyInstance: FastifyInstance = httpAdapter.getInstance()
     fastifyInstance.register(swagger, {
@@ -110,5 +113,6 @@ export class AppModule implements OnModuleInit {
     fastifyInstance.register(swaggerUi, {
       routePrefix: '/docs',
     })
+    sofaLogger.log('Created Swagger docs {/docs, GET}')
   }
 }
