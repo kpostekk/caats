@@ -3,6 +3,7 @@
     <p><i>Cats as a Timetable Service</i></p>
     <p>
         <a href="https://codeclimate.com/github/kpostekk/caats/maintainability"><img src="https://api.codeclimate.com/v1/badges/263c7c9bbe2163a7d7f5/maintainability" /></a>
+        <img src="https://github.com/kpostekk/caats/actions/workflows/testing.yml/badge.svg">
     </p>
 </div>
 
