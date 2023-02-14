@@ -1,11 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { readFile } from 'fs/promises'
+import { readFile, readdir as readDir } from 'fs/promises'
+import path from 'path'
 import { ParserModule } from './parser.module'
 import { ParserService } from './parser.service'
 
 describe('ParserService', () => {
   let parser: ParserService
-  let parseResult: Record<string, { value?: string; humanKey: string; }>
+  let sources: string[]
+  let convertedObjects: Record<
+    string,
+    {
+      humanKey: string
+      value?: string
+    }
+  >[]
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,14 +28,42 @@ describe('ParserService', () => {
     expect(parser).toBeDefined()
   })
 
-  it('parse example', async () => {
-    parseResult = parser.htmlToRawObject(
-      (await readFile('test/html/t1.html')).toString()
+  it('load html files', async () => {
+    const assetsPath = './test/assets'
+    const assets = await readDir('./test/assets').then((f) =>
+      f.filter((x) => x.match(/^.+[.]html$/))
     )
-    expect(parseResult).toBeDefined()
+    const htmlFiles = assets.map((f) => path.join(assetsPath, f))
+    sources = await Promise.all(
+      htmlFiles.map((p) => readFile(p).then((c) => c.toString()))
+    )
   })
 
-  it('convert to event', () => {
-    expect(parser.convertRawObjectToEvent(0, parseResult)).toBeDefined()
+  it('convert html content into objects', () => {
+    convertedObjects = sources.map((s) => parser.htmlToRawObject(s))
+  })
+
+  it('parse generic events', () => {
+    for (const co of convertedObjects) {
+      if (co.ctl06_TypRezerwacjiLabel) continue
+
+      const result = parser.convertRawObjectToEvent(-1, co)
+
+      expect(result).toBeDefined()
+    }
+  })
+
+  it('parse exam events', () => {
+    for (const co of convertedObjects) {
+      if (
+        !co.ctl06_TypRezerwacjiLabel ||
+        co.ctl06_TypRezerwacjiLabel.value !== 'egzamin'
+      )
+        continue
+
+      const result = parser.convertRawObjectReservationToEvent(-1, co)
+
+      expect(result).toBeDefined()
+    }
   })
 })

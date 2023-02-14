@@ -51,10 +51,10 @@ export class ParserService {
     ).toJSDate()
 
     return {
-      code: code.value, // source changed
-      subject: name.value, // source changed
+      code: code.value,
+      subject: name.value,
       room: room?.value,
-      groups: groupsString?.value.split(', '), // changed
+      groups: groupsString?.value.split(', '),
       hosts: hostsString?.value.split(', ').filter((h) => h !== '---'),
       type: type.value,
       startsAt,
