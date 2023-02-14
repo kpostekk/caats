@@ -60,9 +60,13 @@ type Query {
 }
 
 type Mutation {
+  "Updates task state. Internal."
   updateTaskState(id: ID!, state: TaskState!): Boolean!
+  "Allows to store scrapped content. Internal."
   finishTask(id: ID!, result: TaskResult!): Boolean!
+  "Creates many events relatively to current date."
   createTasksBulk(input: TasksBulkInput!): Boolean!
+  "Creates a token for scraper."
   createScraper(name: String): String!
 }
 

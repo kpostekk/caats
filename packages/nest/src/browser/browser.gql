@@ -86,18 +86,25 @@ type ScheduleEvent {
 }
 
 type User {
+  "List of events for current user."
   events(search: ScheduleInput): [ScheduleEvent!]!
+  "The next event for current user."
   nextEvent: ScheduleEvent
+  "The current event for current user."
   currentEvent: ScheduleEvent
-  scrapers: [Scraper!]!
+  # "Scrapers created by this user."
+  # scrapers: [Scraper!]!
 }
 
 type Query {
+  "List of all available events. Not specifying target results in empty list."
   events(search: ScheduleInput, targets: ScheduleTargets): [ScheduleEvent!]!
+  "Details for specified event."
   event(id: Int!): ScheduleEvent
   scrapers: [Scraper!]!
   tasks: [StoredTask!]!
   sources: [EventSource!]!
+  "Returns groups matching the filter. Function for custom frontend."
   groups(filter: [[String!]!]): [String!]!
 
   findByDescription(query: String!): [ScheduleEvent!]!

@@ -1,3 +1,4 @@
 type Mutation {
+  "Creates a subscription for a specified list of groups. Returns link with ICS subscription."
   createSubscription(groups: [String]!): String!
 }

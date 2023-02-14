@@ -65,13 +65,18 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
+  /** Creates a token for scraper. */
   createScraper: Scalars['String'];
+  /** Creates a subscription for a specified list of groups. Returns link with ICS subscription. */
   createSubscription: Scalars['String'];
+  /** Creates many events relatively to current date. */
   createTasksBulk: Scalars['Boolean'];
+  /** Allows to store scrapped content. Internal. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
+  /** Updates task state. Internal. */
   updateTaskState: Scalars['Boolean'];
 };
 
@@ -114,10 +119,14 @@ export type MutationUpdateTaskStateArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Returns details about app. */
   app?: Maybe<App>;
+  /** Details for specified event. */
   event?: Maybe<ScheduleEvent>;
+  /** List of all available events. Not specifying target results in empty list. */
   events: Array<ScheduleEvent>;
   findByDescription: Array<ScheduleEvent>;
+  /** Returns groups matching the filter. Function for custom frontend. */
   groups: Array<Scalars['String']>;
   ongoingScrapers: Array<WorkingScraper>;
   scrapers: Array<Scraper>;
@@ -265,9 +274,11 @@ export type TasksBulkInput = {
 /** A CaaTS user. */
 export type User = {
   __typename?: 'User';
+  /** The current event for current user. */
   currentEvent?: Maybe<ScheduleEvent>;
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  /** List of events for current user. */
   events: Array<ScheduleEvent>;
   groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
@@ -276,9 +287,11 @@ export type User = {
   isSuperuser: Scalars['Boolean'];
   /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
+  /** The next event for current user. */
   nextEvent?: Maybe<ScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
+  /** Scrapers created by this user. */
   scrapers: Array<Scraper>;
 };
 
