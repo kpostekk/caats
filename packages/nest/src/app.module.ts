@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common'
-import { GraphQLModule } from '@nestjs/graphql'
+import { Inject, Module, OnModuleInit } from '@nestjs/common'
+import { GraphQLModule, GraphQLSchemaHost } from '@nestjs/graphql'
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius'
 import { join } from 'path'
 import { AppResolver } from './app.resolver'
@@ -16,6 +16,11 @@ import { IcsModule } from './ics/ics.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { EmitterModule } from './emitter/emitter.module'
 import { EmitterService } from './emitter/emitter.service'
+import { OpenAPI, useSofa } from 'sofa-api'
+import { HttpAdapterHost } from '@nestjs/core'
+import { FastifyInstance } from 'fastify'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
 
 @Module({
   imports: [
@@ -58,4 +63,52 @@ import { EmitterService } from './emitter/emitter.service'
   ],
   providers: [AppResolver],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(
+    @Inject(GraphQLSchemaHost) private readonly schemaHost: GraphQLSchemaHost,
+    @Inject(HttpAdapterHost) private readonly httpAdapterHost: HttpAdapterHost
+  ) {}
+
+  onModuleInit(): void {
+    if (!this.httpAdapterHost) return
+
+    const { httpAdapter } = this.httpAdapterHost
+    const { schema } = this.schemaHost
+
+    const openApi = OpenAPI({
+      schema,
+      info: {
+        title: 'CaaTS REST API',
+        version: '1.0.0',
+        description: 'A REST API translation for GraphQL requests.',
+      },
+    })
+
+    // convert GraphQL API to REST using SOFA
+    httpAdapter.use(
+      '/api',
+      useSofa({
+        schema,
+        basePath: '/api',
+        onRoute(info) {
+          openApi.addRoute(info, {
+            basePath: '/api',
+          })
+        },
+      })
+    )
+
+    console.log(openApi.get())
+
+    const fastifyInstance: FastifyInstance = httpAdapter.getInstance()
+    fastifyInstance.register(swagger, {
+      mode: 'static',
+      specification: {
+        document: openApi.get(),
+      },
+    })
+    fastifyInstance.register(swaggerUi, {
+      routePrefix: '/docs',
+    })
+  }
+}
