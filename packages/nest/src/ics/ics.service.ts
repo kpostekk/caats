@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { TimetableEvent } from '@prisma/client'
+import { TimetableEvent, User } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { EventAttributes, createEvents } from 'ics'
 import { DateTime } from 'luxon'
@@ -26,6 +26,32 @@ export class IcsService {
     return name
   }
 
+  private eventsForGroups(groups: string[]) {
+    return this.prisma.timetableEvent.findMany({
+      where: {
+        groups: {
+          hasSome: groups,
+        },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
+      },
+    })
+  }
+
+  async getEventsForUser(user: Pick<User, 'id'>) {
+    const { groups } = await this.prisma.user.findFirstOrThrow({
+      where: { id: user.id },
+      select: { groups: true },
+    })
+
+    const events = await this.eventsForGroups(groups)
+
+    return events
+  }
+
   async getEventsForSubscription(id: string) {
     const { includeGroups } =
       await this.prisma.icsSubscriptions.findFirstOrThrow({
@@ -37,18 +63,7 @@ export class IcsService {
         },
       })
 
-    const events = await this.prisma.timetableEvent.findMany({
-      where: {
-        groups: {
-          hasSome: includeGroups,
-        },
-        source: {
-          task: {
-            status: 'SUCCESS',
-          },
-        },
-      },
-    })
+    const events = await this.eventsForGroups(includeGroups)
 
     return events
   }
