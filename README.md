@@ -8,6 +8,8 @@
     </p>
 </div>
 
+![image1](https://user-images.githubusercontent.com/30326322/218796888-3700ed0c-6809-4930-94d0-884ee70e8ec4.jpeg)
+
 ## Dlaczego?
 
 |                                      | CaaTS     | Altapi           | Plan Zajęć PJATK                      |
