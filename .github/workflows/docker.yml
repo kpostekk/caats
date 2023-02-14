@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - "src/"
+      - "src/**/!*.spec.ts"
       - "test/"
       - "package.json"
+      - "packages/**/package.json"
       - "yarn.lock"
       - ".github/workflows/*.yml"
 
