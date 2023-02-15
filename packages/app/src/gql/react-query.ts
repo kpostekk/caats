@@ -300,8 +300,6 @@ export type User = {
   nextEvent?: Maybe<ScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
-  /** Scrapers created by this user. */
-  scrapers: Array<Scraper>;
 };
 
 
