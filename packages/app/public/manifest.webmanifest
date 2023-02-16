@@ -1,0 +1,1 @@
+{"name":"CaaTS","short_name":"@caats/app","start_url":"/app","display":"standalone","background_color":"#ffffff","lang":"pl","scope":"/app","description":"Jeszcze lepsza apka do planu zajęć PJATK.","id":"/app","icons":[{"purpose":"any","src":"grumpy.webp","sizes":"256x256","type":"image/webp"},{"purpose":"maskable","src":"grumpy.webp","sizes":"256x256","type":"image/webp"}]}

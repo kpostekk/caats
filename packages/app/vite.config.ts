@@ -75,9 +75,11 @@ export default defineConfig({
             type: 'image/webp',
           },
         ],
+        background_color: 'black',
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        globPatterns: ['**/*.{js,css,html,png,webp}'],
       },
     }),
   ],
@@ -92,15 +94,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          lib: [
-            'react',
-            'react-dom',
-            '@tanstack/react-query',
-            'react-router-dom',
-            'react-use',
-            'zustand',
-            '@headlessui/react',
-          ],
+          react: ['react', 'react-dom', 'react-router-dom'],
           graphql: ['graphql-request', 'graphql'],
           luxon: ['luxon'],
         },
