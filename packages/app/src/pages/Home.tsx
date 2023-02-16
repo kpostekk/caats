@@ -1,11 +1,5 @@
 import { lazy, Suspense } from 'react'
-import {
-  FaArrowDown,
-  FaBookOpen,
-  FaDiscord,
-  FaGhost,
-  FaGithub,
-} from 'react-icons/fa'
+import { FaBookOpen, FaDiscord, FaGhost, FaGithub } from 'react-icons/fa'
 import {
   HiExternalLink,
   HiEyeOff,
