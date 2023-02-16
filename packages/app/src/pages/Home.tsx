@@ -20,8 +20,8 @@ const AppVersion = lazy(() => import('../components/AppVersion'))
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full">
-      <div className="grid h-screen w-full place-content-center place-items-center gap-4 px-8 sm:grid-cols-1 md:grid-cols-2 md:p-24 md:px-0 lg:p-64">
+    <div className="container min-h-screen w-full">
+      <div className="grid h-screen w-full place-content-center place-items-center gap-4 px-8 sm:grid-cols-1 md:grid-cols-2">
         <div>
           <h1 className="select-none text-6xl font-extrabold">CaaTS</h1>
           <p className="my-2 text-xl font-semibold">

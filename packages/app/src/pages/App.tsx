@@ -31,7 +31,7 @@ function RenderLinks(props: RenderLinksProps) {
     <>
       {props.links.map((link) => {
         const renderedLink = (
-          <Link to={link.to}>
+          <Link to={link.to} key={link.to}>
             {link.icon && <link.icon />}
             {link.label}
           </Link>
@@ -93,11 +93,14 @@ export default function App() {
                   <hr />
                 </>
               )}
-              <RenderLinks links={links} renderAs={(_, r) => <li>{r}</li>} />
+              <RenderLinks
+                links={links}
+                renderAs={(l, r) => <li key={l.to}>{r}</li>}
+              />
             </ul>
           </div>
         </div>
-        <div className="navbar-center">
+        <div className="navbar-center gap-2">
           <Transition
             show={!networkState.online}
             enter="transition-opacity duration-200"
@@ -107,10 +110,11 @@ export default function App() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="animate-pulse pr-2 text-2xl">
+            <div className="animate-pulse text-2xl">
               <HiStatusOffline />
             </div>
           </Transition>
+          <img className="h-6" src="/grumpyicon.webp" />
           <h1 className="select-none text-2xl font-bold">CaaTS</h1>
         </div>
         <div className="navbar-end">
@@ -130,7 +134,7 @@ export default function App() {
           </div>
         </div>
       </div>
-      <div className="relative h-[calc(100vh-4rem-6px)]">
+      <div className="relative h-[calc(100vh-4rem-8px)]">
         <Suspense>
           <Outlet />
         </Suspense>

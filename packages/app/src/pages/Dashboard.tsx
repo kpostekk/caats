@@ -5,7 +5,7 @@ import {
   useUserQuery,
 } from '../gql/react-query'
 import { useGqlClient } from '../components/useGqlClient/useGqlClient'
-import palmLeafs from '../assets/palm-leafs.png'
+import palmLeafs from '../assets/palm-leafs.webp'
 import { UpdatePrompt } from '../components/UpdatePrompt/UpdatePrompt'
 import { HiCalendar, HiCog, HiExternalLink, HiSearch } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
@@ -181,7 +181,8 @@ export default function Dashboard() {
 
   return (
     <div className="container max-w-5xl pb-12 md:pb-0">
-      <div className="grid grid-cols-1 gap-2 xl:grid-cols-3">
+      {/* Mobile variant */}
+      <div className="grid grid-cols-1 gap-2 md:hidden">
         <div className="col-span-2">
           <div className="relative select-none overflow-hidden">
             <div className="absolute right-0">
@@ -214,6 +215,33 @@ export default function Dashboard() {
           </div>
         </div>
         <DashboardButtons />
+      </div>
+      {/* Desktop variant */}
+      <div className="my-2 hidden grid-cols-2 gap-2 md:grid">
+        <div className="relative row-span-2 w-full overflow-hidden rounded-lg border-2 border-black">
+          <img
+            className="absolute right-0 z-10 h-[160%] translate-x-[50%] translate-y-[-12%] rotate-[-60deg] scale-[100%]"
+            src={palmLeafs}
+          />
+          <div className="z-10 grid h-full place-items-center p-4">
+            <h1 className="mr-auto text-4xl font-bold">
+              Siema, {name?.split(' ')[0]}
+            </h1>
+          </div>
+        </div>
+        <div className="w-full rounded-lg bg-black p-4 text-white">
+          <UpdatePrompt />
+          <PrimarySection query={userQuery.data} />
+        </div>
+        <div className="w-full rounded-lg bg-black p-4 text-white">
+          <p>Do końca semestru pozostało X dni.</p>
+        </div>
+        <div className="w-full rounded-lg bg-black p-4 text-white">
+          <p>Your ad here.</p>
+        </div>
+        <div className="w-full rounded-lg border-2 border-black p-4">
+          <DashboardButtons />
+        </div>
       </div>
     </div>
   )
