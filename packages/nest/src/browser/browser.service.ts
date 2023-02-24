@@ -38,6 +38,11 @@ export class BrowserService {
         groups: {
           hasSome: groups ?? [],
         },
+        source: {
+          task: {
+            status: 'SUCCESS',
+          },
+        },
       },
       skip: options?.skip,
       take: options?.take,
