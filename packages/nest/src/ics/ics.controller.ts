@@ -2,15 +2,13 @@ import {
   Controller,
   Get,
   Param,
-  NotFoundException,
-  Response,
   Query,
   Header,
   Request,
   Redirect,
 } from '@nestjs/common'
 import { IcsService, SignedSubscriptionOptions } from './ics.service'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { FastifyRequest } from 'fastify'
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from '../prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
@@ -25,7 +23,7 @@ export class IcsController {
   ) {}
 
   @Get('cal.ics')
-  @Header('Content-Type', 'text/plain; charset=utf-8')
+  @Header('Content-Type', 'text/calendar; charset=utf-8')
   async getCalForSignature(@Query('signature') signature: string) {
     const options: SignedSubscriptionOptions = await this.jwt.verifyAsync(
       signature
