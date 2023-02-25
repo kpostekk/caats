@@ -332,7 +332,15 @@ export class SupervisorService implements OnModuleInit {
 
     if (pendingTasks >= 21) return
 
-    await this.createTasks(7 * 12, 0)
+    const nextEnd = DateTime.fromObject({
+      day: 2,
+      month: 7,
+      year: 2023,
+    })
+      .diffNow()
+      .as('days')
+
+    await this.createTasks(Math.max(Math.floor(nextEnd), 7 * 4 * 2), 0)
   }
 
   getTaskQueue() {
