@@ -1,12 +1,30 @@
 import classNames from 'classnames'
 import { ReactNode } from 'react'
-import { HiChevronDown } from 'react-icons/hi'
-import { useParams } from 'react-router-dom'
+import {
+  HiChevronDown,
+  HiCubeTransparent,
+  HiQuestionMarkCircle,
+} from 'react-icons/hi'
+import { Link, useParams } from 'react-router-dom'
 import { useGqlClient } from '../components'
-import { useEventDetailsQuery } from '../gql/react-query'
+import { useEventDetailsQuery, useUserQuery } from '../gql/react-query'
+import { useAuthStore } from '../states/auth'
 
 type DataRowProps = {
   value: [string, ReactNode]
+}
+
+function useIsInUserGroups(groups: string[] | null | undefined) {
+  const client = useGqlClient()
+  const userQuery = useUserQuery(client, {})
+
+  if (!userQuery.data || !groups) return false
+
+  for (const theirGroup of groups) {
+    if (!userQuery.data.user.groups.includes(theirGroup)) return false
+  }
+
+  return true
 }
 
 function DataRow(props: DataRowProps) {
@@ -32,15 +50,26 @@ export default function Event() {
 
   const client = useGqlClient()
   const query = useEventDetailsQuery(client, { id: Number(id) })
+  const notUserGroupsWarning = useIsInUserGroups(query.data?.event?.groups)
 
-  if (!query.data || !query.data.event) return null
+  if (!query.data || !query.data.event) {
+    return (
+      <div className="container max-w-md p-2 md:px-0">
+        <HiCubeTransparent className="my-4 text-[96px]" />
+        <p className="text-xl font-bold">Wybrany event nie istnieje.</p>
+        <Link className="btn my-4" to="/app/calendar">
+          Powrót do kalendarza
+        </Link>
+      </div>
+    )
+  }
 
   const event = query.data.event
   const isCurrent =
     new Date(event.endsAt) > new Date() && new Date(event.startsAt) < new Date()
 
   return (
-    <div className="container max-w-lg p-2 md:px-0">
+    <div className="container max-w-md p-2 md:px-0">
       <h1 className="text-5xl font-bold">
         <span
           className={classNames({
@@ -52,6 +81,16 @@ export default function Event() {
         <span className="text-lg">{`(#${event.id})`}</span>
       </h1>
       <p>{event.subject}</p>
+      {event.source.task.status !== 'SUCCESS' ? (
+        <p className="text-warning border-y-warning my-2 border-y-2 py-2 font-bold">
+          Wybrany event nie jest aktualny!
+        </p>
+      ) : null}
+      {!notUserGroupsWarning ? (
+        <p className="text-info border-y-info my-2 border-y-2 py-2 font-bold">
+          Przeglądasz wydarzenie dla innej grupy!
+        </p>
+      ) : null}
       <div className="space-y-4 py-2">
         <h2 className="text-3xl font-bold">Informacje ogólne</h2>
         <DataRowContainer>
