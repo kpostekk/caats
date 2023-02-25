@@ -4,39 +4,58 @@ import {
   Param,
   NotFoundException,
   Response,
+  Query,
+  Header,
+  Request,
+  Redirect,
 } from '@nestjs/common'
-import { IcsService } from './ics.service'
-import { FastifyReply } from 'fastify'
+import { IcsService, SignedSubscriptionOptions } from './ics.service'
+import { FastifyReply, FastifyRequest } from 'fastify'
+import { JwtService } from '@nestjs/jwt'
+import { PrismaService } from '../prisma/prisma.service'
+import { ConfigService } from '@nestjs/config'
 
 @Controller('ics')
 export class IcsController {
-  constructor(private readonly ics: IcsService) {}
+  constructor(
+    private readonly ics: IcsService,
+    private readonly jwt: JwtService,
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService
+  ) {}
 
-  @Get(':sub.ics')
-  async getCalendarForSubscription(
-    @Response() response: FastifyReply,
-    @Param('sub') sub: string
-  ) {
-    try {
-      const events = await this.ics.getEventsForSubscription(sub)
-      response.header('Content-Type', 'text/calendar')
-      response.send(this.ics.getIcsEvents(events))
-    } catch {
-      throw new NotFoundException()
-    }
+  @Get('cal.ics')
+  @Header('Content-Type', 'text/plain; charset=utf-8')
+  async getCalForSignature(@Query('signature') signature: string) {
+    const options: SignedSubscriptionOptions = await this.jwt.verifyAsync(
+      signature
+    )
+    return await this.ics.readSignedSubscription(options)
   }
 
-  @Get('u/:id.ics')
-  async getCalendarForUser(
-    @Response() response: FastifyReply,
-    @Param('id') id: string
+  @Get('s/:shortcut/cal.ics')
+  @Redirect('ics/cal.ics', 308)
+  async redirectResolvedShortcut(
+    @Request() request: FastifyRequest,
+    @Param('shortcut') shortcut: string
   ) {
-    try {
-      const events = await this.ics.getEventsForUser({ id })
-      response.header('Content-Type', 'text/calendar')
-      response.send(this.ics.getIcsEvents(events))
-    } catch {
-      throw new NotFoundException()
+    const { jwt } = await this.prisma.icsShortcuts.findUniqueOrThrow({
+      where: {
+        shortHash: shortcut,
+      },
+      select: {
+        jwt: true,
+      },
+    })
+
+    const redirectUrl = new URL(
+      '/ics/cal.ics',
+      this.config.getOrThrow('BASE_URL')
+    )
+    redirectUrl.searchParams.set('signature', jwt)
+
+    return {
+      url: redirectUrl.toString(),
     }
   }
 }

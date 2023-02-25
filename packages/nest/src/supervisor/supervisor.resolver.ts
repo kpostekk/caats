@@ -18,7 +18,6 @@ import { PubSub } from 'mercurius'
 import { AuthGuard, ScraperGuard, SuperuserGuard } from '../auth/auth.guard'
 import {
   GqlMutationCreateScraperArgs,
-  GqlQueryGetTaskCollectionArgs,
   GqlTask,
   GqlTaskResult,
   GqlTasksBulkInput,

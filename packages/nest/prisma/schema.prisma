@@ -11,19 +11,19 @@ generator client {
 /// Model that represents a user of the system.
 model User {
     /// Internal user id
-    id               String             @id @default(uuid()) @db.Uuid
+    id           String         @id @default(uuid()) @db.Uuid
     /// Mail provided by Google
-    email            String             @unique
+    email        String         @unique
     /// User selected name
-    name             String?
+    name         String?
     /// Users profile picture
-    picture          String?
+    picture      String?
     /// Superuser should be able to access all data and modify data accessors
-    isSuperuser      Boolean            @default(false)
-    groups           String[]
-    sessions         UserSession[]
-    icsSubscriptions IcsSubscriptions[]
-    scrapers         Scraper[]
+    isSuperuser  Boolean        @default(false)
+    groups       String[]
+    sessions     UserSession[]
+    scrapers     Scraper[]
+    icsShortcuts IcsShortcuts[]
 }
 
 model UserSession {
@@ -96,12 +96,11 @@ model TimetableEvent {
     @@index(hosts, type: Hash)
 }
 
-model IcsSubscriptions {
-    id            String   @id
-    createdAt     DateTime @default(now())
-    includeGroups String[]
-    userId        String   @db.Uuid
-    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model IcsShortcuts {
+    shortHash String @id @map("id")
+    jwt       String @map("token")
+    user      User   @relation(fields: [userId], references: [id])
+    userId    String @db.Uuid
 }
 
 enum ConnectionStatus {

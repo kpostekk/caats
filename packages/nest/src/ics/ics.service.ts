@@ -3,35 +3,70 @@ import { TimetableEvent, User } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { EventAttributes, createEvents } from 'ics'
 import { DateTime } from 'luxon'
-import { randProductAdjective, randAccessory, randNumber } from '@ngneat/falso'
-import { randomBytes } from 'crypto'
+import { createHash, randomBytes } from 'crypto'
+import { JwtService } from '@nestjs/jwt'
+import { ConfigService } from '@nestjs/config'
+
+export type SignedSubscriptionOptions = {
+  groups?: string[]
+  user?: Pick<User, 'id'>
+  hosts?: string[]
+}
 
 @Injectable()
 export class IcsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService
+  ) {}
 
-  private getSubscriptionName() {
-    return randomBytes(8).toString('base64url')
+  async createSignedSubscription(
+    options: SignedSubscriptionOptions,
+    user?: Pick<User, 'id'>
+  ) {
+    const token = await this.jwt.signAsync(options)
+
+    const shortcut = user
+      ? await this.prisma.icsShortcuts.create({
+          data: {
+            shortHash: createHash('sha1')
+              .update(token)
+              .digest('base64url')
+              .slice(0, 12),
+            jwt: token,
+            userId: user.id,
+          },
+        })
+      : null
+
+    return { token, shortcut }
   }
 
-  async createSubscription(userId: string, groups: string[]) {
-    const name = this.getSubscriptionName()
-    await this.prisma.icsSubscriptions.create({
-      data: {
-        userId,
-        includeGroups: groups,
-        id: name,
-      },
-    })
-    return name
-  }
+  async readSignedSubscription(options: SignedSubscriptionOptions) {
+    const groups = options.user
+      ? await this.prisma.user
+          .findMany({
+            where: {
+              id: options.user.id,
+            },
+            select: {
+              groups: true,
+            },
+          })
+          .then((v) => v.reduce((pv, cv) => pv.concat(cv.groups), []))
+      : options.groups
 
-  private eventsForGroups(groups: string[]) {
-    return this.prisma.timetableEvent.findMany({
+    const events = await this.prisma.timetableEvent.findMany({
       where: {
         groups: {
           hasSome: groups,
         },
+        hosts: options.hosts
+          ? {
+              hasSome: options.hosts,
+            }
+          : undefined,
         source: {
           task: {
             status: 'SUCCESS',
@@ -39,33 +74,8 @@ export class IcsService {
         },
       },
     })
-  }
 
-  async getEventsForUser(user: Pick<User, 'id'>) {
-    const { groups } = await this.prisma.user.findFirstOrThrow({
-      where: { id: user.id },
-      select: { groups: true },
-    })
-
-    const events = await this.eventsForGroups(groups)
-
-    return events
-  }
-
-  async getEventsForSubscription(id: string) {
-    const { includeGroups } =
-      await this.prisma.icsSubscriptions.findFirstOrThrow({
-        where: {
-          id,
-        },
-        select: {
-          includeGroups: true,
-        },
-      })
-
-    const events = await this.eventsForGroups(includeGroups)
-
-    return events
+    return this.getIcsEvents(events)
   }
 
   getIcsEvents(events: TimetableEvent[]) {
@@ -73,6 +83,10 @@ export class IcsService {
       const startDt = DateTime.fromJSDate(event.startsAt)
       const endDt = DateTime.fromJSDate(event.endsAt)
       const lastModified = DateTime.fromJSDate(event.createdAt)
+      const url = new URL(
+        `/app/event/${event.id}`,
+        this.config.getOrThrow('BASE_URL')
+      )
 
       return {
         start: [
@@ -86,10 +100,10 @@ export class IcsService {
         title: `${event.code} - ${event.type} (${event.room})`,
         description: `${event.type} z ${event.subject} w sali ${
           event.room
-        }.\nProwadzący: ${event.hosts.join(', ')}`,
+        }.\nProwadzący: ${event.hosts.join(', ')}.`,
         organizer: {
           name: 'CaaTS',
-          email: 'calmaster@caats.app',
+          email: `calendar@${url.hostname}`,
         },
         alarms: [
           {
@@ -107,7 +121,8 @@ export class IcsService {
           lastModified.hour,
           lastModified.minute,
         ],
-        url: `https://caats.app/app/event/${event.id}`,
+        url: url.toString(),
+        uid: 'caats-ev-' + event.id,
       }
     })
 

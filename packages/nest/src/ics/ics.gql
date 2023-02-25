@@ -1,4 +1,15 @@
+input SubscriptionOptions {
+  user: Boolean
+  hosts: [String]
+  groups: [String]
+}
+
+type SubscriptionLinks {
+  full: String!
+  short: String
+}
+
 type Mutation {
   "Creates a subscription for a specified list of groups. Returns link with ICS subscription."
-  createSubscription(groups: [String]!): String!
+  createSubscription(options: SubscriptionOptions!): SubscriptionLinks!
 }

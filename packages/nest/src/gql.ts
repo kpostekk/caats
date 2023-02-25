@@ -62,24 +62,21 @@ export type GqlLoginResponse = {
 
 export type GqlMutation = {
   __typename?: 'Mutation';
-  /** @deprecated Field no longer supported */
-  addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: GqlLoginResponse;
+  /** Creates a token for scraper. */
   createScraper: Scalars['String'];
-  createSubscription: Scalars['String'];
+  /** Creates a subscription for a specified list of groups. Returns link with ICS subscription. */
+  createSubscription: GqlSubscriptionLinks;
+  /** Creates many events relatively to current date. */
   createTasksBulk: Scalars['Boolean'];
+  /** Allows to store scrapped content. Internal. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
-  /** @deprecated Field no longer supported */
   setGroups: Scalars['Boolean'];
+  /** Updates task state. Internal. */
   updateTaskState: Scalars['Boolean'];
-};
-
-
-export type GqlMutationAddGroupArgs = {
-  group: Scalars['String'];
 };
 
 
@@ -94,7 +91,7 @@ export type GqlMutationCreateScraperArgs = {
 
 
 export type GqlMutationCreateSubscriptionArgs = {
-  groups: Array<InputMaybe<Scalars['String']>>;
+  options: GqlSubscriptionOptions;
 };
 
 
@@ -121,30 +118,20 @@ export type GqlMutationUpdateTaskStateArgs = {
 
 export type GqlQuery = {
   __typename?: 'Query';
+  /** Returns details about app. */
   app?: Maybe<GqlApp>;
-  /** @deprecated Field no longer supported */
-  autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  /** Details for specified event. */
   event?: Maybe<GqlScheduleEvent>;
+  /** List of all available events. Not specifying target results in empty list. */
   events: Array<GqlScheduleEvent>;
-  /** @deprecated Field no longer supported */
   findByDescription: Array<GqlScheduleEvent>;
-  /** @deprecated Field no longer supported */
-  getGroups?: Maybe<Array<Scalars['String']>>;
-  getTaskCollection: Array<Scalars['JSON']>;
-  /** @deprecated Use subscription receiveTask instead. */
-  getTasks: Array<GqlTask>;
+  /** Returns groups matching the filter. Function for custom frontend. */
   groups: Array<Scalars['String']>;
-  me: GqlUser;
   ongoingScrapers: Array<GqlWorkingScraper>;
   scrapers: Array<GqlScraper>;
   sources: Array<GqlEventSource>;
   tasks: Array<GqlStoredTask>;
   user: GqlUser;
-};
-
-
-export type GqlQueryAutocompleteGroupsArgs = {
-  query: Scalars['String'];
 };
 
 
@@ -161,11 +148,6 @@ export type GqlQueryEventsArgs = {
 
 export type GqlQueryFindByDescriptionArgs = {
   query: Scalars['String'];
-};
-
-
-export type GqlQueryGetTaskCollectionArgs = {
-  collection: GqlTaskCollection;
 };
 
 
@@ -249,6 +231,18 @@ export type GqlSubscription = {
   receiveTask?: Maybe<GqlTask>;
 };
 
+export type GqlSubscriptionLinks = {
+  __typename?: 'SubscriptionLinks';
+  full: Scalars['String'];
+  short?: Maybe<Scalars['String']>;
+};
+
+export type GqlSubscriptionOptions = {
+  groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  hosts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  user?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type GqlTask = {
   __typename?: 'Task';
   date: Scalars['String'];
@@ -289,9 +283,11 @@ export type GqlTasksBulkInput = {
 /** A CaaTS user. */
 export type GqlUser = {
   __typename?: 'User';
+  /** The current event for current user. */
   currentEvent?: Maybe<GqlScheduleEvent>;
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  /** List of events for current user. */
   events: Array<GqlScheduleEvent>;
   groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
@@ -300,10 +296,10 @@ export type GqlUser = {
   isSuperuser: Scalars['Boolean'];
   /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
+  /** The next event for current user. */
   nextEvent?: Maybe<GqlScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
-  scrapers: Array<GqlScraper>;
 };
 
 
