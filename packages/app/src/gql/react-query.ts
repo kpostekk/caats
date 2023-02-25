@@ -77,7 +77,7 @@ export type Mutation = {
   /** Creates a token for scraper. */
   createScraper: Scalars['String'];
   /** Creates a subscription for a specified list of groups. Returns link with ICS subscription. */
-  createSubscription: Scalars['String'];
+  createSubscription: SubscriptionLinks;
   /** Creates many events relatively to current date. */
   createTasksBulk: Scalars['Boolean'];
   /** Allows to store scrapped content. Internal. */
@@ -101,7 +101,7 @@ export type MutationCreateScraperArgs = {
 
 
 export type MutationCreateSubscriptionArgs = {
-  groups: Array<InputMaybe<Scalars['String']>>;
+  options: SubscriptionOptions;
 };
 
 
@@ -239,6 +239,18 @@ export type StoredTask = {
 export type Subscription = {
   __typename?: 'Subscription';
   receiveTask?: Maybe<Task>;
+};
+
+export type SubscriptionLinks = {
+  __typename?: 'SubscriptionLinks';
+  full: Scalars['String'];
+  short?: Maybe<Scalars['String']>;
+};
+
+export type SubscriptionOptions = {
+  groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  hosts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  user?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Task = {
@@ -417,6 +429,11 @@ export type FindGroupsQueryVariables = Exact<{
 
 
 export type FindGroupsQuery = { __typename?: 'Query', groups: Array<string> };
+
+export type CreateSubscriptionMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateSubscriptionMutation = { __typename?: 'Mutation', createSubscription: { __typename?: 'SubscriptionLinks', short?: string | null } };
 
 export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -826,6 +843,26 @@ export const useFindGroupsQuery = <
     useQuery<FindGroupsQuery, TError, TData>(
       ['FindGroups', variables],
       fetcher<FindGroupsQuery, FindGroupsQueryVariables>(client, FindGroupsDocument, variables, headers),
+      options
+    );
+export const CreateSubscriptionDocument = `
+    mutation CreateSubscription {
+  createSubscription(options: {user: true}) {
+    short
+  }
+}
+    `;
+export const useCreateSubscriptionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateSubscriptionMutation, TError, CreateSubscriptionMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateSubscriptionMutation, TError, CreateSubscriptionMutationVariables, TContext>(
+      ['CreateSubscription'],
+      (variables?: CreateSubscriptionMutationVariables) => fetcher<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>(client, CreateSubscriptionDocument, variables, headers)(),
       options
     );
 export const StatusDocument = `

@@ -13,5 +13,11 @@ mutation CreateScraper($name: String) {
 }
 
 query FindGroups($search: [[String!]!]!) {
- groups(filter: $search)
+  groups(filter: $search)
+}
+
+mutation CreateSubscription {
+  createSubscription(options: { user: true }) {
+    short
+  }
 }

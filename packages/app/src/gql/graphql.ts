@@ -68,7 +68,7 @@ export type Mutation = {
   /** Creates a token for scraper. */
   createScraper: Scalars['String'];
   /** Creates a subscription for a specified list of groups. Returns link with ICS subscription. */
-  createSubscription: Scalars['String'];
+  createSubscription: SubscriptionLinks;
   /** Creates many events relatively to current date. */
   createTasksBulk: Scalars['Boolean'];
   /** Allows to store scrapped content. Internal. */
@@ -92,7 +92,7 @@ export type MutationCreateScraperArgs = {
 
 
 export type MutationCreateSubscriptionArgs = {
-  groups: Array<InputMaybe<Scalars['String']>>;
+  options: SubscriptionOptions;
 };
 
 
@@ -230,6 +230,18 @@ export type StoredTask = {
 export type Subscription = {
   __typename?: 'Subscription';
   receiveTask?: Maybe<Task>;
+};
+
+export type SubscriptionLinks = {
+  __typename?: 'SubscriptionLinks';
+  full: Scalars['String'];
+  short?: Maybe<Scalars['String']>;
+};
+
+export type SubscriptionOptions = {
+  groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  hosts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  user?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Task = {
@@ -436,6 +448,11 @@ export type FindGroupsQueryVariables = Exact<{
 
 export type FindGroupsQuery = { __typename?: 'Query', groups: Array<string> };
 
+export type CreateSubscriptionMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateSubscriptionMutation = { __typename?: 'Mutation', createSubscription: { __typename?: 'SubscriptionLinks', short?: string | null } };
+
 export type StatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -459,4 +476,5 @@ export const SetGroupsDocument = {"kind":"Document","definitions":[{"kind":"Oper
 export const GetCurrentGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCurrentGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"groups"}}]}}]}}]} as unknown as DocumentNode<GetCurrentGroupsQuery, GetCurrentGroupsQueryVariables>;
 export const CreateScraperDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateScraper"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createScraper"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}]}}]} as unknown as DocumentNode<CreateScraperMutation, CreateScraperMutationVariables>;
 export const FindGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindGroups"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"groups"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}]}]}}]} as unknown as DocumentNode<FindGroupsQuery, FindGroupsQueryVariables>;
+export const CreateSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"user"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"short"}}]}}]}}]} as unknown as DocumentNode<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>;
 export const StatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Status"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ongoingScrapers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeen"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"currentTask"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"targetDate"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<StatusQuery, StatusQueryVariables>;
