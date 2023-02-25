@@ -32,6 +32,10 @@ import swaggerUi from '@fastify/swagger-ui'
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
+        BASE_URL: Joi.string()
+          .uri({ scheme: ['http', 'https'] })
+          .exist()
+          .default('https://caats.app/'),
       }),
     }),
     GraphQLModule.forRootAsync<MercuriusDriverConfig>({
