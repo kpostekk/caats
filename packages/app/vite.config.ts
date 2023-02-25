@@ -88,6 +88,7 @@ export default defineConfig({
       '/graphql': backendUrl,
       '/graphiql': backendUrl,
       '/docs': backendUrl,
+      '/ics': backendUrl,
     },
   },
   build: {
