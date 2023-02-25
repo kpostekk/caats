@@ -36,7 +36,7 @@ export class BrowserResolver {
       ` (${(args.filter[3] ?? []).join('|')})` +
       '[.]' +
       `(${(args.filter[4] ?? []).join('|')})` +
-      ' (-|(OB[.])?[A-Z]+|[A-Z]_[A-Z]+) ' +
+      ' (-|(OB[.])?[A-Z0-9]+|[A-Z0-9]_[A-Z0-9]+) ' +
       `(${(args.filter[6] ?? []).join('|')})` +
       (args.filter[5][0] ?? '') +
       '$'
