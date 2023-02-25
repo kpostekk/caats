@@ -52,6 +52,17 @@ export default function Event() {
   const query = useEventDetailsQuery(client, { id: Number(id) })
   const notUserGroupsWarning = useIsInUserGroups(query.data?.event?.groups)
 
+  if (query.isLoading) {
+    return (
+      <div className="container max-w-md space-y-2 p-2 md:px-0">
+        <div className="bg-base-300 h-16 w-1/2 animate-pulse rounded-lg" />
+        <div className="bg-base-300 h-6 w-2/3 animate-pulse rounded-lg" />
+        <div className="bg-base-300 h-12 w-full animate-pulse rounded-lg" />
+        <div className="bg-base-300 h-12 w-full animate-pulse rounded-lg" />
+      </div>
+    )
+  }
+
   if (!query.data || !query.data.event) {
     return (
       <div className="container max-w-md p-2 md:px-0">
