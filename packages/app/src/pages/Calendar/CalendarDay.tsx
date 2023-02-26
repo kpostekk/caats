@@ -3,7 +3,6 @@ import { HiArrowLeft, HiArrowRight, HiCalendar } from 'react-icons/hi'
 import { Link, useParams } from 'react-router-dom'
 import { useGqlClient } from '../../components'
 import { ScheduleEventRow } from '../../components/ScheduleEvent/ScheduleEvent'
-import { Timelines } from '../../components/Timelines/Timelines'
 import { useUserEventsQuery } from '../../gql/react-query'
 
 export default function CalendarDay() {

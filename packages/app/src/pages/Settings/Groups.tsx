@@ -8,7 +8,6 @@ import { useList, useSet } from 'react-use'
 import { ItemSelector } from '../../components/ItemSelector/ItemSelector'
 import { InputSelector } from '../../components/InputSelector/InputSelector'
 import { useEffect } from 'react'
-import { useAuthStore } from '../../states/auth'
 import { HiCog } from 'react-icons/hi'
 
 export default function SettingsGroups() {

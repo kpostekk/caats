@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { Key, ReactNode, useMemo, useState } from 'react'
 import { useInterval } from 'react-use'
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 type AnimatedValueProps = {
   children: ReactNode

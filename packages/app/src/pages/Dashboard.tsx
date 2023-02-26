@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
 import { AnimatedCountdown } from '../components/AnimatedCountdown/AnimatedCountdown'
 import { useMemo } from 'react'
-import { Timeline } from '../components/Timeline/Timeline'
 import { Timelines } from '../components/Timelines/Timelines'
 
 type PrimarySectionEventProps = {

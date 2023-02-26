@@ -1,14 +1,9 @@
 import classNames from 'classnames'
 import { ReactNode } from 'react'
-import {
-  HiChevronDown,
-  HiCubeTransparent,
-  HiQuestionMarkCircle,
-} from 'react-icons/hi'
+import { HiChevronDown, HiCubeTransparent } from 'react-icons/hi'
 import { Link, useParams } from 'react-router-dom'
 import { useGqlClient } from '../components'
 import { useEventDetailsQuery, useUserQuery } from '../gql/react-query'
-import { useAuthStore } from '../states/auth'
 
 type DataRowProps = {
   value: [string, ReactNode]

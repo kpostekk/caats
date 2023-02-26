@@ -4,7 +4,6 @@ import { useGqlClient } from '../components'
 import {
   SimpleEventFragment,
   useUserEventsAfterQuery,
-  useUserEventsQuery,
 } from '../gql/react-query'
 
 type ScheduleCardProps = {
