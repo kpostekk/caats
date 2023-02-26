@@ -250,8 +250,8 @@ export default function Dashboard() {
           <DashboardButtons />
         </div>
         <div className="col-span-2 rounded-lg border-2 border-black p-4">
-          <button>{'<'}</button>
-          <button>{'>'}</button>
+          {/* <button>{'<'}</button>
+          <button>{'>'}</button> */}
           <Timelines scale={1.05} count={3} />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { AnimatePresence, AnimationProps, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { DateTime } from 'luxon'
 import { useCallback, useState } from 'react'
 import { HiArrowLeft, HiArrowRight, HiReply } from 'react-icons/hi'
@@ -39,12 +39,6 @@ export default function Calendar() {
 
   return (
     <div className="mx-auto p-2 md:max-w-md md:px-0">
-      {/* <CalDatePicker
-        date={now}
-        onClick={(d) =>
-          navigate(`/app/calendar/${DateTime.fromJSDate(d).toISODate()}`)
-        }
-      /> */}
       <div className="overflow-hidden">
         <AnimatePresence custom={direction} initial={false}>
           <motion.div
@@ -56,18 +50,12 @@ export default function Calendar() {
             initial={'enter'}
             animate={'center'}
             exit={'exit'}
-            // initial={{ y: 340, position: 'absolute', zIndex: 10 }}
-            // animate={{ y: 0, opacity: 1, position: 'relative' }}
-            // exit={{ opacity: 0.3, position: 'absolute', zIndex: 0 }}
             drag="x"
             dragConstraints={{ right: 0, left: 0 }}
             dragElastic={0.8}
             transition={{
               duration: 0.2,
               ease: 'easeInOut',
-              // type: 'spring',
-              // stiffness: 400,
-              // damping: 20,
             }}
             onDragEnd={(e, { offset }) => {
               if (offset.x > 100) {
