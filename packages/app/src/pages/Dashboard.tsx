@@ -62,20 +62,24 @@ function useIsVacation(query?: UserQuery) {
   const isVacation = useMemo(() => {
     if (!query?.user.nextEvent) return false // if there is no next event return false (probably loading)
     if (query.user.currentEvent) return false // if there is current event return false (that means you are not on vacation)
-    if (!query.user.nextEvent?.previous) return true // if there is no previous event return true (that means next will be first event)
     if (
-      DateTime.fromISO(query.user.nextEvent?.startsAt).diffNow().as('days') <
-      1.5
+      DateTime.fromISO(query.user.nextEvent?.startsAt).diffNow().as('days') < 4
     ) {
       return false
     }
+
+    if (!query.user.nextEvent?.previous) return true // if there is no previous event return true (that means next will be first event)
 
     const diff = DateTime.fromISO(query.user.nextEvent?.startsAt).diff(
       DateTime.fromISO(query.user.nextEvent?.previous?.endsAt),
       'days'
     )
-    return diff.days > 7 && diff.isValid
-  }, [query])
+    return diff.as('days') > 7 && diff.isValid
+  }, [
+    query?.user.nextEvent,
+    query?.user.currentEvent,
+    query?.user.nextEvent?.previous,
+  ])
   return isVacation
 }
 
@@ -218,13 +222,13 @@ export default function Dashboard() {
       </div>
       {/* Desktop variant */}
       <div className="my-2 hidden grid-cols-2 gap-2 md:grid">
-        <div className="relative row-span-2 w-full overflow-hidden rounded-lg border-2 border-black">
+        <div className="relative row-span-2 w-full select-none overflow-hidden rounded-lg border-2 border-black">
           <img
-            className="absolute right-0 z-10 h-[160%] translate-x-[50%] translate-y-[-12%] rotate-[-60deg] scale-[100%]"
+            className="absolute right-0 z-0 h-[160%] translate-x-[50%] translate-y-[-12%] rotate-[-60deg] scale-[100%]"
             src={palmLeafs}
           />
-          <div className="z-10 grid h-full place-items-center p-4">
-            <h1 className="mr-auto text-4xl font-bold">
+          <div className="absolute z-20 grid h-full place-items-center p-4">
+            <h1 className="mr-auto rounded-lg bg-white/60 p-2 pl-0 text-4xl font-bold backdrop-blur-sm">
               Siema, {name?.split(' ')[0]}
             </h1>
           </div>
@@ -232,12 +236,6 @@ export default function Dashboard() {
         <div className="w-full rounded-lg bg-black p-4 text-white">
           <UpdatePrompt />
           <PrimarySection query={userQuery.data} />
-        </div>
-        <div className="w-full rounded-lg bg-black p-4 text-white">
-          <p>Do końca semestru pozostało X dni.</p>
-        </div>
-        <div className="w-full rounded-lg bg-black p-4 text-white">
-          <p>Your ad here.</p>
         </div>
         <div className="w-full rounded-lg border-2 border-black p-4">
           <DashboardButtons />
