@@ -12,6 +12,8 @@ import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
 import { AnimatedCountdown } from '../components/AnimatedCountdown/AnimatedCountdown'
 import { useMemo } from 'react'
+import { Timeline } from '../components/Timeline/Timeline'
+import { Timelines } from '../components/Timelines/Timelines'
 
 type PrimarySectionEventProps = {
   simpleEvent: SimpleEventFragment
@@ -187,7 +189,7 @@ export default function Dashboard() {
     <div className="container max-w-5xl pb-12 md:pb-0">
       {/* Mobile variant */}
       <div className="grid grid-cols-1 gap-2 md:hidden">
-        <div className="col-span-2">
+        <div>
           <div className="relative select-none overflow-hidden">
             <div className="absolute right-0">
               <img
@@ -205,7 +207,7 @@ export default function Dashboard() {
               </h1>
             </div>
           </div>
-          <div className="mx-1 h-[30vh] min-h-[310px] rounded-xl bg-black p-6 text-white">
+          <div className="mx-1 h-[20vh] min-h-[240px] rounded-xl bg-black p-6 text-white">
             <UpdatePrompt />
             {userQuery.isLoading ? (
               <div className="space-y-4">
@@ -218,7 +220,15 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-        <DashboardButtons />
+        {/* <div>
+          <DashboardButtons />
+        </div> */}
+        <div className="mx-1 rounded-lg border-2 border-black p-2">
+          <Timelines scale={1.075} count={1} />
+        </div>
+        <div className="mx-1 rounded-lg border-2 border-black py-2">
+          <DashboardButtons />
+        </div>
       </div>
       {/* Desktop variant */}
       <div className="my-2 hidden grid-cols-2 gap-2 md:grid">
@@ -239,6 +249,11 @@ export default function Dashboard() {
         </div>
         <div className="w-full rounded-lg border-2 border-black p-4">
           <DashboardButtons />
+        </div>
+        <div className="col-span-2 rounded-lg border-2 border-black p-4">
+          <button>{'<'}</button>
+          <button>{'>'}</button>
+          <Timelines scale={1.05} count={3} />
         </div>
       </div>
     </div>

@@ -80,7 +80,9 @@ export default function Calendar() {
             <CalDatePicker
               date={now}
               onClick={(d) =>
-                navigate(`/app/calendar/${DateTime.fromJSDate(d).toISODate()}`)
+                navigate(
+                  `/app/calendar/${DateTime.fromJSDate(d).toISODate()}/week`
+                )
               }
             />
           </motion.div>

@@ -20,6 +20,7 @@ const SettingsThanks = lazy(() => import('./pages/Settings/Thanks'))
 const Schedule = lazy(() => import('./pages/Schedule'))
 const Calendar = lazy(() => import('./pages/Calendar/Calendar'))
 const CalendarDay = lazy(() => import('./pages/Calendar/CalendarDay'))
+const CalendarWeek = lazy(() => import('./pages/Calendar/CalendarWeek'))
 const Search = lazy(() => import('./pages/Search'))
 const Event = lazy(() => import('./pages/Event'))
 const Status = lazy(() => import('./pages/Status'))
@@ -100,6 +101,10 @@ export const router = createBrowserRouter([
           {
             path: '/app/calendar/:date/',
             element: <CalendarDay />,
+          },
+          {
+            path: '/app/calendar/:date/week/',
+            element: <CalendarWeek />,
           },
           {
             path: '/app/event/:id/',
