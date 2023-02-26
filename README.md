@@ -8,7 +8,7 @@
     </p>
 </div>
 
-![image1](https://user-images.githubusercontent.com/30326322/218796888-3700ed0c-6809-4930-94d0-884ee70e8ec4.jpeg)
+![image1](https://user-images.githubusercontent.com/30326322/221412496-8b4843ea-9f2d-4aea-9f85-747b639483ae.jpeg)
 
 ## Dlaczego?
 
