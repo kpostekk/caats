@@ -95,6 +95,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          'framer-motion': ['framer-motion'],
           react: ['react', 'react-dom', 'react-router-dom'],
           graphql: ['graphql-request', 'graphql'],
           luxon: ['luxon'],
