@@ -51,7 +51,7 @@ export default function CalendarDay() {
         </div>
       )}
 
-      <div className="fixed bottom-0 w-full py-4">
+      <div className="fixed bottom-0 z-50 w-full py-4">
         <div className="card card-bordered card-compact z-10 mx-auto w-fit bg-white">
           <div className="card-body grid grid-cols-3 gap-4">
             <Link

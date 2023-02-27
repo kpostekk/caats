@@ -223,7 +223,7 @@ export default function Dashboard() {
           <DashboardButtons />
         </div> */}
         <div className="mx-1 rounded-lg border-2 border-black p-2">
-          <Timelines scale={1.075} count={1} />
+          <Timelines scale={1} count={1} />
         </div>
         <div className="mx-1 rounded-lg border-2 border-black py-2">
           <DashboardButtons />
@@ -252,7 +252,7 @@ export default function Dashboard() {
         <div className="col-span-2 rounded-lg border-2 border-black p-4">
           {/* <button>{'<'}</button>
           <button>{'>'}</button> */}
-          <Timelines scale={1.05} count={3} />
+          <Timelines scale={0.9} count={3} />
         </div>
       </div>
     </div>

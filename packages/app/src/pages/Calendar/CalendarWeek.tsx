@@ -18,11 +18,11 @@ export default function CalendarWeek() {
       <div className="container min-h-full overflow-x-auto py-2">
         <Timelines
           count={Number(searchParams.get('width'))}
-          scale={0.925}
+          scale={0.9}
           date={dt.toJSDate()}
         />
       </div>
-      <div className="fixed bottom-0 w-full py-4">
+      <div className="fixed bottom-0 z-50 w-full py-4">
         <div className="card card-bordered card-compact z-10 mx-auto w-fit bg-white">
           <div className="card-body grid grid-cols-3 gap-4">
             <Link
