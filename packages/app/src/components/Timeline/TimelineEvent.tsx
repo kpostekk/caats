@@ -17,7 +17,9 @@ export function TimelineEvent(props: TimelineEventProps) {
       )}
       style={{
         top:
-          (props.startsAt.getTime() - props.relativeTo.getTime()) * props.scale,
+          (props.startsAt.getTime() - props.relativeTo.getTime()) *
+          props.scale +
+          8,
         height:
           (props.endsAt.getTime() - props.startsAt.getTime()) * props.scale,
       }}
@@ -27,7 +29,7 @@ export function TimelineEvent(props: TimelineEventProps) {
         className={classNames(
           'absolute z-0 h-full w-2 group-hover:w-4/5 duration-200 ease-in-out',
           !['Ćwiczenia', 'Wykład'].includes(props.type) &&
-            'bg-slate-300 group-hover:bg-slate-900',
+          'bg-slate-300 group-hover:bg-slate-900',
           props.type === 'Ćwiczenia' && 'bg-sky-300 group-hover:bg-sky-900',
           props.type === 'Wykład' && 'bg-rose-300 group-hover:bg-rose-900'
         )}
