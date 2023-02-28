@@ -42,7 +42,7 @@ export default function Thanks() {
         ]}
       />
       <ThanksFor
-        who="Aleksandra Indulska"
+        who="✨ Ola <3 ✨"
         what="Podziękowania za optymalizacje scrapowania i przetwarzania danych oraz UX/UI review."
         links={[
           ['Linked in', 'https://www.linkedin.com/in/aleksandra-indulska/'],
