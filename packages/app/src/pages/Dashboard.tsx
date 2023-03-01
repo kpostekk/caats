@@ -206,7 +206,7 @@ export default function Dashboard() {
               </h1>
             </div>
           </div>
-          <div className="mx-1 h-[20vh] min-h-[240px] rounded-xl bg-black p-6 text-white">
+          <div className="mx-1 min-h-[240px] rounded-xl bg-black p-6 text-white">
             <UpdatePrompt />
             {userQuery.isLoading ? (
               <div className="space-y-4">
