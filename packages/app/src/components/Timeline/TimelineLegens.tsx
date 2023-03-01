@@ -28,12 +28,14 @@ export function TimelineLegends(props: TimelineLegends) {
         <div
           style={{ height: 1000 * 60 * 60 * props.scale }}
           key={v.toUnixInteger()}
-          className="flex w-full gap-1"
+          className="w-full"
         >
-          <span className="select-none text-xs opacity-80">
-            {v.toLocaleString({ timeStyle: 'short' })}
-          </span>
-          <hr className="grow" />
+          <div className="flex w-full items-center gap-1">
+            <span className="select-none text-xs opacity-80">
+              {v.toLocaleString({ timeStyle: 'short' })}
+            </span>
+            <hr className="grow" />
+          </div>
         </div>
       ))}
       <div style={{ height: 1000 * 60 * 30 * props.scale }} />
