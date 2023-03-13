@@ -43,7 +43,7 @@ export function Timeline(props: TimelineProps) {
       style={{
         height: (endDate.getTime() - beginDate.getTime()) * scale,
       }}
-      className="relative min-w-[180px] grow"
+      className="relative min-w-[290px] grow"
     >
       <div className="absolute w-full">
         <TimelineLegends
