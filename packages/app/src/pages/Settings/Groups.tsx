@@ -40,6 +40,11 @@ export default function SettingsGroups() {
       <h2>Grupy</h2>
       <h3>Twoje aktualne grupy</h3>
       <div className="flex flex-wrap gap-1 p-2">
+        {userQuery.data?.user.groups.length === 0 && (
+          <div className="rounded-lg border-2 border-black px-4 py-1">
+            <span className="font-semibold italic">Brak</span>
+          </div>
+        )}
         {userQuery.data?.user.groups.map((group) => (
           <div
             key={group}
@@ -49,7 +54,51 @@ export default function SettingsGroups() {
           </div>
         ))}
       </div>
-      <h3>Zmień grupy</h3>
+      <h3>Zmień grupy (ręcznie)</h3>
+      <p className="italic">
+        Wpisuj 1 grupę na jedną linijkę. Zalecam kopiować nazwy grup z planu
+        zajęć. Wielkość liter ma znaczenie.
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        <textarea
+          id="manual-input"
+          className="input input-bordered col-span-2 h-24 border-2 border-black font-mono"
+        ></textarea>
+        <button
+          className="btn"
+          onClick={() => {
+            const i = document.getElementById(
+              'manual-input'
+            ) as HTMLTextAreaElement
+
+            if (!i) return
+
+            i.value = userQuery.data?.user.groups.join('\n') ?? ''
+          }}
+        >
+          Wczytaj z obecnych grup
+        </button>
+        <button
+          className="btn"
+          onClick={() =>
+            setGroupsMutation.mutate({
+              groups: (
+                document.getElementById('manual-input') as HTMLTextAreaElement
+              ).value
+                .split('\n')
+                .filter((v) => !!v),
+            })
+          }
+        >
+          {setGroupsMutation.isLoading ? (
+            <HiCog className="animate-spin" />
+          ) : (
+            'Zapisz'
+          )}
+        </button>
+      </div>
+
+      <h3>Zmień grupy (beta)</h3>
       <h4>Lokalizacja</h4>
       <ItemSelector
         items={['W', 'G', 'B']}
