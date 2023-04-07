@@ -10,7 +10,7 @@ import {
   HiStatusOffline,
   HiTemplate,
 } from 'react-icons/hi'
-import { IconType } from 'react-icons/lib'
+import { IconType } from 'react-icons/lib/esm'
 import { Link, Outlet } from 'react-router-dom'
 import { useNetworkState } from 'react-use'
 import { useAuthStore } from '../states/auth'
@@ -100,7 +100,7 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <div className="navbar-center gap-2">
+        <Link className="navbar-center gap-2" to={'/app'}>
           <Transition
             show={!networkState.online}
             enter="transition-opacity duration-200"
@@ -116,7 +116,7 @@ export default function App() {
           </Transition>
           <img className="h-6" src="/grumpyicon.webp" />
           <h1 className="select-none text-2xl font-bold">CaaTS</h1>
-        </div>
+        </Link>
         <div className="navbar-end">
           <div className="dropdown dropdown-end dropdown-hover">
             <button className="btn btn-ghost btn-square aspect-square rounded-lg">
