@@ -24,3 +24,5 @@
 
 > *zaobserwowany stack technologiczny - może się różnić w rzeczywistości
 
+
+*moze teraz wam sie uda reaktywowac lustro*
