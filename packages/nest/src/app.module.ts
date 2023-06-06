@@ -1,6 +1,6 @@
 import { Inject, Logger, Module, OnModuleInit } from '@nestjs/common'
 import { GraphQLModule, GraphQLSchemaHost } from '@nestjs/graphql'
-import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius'
+// import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius'
 import { join } from 'path'
 import { AppResolver } from './app.resolver'
 import { PrismaModule } from './prisma/prisma.module'
@@ -14,13 +14,16 @@ import { BrowserModule } from './browser/browser.module'
 import { resolvers, typeDefs } from 'graphql-scalars'
 import { IcsModule } from './ics/ics.module'
 import { ScheduleModule } from '@nestjs/schedule'
-import { EmitterModule } from './emitter/emitter.module'
-import { EmitterService } from './emitter/emitter.service'
-import { OpenAPI, useSofa } from 'sofa-api'
-import { HttpAdapterHost } from '@nestjs/core'
-import { FastifyInstance } from 'fastify'
-import swagger from '@fastify/swagger'
-import swaggerUi from '@fastify/swagger-ui'
+// import { EmitterModule } from './emitter/emitter.module'
+// import { EmitterService } from './emitter/emitter.service'
+// import { OpenAPI, useSofa } from 'sofa-api'
+// import { HttpAdapterHost } from '@nestjs/core'
+// import { FastifyInstance } from 'fastify'
+import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo'
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
+import { PubsubModule } from './pubsub/pubsub.module'
+// import swagger from '@fastify/swagger'
+// import swaggerUi from '@fastify/swagger-ui'
 
 @Module({
   imports: [
@@ -38,20 +41,18 @@ import swaggerUi from '@fastify/swagger-ui'
           .default('https://caats.app/'),
       }),
     }),
-    GraphQLModule.forRootAsync<MercuriusDriverConfig>({
-      driver: MercuriusDriver,
-      imports: [EmitterModule],
-      inject: [EmitterService],
-      useFactory: (emitter: EmitterService) => ({
-        typePaths: ['./**/*.{gql,graphql}'],
-        queryDepth: process.env.NODE_ENV !== 'development' ? 7 : Infinity,
-        graphiql: true,
-        typeDefs,
-        resolvers,
-        subscription: {
-          emitter: emitter.getEmitter(),
-        },
-      }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      typePaths: ['./**/*.{gql,graphql}'],
+      typeDefs,
+      resolvers,
+      // playground: true,
+      // installSubscriptionHandlers: true,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      introspection: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
@@ -63,75 +64,8 @@ import swaggerUi from '@fastify/swagger-ui'
     SupervisorModule,
     BrowserModule,
     IcsModule,
-    EmitterModule,
+    PubsubModule,
   ],
   providers: [AppResolver],
 })
-export class AppModule implements OnModuleInit {
-  constructor(
-    @Inject(GraphQLSchemaHost) private readonly schemaHost: GraphQLSchemaHost,
-    @Inject(HttpAdapterHost) private readonly httpAdapterHost: HttpAdapterHost
-  ) {}
-
-  onModuleInit(): void {
-    if (!this.httpAdapterHost) return
-
-    const sofaLogger = new Logger('SOFA', { timestamp: true })
-    sofaLogger.log('Initializing SOFA')
-
-    const { httpAdapter } = this.httpAdapterHost
-    const { schema } = this.schemaHost
-
-    const openApi = OpenAPI({
-      schema,
-      info: {
-        title: 'CaaTS REST API',
-        version: '1.0.0',
-        description: 'A REST API translation for GraphQL requests.',
-      },
-      components: {
-        securitySchemes: {
-          bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
-          },
-        },
-      },
-      security: [
-        {
-          bearerAuth: [],
-        },
-      ],
-    })
-    sofaLogger.log('Created Open API document')
-
-    // convert GraphQL API to REST using SOFA
-    httpAdapter.use(
-      '/api',
-      useSofa({
-        schema,
-        basePath: '/api',
-        onRoute(info) {
-          openApi.addRoute(info, {
-            basePath: '/api',
-          })
-          sofaLogger.log(`Mapped {/api${info.path}, ${info.method}} route`)
-        },
-        ignore: ['Query.user.events'],
-      })
-    )
-
-    const fastifyInstance: FastifyInstance = httpAdapter.getInstance()
-    fastifyInstance.register(swagger, {
-      mode: 'static',
-      specification: {
-        document: openApi.get(),
-      },
-    })
-    fastifyInstance.register(swaggerUi, {
-      routePrefix: '/docs',
-    })
-    sofaLogger.log('Created Swagger docs {/docs, GET}')
-  }
-}
+export class AppModule {}

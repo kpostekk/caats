@@ -10,6 +10,7 @@ import { User } from '@prisma/client'
 import { FastifyRequest } from 'fastify'
 import { PrismaService } from '../prisma/prisma.service'
 import { JwtPayload } from './auth.service'
+import {  } from '@apollo/server'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -83,8 +84,15 @@ export class ScraperGuard implements CanActivate {
 
   async canActivate(execCtx: ExecutionContext): Promise<boolean> {
     const context = GqlExecutionContext.create(execCtx).getContext()
-    const request = (context.request || context.req) as FastifyRequest
-    const { authorization } = request.headers
+
+    if (!context.req.connectionParams) {
+      throw new UnauthorizedException()
+    }
+
+    const connectionParams = context.req.connectionParams as { Authorization?: string }
+
+    // const connectionParams = (context.request || context.req) as FastifyRequest
+    const authorization = connectionParams.Authorization
 
     if (!authorization) throw new UnauthorizedException()
 

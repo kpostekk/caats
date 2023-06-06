@@ -7,7 +7,8 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { createHash, randomBytes } from 'crypto'
 import { randAnimal } from '@ngneat/falso'
 import { JwtService } from '@nestjs/jwt'
-import { EmitterService } from '../emitter/emitter.service'
+import { PubsubService } from '../pubsub/pubsub.service'
+// import { EmitterService } from '../emitter/emitter.service'
 
 @Injectable()
 export class SupervisorService implements OnModuleInit {
@@ -17,7 +18,7 @@ export class SupervisorService implements OnModuleInit {
     private readonly prisma: PrismaService,
     private readonly parser: ParserService,
     private readonly jwt: JwtService,
-    private readonly emitter: EmitterService
+    private readonly pubsub: PubsubService,
   ) {}
 
   async onModuleInit() {
@@ -303,16 +304,24 @@ export class SupervisorService implements OnModuleInit {
     if (!nextScraper) return
     this.logger.debug(`Found scraper ${nextScraper.alias} to dispatch!`)
 
-    this.emitter.getEmitter().emit({
-      topic: nextScraper.id,
-      payload: {
-        receiveTask: {
-          id: nextTask.id,
-          date: nextTask.targetDate.toISOString().substring(0, 10),
-          hash: nextTask.initialHash,
-        },
+    this.pubsub.publish(nextScraper.id, {
+      receiveTask: {
+        id: nextTask.id,
+        date: nextTask.targetDate.toISOString().substring(0, 10),
+        hash: nextTask.initialHash,
       },
     })
+
+    // this.emitter.getEmitter().emit({
+    //   topic: nextScraper.id,
+    //   payload: {
+    //     receiveTask: {
+    //       id: nextTask.id,
+    //       date: nextTask.targetDate.toISOString().substring(0, 10),
+    //       hash: nextTask.initialHash,
+    //     },
+    //   },
+    // })
 
     await this.prisma.task.update({
       where: { id: nextTask.id },

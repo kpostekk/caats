@@ -14,7 +14,7 @@ import {
 } from '@nestjs/graphql'
 import { Scraper, TaskStatus, User } from '@prisma/client'
 import { FastifyRequest } from 'fastify'
-import { PubSub } from 'mercurius'
+// import { PubSub } from 'mercurius'
 import { AuthGuard, ScraperGuard, SuperuserGuard } from '../auth/auth.guard'
 import {
   GqlMutationCreateScraperArgs,
@@ -23,10 +23,15 @@ import {
   GqlTasksBulkInput,
 } from '../gql'
 import { SupervisorService } from './supervisor.service'
+import { PubSub } from 'graphql-subscriptions'
+import { PubsubService } from '../pubsub/pubsub.service'
 
 @Resolver()
 export class SupervisorResolver {
-  constructor(private readonly supervisor: SupervisorService) {}
+  constructor(
+    private readonly supervisor: SupervisorService,
+    private readonly pubsub: PubsubService
+  ) {}
 
   @UseGuards(ScraperGuard)
   @Mutation()
@@ -60,20 +65,22 @@ export class SupervisorResolver {
   @UseGuards(ScraperGuard)
   @Subscription()
   async receiveTask(
-    @Context('pubsub') pubsub: PubSub,
     @Context('scraper') scraper: Scraper
   ) {
-    const subscription = pubsub
-      .subscribe(['newTask', scraper.id, scraper.ownerId])
-      .then((i) => {
-        return i.once('close', () => {
-          this.supervisor.updateScraper(scraper.id, 'DISCONNECTED')
-        })
-      })
+    const asyncIterator = this.pubsub.asyncData(
+      ['newTask', scraper.id, scraper.ownerId],
+      () => {
+        this.supervisor.updateScraper(scraper.id, 'DISCONNECTED')
+      }
+    )
 
-    await this.supervisor.updateScraper(scraper.id, 'AWAITING')
-    await this.supervisor.dispatch()
-    return subscription
+    setTimeout(async () => {
+      await this.supervisor.createTasks()
+      await this.supervisor.updateScraper(scraper.id, 'AWAITING')
+      await this.supervisor.dispatch()
+    }, 500)
+
+    return asyncIterator
   }
 
   @UseGuards(AuthGuard, SuperuserGuard)
