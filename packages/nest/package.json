@@ -1,6 +1,6 @@
 {
   "name": "@caats/nest",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "",
   "author": "Krystian Postek <krystian@postek.eu>",
   "contributors": [
@@ -11,7 +11,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "legacy:build": "nest build",
-    "build": "tsc --project tsconfig.build.json && swc src/ -d dist/",
+    "build": "tsc --project tsconfig.build.json",
     "dev": "swc src/ -d dist/ && node dist",
     "start": "node dist",
     "test:e2e": "jest --config ./test/jest-e2e.json",
