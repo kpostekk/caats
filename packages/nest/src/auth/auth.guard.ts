@@ -84,11 +84,11 @@ export class ScraperGuard implements CanActivate {
   async canActivate(execCtx: ExecutionContext): Promise<boolean> {
     const context = GqlExecutionContext.create(execCtx).getContext()
 
-    if (!context.req.connectionParams) {
+    if (!context.req.connectionParams && !context.req.headers) {
       throw new UnauthorizedException()
     }
 
-    const connectionParams = context.req.connectionParams
+    const connectionParams = context.req.connectionParams || context.req.headers
 
     // const connectionParams = (context.request || context.req) as FastifyRequest
     const authorization = connectionParams.Authorization || connectionParams.authorization
