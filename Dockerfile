@@ -1,4 +1,4 @@
-FROM node:19 AS build
+FROM node:20 AS build
 
 WORKDIR /build
 
@@ -26,7 +26,7 @@ RUN yarn workspace @caats/nest build
 
 RUN yarn install --production
 
-FROM node:19-slim AS application
+FROM node:20-slim AS application
 
 WORKDIR /caats
 

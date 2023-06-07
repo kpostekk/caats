@@ -10,7 +10,6 @@ import { User } from '@prisma/client'
 import { FastifyRequest } from 'fastify'
 import { PrismaService } from '../prisma/prisma.service'
 import { JwtPayload } from './auth.service'
-import {  } from '@apollo/server'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
