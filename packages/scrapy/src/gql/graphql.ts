@@ -29,6 +29,14 @@ export type App = {
   version: Scalars['String'];
 };
 
+export type CurrentTask = {
+  __typename?: 'CurrentTask';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  status: TaskState;
+  targetDate: Scalars['Date'];
+};
+
 export type EventSource = {
   __typename?: 'EventSource';
   constantId: Scalars['String'];
@@ -55,24 +63,21 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addGroup: Array<Scalars['String']>;
   /** Exchanges code from Google OAuth2 for a JWT and user. */
   authGoogle: LoginResponse;
+  /** Creates a token for scraper. */
   createScraper: Scalars['String'];
-  createSubscription: Scalars['String'];
+  /** Creates a subscription for a specified list of groups. Returns link with ICS subscription. */
+  createSubscription: SubscriptionLinks;
+  /** Creates many events relatively to current date. */
   createTasksBulk: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
+  /** Allows to store scrapped content. Internal. */
   finishTask: Scalars['Boolean'];
   /** Invalidates the JWT. Requires authentication. */
   logout: Scalars['Boolean'];
   setGroups: Scalars['Boolean'];
-  /** @deprecated Use subscription receiveTask instead. */
+  /** Updates task state. Internal. */
   updateTaskState: Scalars['Boolean'];
-};
-
-
-export type MutationAddGroupArgs = {
-  group: Scalars['String'];
 };
 
 
@@ -87,7 +92,7 @@ export type MutationCreateScraperArgs = {
 
 
 export type MutationCreateSubscriptionArgs = {
-  groups: Array<InputMaybe<Scalars['String']>>;
+  options: SubscriptionOptions;
 };
 
 
@@ -114,27 +119,31 @@ export type MutationUpdateTaskStateArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Returns details about app. */
   app?: Maybe<App>;
-  autocompleteGroups?: Maybe<Array<Scalars['String']>>;
+  /** Details for specified event. */
+  event?: Maybe<ScheduleEvent>;
+  /** List of all available events. Not specifying target results in empty list. */
+  events: Array<ScheduleEvent>;
   findByDescription: Array<ScheduleEvent>;
-  getEvent?: Maybe<ScheduleEvent>;
-  getEventHistory: Array<ScheduleEvent>;
-  getGroups?: Maybe<Array<Scalars['String']>>;
-  /** Returns all schedule events for the given groups. */
-  getScheduleGroups: Array<ScheduleEvent>;
-  /** Returns all schedule events for the given host. */
-  getScheduleHosts: Array<ScheduleEvent>;
-  /** Returns all schedule events for the given user based on theirs preferences. Requires authentication. */
-  getScheduleUser: Array<ScheduleEvent>;
-  getTaskCollection: Array<Scalars['JSON']>;
-  /** @deprecated Use subscription receiveTask instead. */
-  getTasks: Array<Task>;
-  me: User;
+  /** Returns groups matching the filter. Function for custom frontend. */
+  groups: Array<Scalars['String']>;
+  ongoingScrapers: Array<WorkingScraper>;
+  scrapers: Array<Scraper>;
+  sources: Array<EventSource>;
+  tasks: Array<StoredTask>;
+  user: User;
 };
 
 
-export type QueryAutocompleteGroupsArgs = {
-  query: Scalars['String'];
+export type QueryEventArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryEventsArgs = {
+  search?: InputMaybe<ScheduleInput>;
+  targets?: InputMaybe<ScheduleTargets>;
 };
 
 
@@ -143,38 +152,8 @@ export type QueryFindByDescriptionArgs = {
 };
 
 
-export type QueryGetEventArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryGetEventHistoryArgs = {
-  constantId: Scalars['String'];
-};
-
-
-export type QueryGetScheduleGroupsArgs = {
-  groups: GroupInput;
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
-};
-
-
-export type QueryGetScheduleHostsArgs = {
-  host: HostInput;
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
-};
-
-
-export type QueryGetScheduleUserArgs = {
-  sinceUntil?: InputMaybe<SinceUntil>;
-  skipTake?: InputMaybe<SkipTake>;
-};
-
-
-export type QueryGetTaskCollectionArgs = {
-  collection: TaskCollection;
+export type QueryGroupsArgs = {
+  filter?: InputMaybe<Array<Array<Scalars['String']>>>;
 };
 
 /** Represents a schedule event. */
@@ -188,6 +167,10 @@ export type ScheduleEvent = {
   /** Hosts that are attending this event. */
   hosts: Array<Scalars['String']>;
   id: Scalars['ID'];
+  /** The following event. */
+  next?: Maybe<ScheduleEvent>;
+  /** The previous event. */
+  previous?: Maybe<ScheduleEvent>;
   /** The room where the event is taking place. */
   room?: Maybe<Scalars['String']>;
   /** The source of the event. */
@@ -197,6 +180,26 @@ export type ScheduleEvent = {
   subject: Scalars['String'];
   /** The type of the event. */
   type: Scalars['String'];
+};
+
+export type ScheduleInput = {
+  since?: InputMaybe<Scalars['DateTime']>;
+  skip?: InputMaybe<Scalars['PositiveInt']>;
+  take?: InputMaybe<Scalars['PositiveInt']>;
+  until?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type ScheduleTargets = {
+  groups?: InputMaybe<Array<Scalars['String']>>;
+  hosts?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type Scraper = {
+  __typename?: 'Scraper';
+  alias: Scalars['String'];
+  id: Scalars['ID'];
+  lastSeen?: Maybe<Scalars['DateTime']>;
+  state: Scalars['String'];
 };
 
 /** Represents a time range. */
@@ -220,12 +223,25 @@ export type StoredTask = {
   finishedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   initialHash?: Maybe<Scalars['String']>;
+  scraper?: Maybe<Scraper>;
   status: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   receiveTask?: Maybe<Task>;
+};
+
+export type SubscriptionLinks = {
+  __typename?: 'SubscriptionLinks';
+  full: Scalars['String'];
+  short?: Maybe<Scalars['String']>;
+};
+
+export type SubscriptionOptions = {
+  groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  hosts?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  user?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Task = {
@@ -270,8 +286,12 @@ export type TasksBulkInput = {
 /** A CaaTS user. */
 export type User = {
   __typename?: 'User';
+  /** The current event for current user. */
+  currentEvent?: Maybe<ScheduleEvent>;
   /** Email address of the user provided by Google. */
   email: Scalars['EmailAddress'];
+  /** List of events for current user. */
+  events: Array<ScheduleEvent>;
   groups: Array<Scalars['String']>;
   /** Internal ID of the user. */
   id: Scalars['ID'];
@@ -279,19 +299,31 @@ export type User = {
   isSuperuser: Scalars['Boolean'];
   /** Full name of the user provided by Google. Can be changed by the user. */
   name: Scalars['String'];
+  /** The next event for current user. */
+  nextEvent?: Maybe<ScheduleEvent>;
   /** Picture of the user provided by Google. Can be changed by the user. */
   picture?: Maybe<Scalars['URL']>;
+};
+
+
+/** A CaaTS user. */
+export type UserEventsArgs = {
+  search?: InputMaybe<ScheduleInput>;
+};
+
+export type WorkingScraper = {
+  __typename?: 'WorkingScraper';
+  alias: Scalars['String'];
+  currentTask?: Maybe<CurrentTask>;
+  id: Scalars['ID'];
+  lastSeen: Scalars['DateTime'];
+  state: Scalars['String'];
 };
 
 export type GetAppVersionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAppVersionQuery = { __typename?: 'Query', app?: { __typename?: 'App', version: string } | null };
-
-export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetTasksQuery = { __typename?: 'Query', getTasks: Array<{ __typename?: 'Task', id: string, date: string, hash?: string | null }> };
 
 export type UpdateTaskStateMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -329,7 +361,6 @@ export type AwaitTaskSubscription = { __typename?: 'Subscription', receiveTask?:
 
 
 export const GetAppVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAppVersion"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"app"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"version"}}]}}]}}]} as unknown as DocumentNode<GetAppVersionQuery, GetAppVersionQueryVariables>;
-export const GetTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}}]}}]} as unknown as DocumentNode<GetTasksQuery, GetTasksQueryVariables>;
 export const UpdateTaskStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTaskState"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTaskState"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"state"},"value":{"kind":"EnumValue","value":"RUNNING"}}]}]}}]} as unknown as DocumentNode<UpdateTaskStateMutation, UpdateTaskStateMutationVariables>;
 export const SkipTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"skipTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTaskState"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"state"},"value":{"kind":"EnumValue","value":"SKIPPED"}}]}]}}]} as unknown as DocumentNode<SkipTaskMutation, SkipTaskMutationVariables>;
 export const FailTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"failTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTaskState"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"state"},"value":{"kind":"EnumValue","value":"FAILED"}}]}]}}]} as unknown as DocumentNode<FailTaskMutation, FailTaskMutationVariables>;
