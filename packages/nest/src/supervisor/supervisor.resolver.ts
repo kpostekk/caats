@@ -64,21 +64,13 @@ export class SupervisorResolver {
 
   @UseGuards(ScraperGuard)
   @Subscription()
-  async receiveTask(
-    @Context('scraper') scraper: Scraper
-  ) {
+  async receiveTask(@Context('scraper') scraper: Scraper) {
     const asyncIterator = this.pubsub.asyncData(
       ['newTask', scraper.id, scraper.ownerId],
       () => {
         this.supervisor.updateScraper(scraper.id, 'DISCONNECTED')
       }
     )
-
-    setTimeout(async () => {
-      await this.supervisor.createTasks()
-      await this.supervisor.updateScraper(scraper.id, 'AWAITING')
-      await this.supervisor.dispatch()
-    }, 500)
 
     return asyncIterator
   }

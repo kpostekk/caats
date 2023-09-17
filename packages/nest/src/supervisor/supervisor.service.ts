@@ -30,11 +30,6 @@ export class SupervisorService implements OnModuleInit {
       where: { status: 'SUCCESS' },
     })
 
-    this.logger.verbose('Creating tasks if needed...')
-    if (taskCount < 14) {
-      await this.createTasks(21, 1)
-    }
-
     this.logger.verbose('Initial cleanup is done.')
   }
 
@@ -349,7 +344,7 @@ export class SupervisorService implements OnModuleInit {
       .diffNow()
       .as('days')
 
-    await this.createTasks(Math.max(Math.floor(nextEnd), 7 * 4 * 2), 0)
+    await this.createTasks(90, 0)
   }
 
   getTaskQueue() {
