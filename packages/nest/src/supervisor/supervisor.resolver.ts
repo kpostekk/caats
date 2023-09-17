@@ -72,13 +72,10 @@ export class SupervisorResolver {
       }
     )
 
-    setTimeout(
-      void (async () => {
-        await this.supervisor.updateScraper(scraper.id, 'AWAITING')
-        await this.supervisor.dispatch()
-      }),
-      250
-    )
+    setTimeout(async () => {
+      await this.supervisor.updateScraper(scraper.id, 'AWAITING')
+      await this.supervisor.dispatch()
+    }, 250)
 
     return asyncIterator
   }
