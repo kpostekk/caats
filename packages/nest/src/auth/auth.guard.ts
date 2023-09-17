@@ -93,8 +93,6 @@ export class ScraperGuard implements CanActivate {
     // const connectionParams = (context.request || context.req) as FastifyRequest
     const authorization = headersLike.authorization || headersLike.Authorization
 
-    console.log(JSON.stringify({ headersLike }, null, 2))
-
     if (!authorization) throw new UnauthorizedException()
 
     const [type, jwtString] = authorization.split(' ')
