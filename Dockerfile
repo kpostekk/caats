@@ -20,7 +20,7 @@ ENV SKIPCODEGEN=true
 ARG GOOGLE_CLIENT_ID
 ENV VITE_GOOGLE_CLIENTID=$GOOGLE_CLIENT_ID
 
-RUN yarn workspace @caats/app build
+RUN yarn workspace @caats/app vite build
 RUN yarn workspace @caats/nest prisma generate
 RUN yarn workspace @caats/nest build
 
