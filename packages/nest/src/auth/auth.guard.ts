@@ -88,10 +88,12 @@ export class ScraperGuard implements CanActivate {
       throw new UnauthorizedException()
     }
 
-    const connectionParams = context.req.connectionParams || context.req.headers
+    const headersLike = context.req.connectionParams || context.req.headers
 
     // const connectionParams = (context.request || context.req) as FastifyRequest
-    const authorization = connectionParams.Authorization || connectionParams.authorization
+    const authorization = headersLike.authorization || headersLike.Authorization
+
+    console.log(JSON.stringify({ headersLike }, null, 2))
 
     if (!authorization) throw new UnauthorizedException()
 

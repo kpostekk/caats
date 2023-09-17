@@ -120,7 +120,7 @@ yargs(hideBin(process.argv))
         headers: {
           authorization: `Bearer ${usedToken}`,
         },
-        // fetch,
+        fetch,
       })
 
       // eslint-disable-next-line no-constant-condition
