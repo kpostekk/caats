@@ -25,7 +25,7 @@ export function useIsBusy() {
     if (busyDaysQuery.data) {
       const futureSet = new Set<string>(
         busyDaysQuery.data.user.events.map(({ startsAt }) =>
-          DateTime.fromISO(startsAt).toISODate()
+          DateTime.fromISO(startsAt).toISODate()!
         )
       )
       update(futureSet)

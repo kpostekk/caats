@@ -45,7 +45,7 @@ function CalDate(props: RenderDayProps) {
   const [isBusy, busyDays] = useIsBusy()
 
   const busy = useMemo(
-    () => isBusy(props.date.toISODate()),
+    () => isBusy(props.date.toISODate()!),
     [props.date, isBusy, busyDays]
   )
 

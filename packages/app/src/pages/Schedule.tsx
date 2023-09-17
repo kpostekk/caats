@@ -43,7 +43,7 @@ export default function Schedule() {
   const client = useGqlClient()
   const [now] = useState(DateTime.now().startOf('day'))
   const allEventsSinceNow = useUserEventsAfterQuery(client, {
-    since: now.toISO(),
+    since: now.toISO()!,
   })
 
   return (

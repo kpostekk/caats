@@ -44,11 +44,11 @@ function usePartitionedEvents<
   useEffect(() => {
     evMap.clear()
     for (const ed of eventDates) {
-      set(ed, [])
+      set(ed!, [])
     }
 
     for (const event of events) {
-      const eDate = DateTime.fromISO(event.startsAt).toISODate()
+      const eDate = DateTime.fromISO(event.startsAt).toISODate()!
       console.log(eDate, [...get(eDate), event])
       set(eDate, [...get(eDate), event])
     }
@@ -84,8 +84,8 @@ export function Timelines(props: TimelinesProps) {
 
   const client = useGqlClient()
   const userEventsQuery = useUserEventsQuery(client, {
-    since: since.toISO(),
-    until: until.toISO(),
+    since: since.toISO()!,
+    until: until.toISO()!,
   })
 
   const a = usePartitionedEvents(

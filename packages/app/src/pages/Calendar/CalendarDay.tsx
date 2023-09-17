@@ -11,8 +11,8 @@ export default function CalendarDay() {
 
   const client = useGqlClient()
   const events = useUserEventsQuery(client, {
-    since: dt.toISO(),
-    until: dt.plus({ days: 1 }).toISO(),
+    since: dt.toISO()!,
+    until: dt.plus({ days: 1 }).toISO()!,
   })
 
   return (
