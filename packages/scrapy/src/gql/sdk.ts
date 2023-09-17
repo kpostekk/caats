@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-// import * as Dom from 'graphql-request/dist/types.dom';
+import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -405,22 +405,22 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    getAppVersion(variables?: GetAppVersionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAppVersionQuery> {
+    getAppVersion(variables?: GetAppVersionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetAppVersionQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetAppVersionQuery>(GetAppVersionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAppVersion', 'query');
     },
-    updateTaskState(variables: UpdateTaskStateMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateTaskStateMutation> {
+    updateTaskState(variables: UpdateTaskStateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateTaskStateMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateTaskStateMutation>(UpdateTaskStateDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateTaskState', 'mutation');
     },
-    skipTask(variables: SkipTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SkipTaskMutation> {
+    skipTask(variables: SkipTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<SkipTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SkipTaskMutation>(SkipTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'skipTask', 'mutation');
     },
-    failTask(variables: FailTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FailTaskMutation> {
+    failTask(variables: FailTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FailTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<FailTaskMutation>(FailTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'failTask', 'mutation');
     },
-    finishTask(variables: FinishTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FinishTaskMutation> {
+    finishTask(variables: FinishTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FinishTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<FinishTaskMutation>(FinishTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'finishTask', 'mutation');
     },
-    awaitTask(variables?: AwaitTaskSubscriptionVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AwaitTaskSubscription> {
+    awaitTask(variables?: AwaitTaskSubscriptionVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AwaitTaskSubscription> {
       return withWrapper((wrappedRequestHeaders) => client.request<AwaitTaskSubscription>(AwaitTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'awaitTask', 'subscription');
     }
   };

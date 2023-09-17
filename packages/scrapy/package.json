@@ -17,8 +17,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.1",
-    "@graphql-codegen/client-preset": "^1.2.3",
-    "@graphql-codegen/typescript-graphql-request": "^4.5.8",
+    "@graphql-codegen/typescript-graphql-request": "^5.0.0",
     "@swc/cli": "^0.1.59",
     "@swc/core": "^1.3.24",
     "@swc/register": "^0.1.10",
@@ -30,13 +29,13 @@
     "eslint": "^8.30.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.1",
-    "typescript": "^4.9.4"
+    "typescript": "^5.2.0"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
     "got": "11",
     "graphql": "^16.6.0",
-    "graphql-request": "^5.1.0",
+    "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.11.3",
     "node-html-parser": "^6.1.4",

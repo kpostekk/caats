@@ -2,8 +2,8 @@ overwrite: true
 schema: '../nest/src/**/*.gql'
 documents: 'operations/*.gql'
 generates:
-  'src/gql/':
-    preset: client
+  # 'src/gql/':
+  #   preset: client
   'src/gql/sdk.ts':
     plugins:
       - typescript

@@ -4,7 +4,7 @@ import { hideBin } from 'yargs/helpers'
 import { getSdk } from './gql/sdk'
 import { Stealer } from './stealer'
 import { createClient, Client } from 'graphql-ws'
-import { AwaitTaskSubscription } from './gql/graphql'
+import { AwaitTaskSubscription } from './gql/sdk'
 import { WebSocket } from 'ws'
 import 'dotenv/config'
 
