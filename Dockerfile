@@ -26,7 +26,7 @@ RUN yarn workspace @caats/nest build
 
 RUN yarn install --production
 
-FROM node:20-slim AS application
+FROM node:20 AS application
 
 WORKDIR /caats
 
@@ -53,7 +53,7 @@ RUN yarn workspace @caats/scrapy build
 
 RUN yarn install --production
 
-FROM node:19-slim AS scraper
+FROM node:20 AS scraper
 
 WORKDIR /caats
 
