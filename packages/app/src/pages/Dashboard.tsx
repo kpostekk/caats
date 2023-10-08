@@ -59,6 +59,38 @@ type PrimarySectionProps = {
   query?: UserQuery
 }
 
+/**
+ * Helper function determing if user is on a break
+ * @param query API query about user events
+ * @returns Date of next event, if user is on a break or it is 15 minutes before a first event of the day
+ */
+const useIsOnBreak = (query: UserQuery): Date | undefined => {
+  if (!query.user.nextEvent) return undefined // if there is no next event return undefined (loading / ended studies)
+  const fifthteenMinutesInMillisec = 15 * 60 * 1000
+  const currentDate = new Date()
+  const nextEventStartingDate = new Date(query.user.nextEvent.startsAt)
+  let currentEventEndingDate: Date
+  if (query.user.nextEvent.previous)
+    // if there is a previous lesson (you are on a break), assign the date to a variable
+    currentEventEndingDate = new Date(query.user.nextEvent.previous.endsAt)
+  else if (
+    // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
+    nextEventStartingDate.getTime() - currentDate.getTime() <=
+    fifthteenMinutesInMillisec
+  )
+    return nextEventStartingDate
+  // otherwise do not display countdown
+  else return undefined
+  if (
+    // if previous and next event happen on the same day and you are in between those events, you are on a break -> display countdown
+    currentEventEndingDate.getTime() < currentDate.getTime() &&
+    currentDate.getTime() < nextEventStartingDate.getTime() &&
+    currentEventEndingDate.getDate() == nextEventStartingDate.getDate()
+  )
+    return nextEventStartingDate
+  else return undefined
+}
+
 function useIsVacation(query?: UserQuery) {
   const isVacation = useMemo(() => {
     if (!query?.user.nextEvent) return false // if there is no next event return false (probably loading)
@@ -127,11 +159,17 @@ function PrimarySectionCurrentEvent(props: PrimarySectionProps) {
 
 function PrimarySectionNextEvent(props: PrimarySectionProps) {
   if (!props.query || !props.query.user.nextEvent) return null
-
+  const nextEventStartingDate = useIsOnBreak(props.query)
   return (
     <div className="space-y-2">
       <h1 className="text-4xl font-bold">Kolejne zajęcia</h1>
       <PrimarySectionEvent simpleEvent={props.query.user.nextEvent} />
+      {nextEventStartingDate && (
+        <>
+          <p>Zaczną się za</p>
+          <AnimatedCountdown target={nextEventStartingDate} />
+        </>
+      )}
     </div>
   )
 }
