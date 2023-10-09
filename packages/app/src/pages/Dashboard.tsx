@@ -11,8 +11,9 @@ import { HiCalendar, HiCog, HiExternalLink, HiSearch } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
 import { AnimatedCountdown } from '../components/AnimatedCountdown/AnimatedCountdown'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Timelines } from '../components/Timelines/Timelines'
+import { useInterval } from 'react-use'
 
 type PrimarySectionEventProps = {
   simpleEvent: SimpleEventFragment
@@ -66,7 +67,8 @@ type PrimarySectionProps = {
  */
 const useIsOnBreak = (query: UserQuery): DateTime | undefined => {
   if (!query.user.nextEvent) return undefined // if there is no next event return undefined (loading / ended studies)
-  const currentDate = DateTime.now()
+  const [now, setNow] = useState(DateTime.now())
+  useInterval(() => setNow(DateTime.now()), 1000)
   const nextEventStartingDate = DateTime.fromISO(query.user.nextEvent.startsAt)
   let currentEventEndingDate: DateTime
   if (query.user.nextEvent.previous)
@@ -76,15 +78,15 @@ const useIsOnBreak = (query: UserQuery): DateTime | undefined => {
     )
   else if (
     // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
-    nextEventStartingDate.diff(currentDate).as('minutes') <= 15
+    nextEventStartingDate.diff(now).as('minutes') <= 15
   )
     return nextEventStartingDate
   // otherwise do not display countdown
   else return undefined
   if (
     // if previous and next event happen on the same day and you are in between those events, you are on a break -> display countdown
-    currentEventEndingDate < currentDate &&
-    currentDate < nextEventStartingDate &&
+    currentEventEndingDate < now &&
+    now < nextEventStartingDate &&
     currentEventEndingDate.hasSame(nextEventStartingDate, 'day')
   )
     return nextEventStartingDate
