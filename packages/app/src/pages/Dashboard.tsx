@@ -62,30 +62,30 @@ type PrimarySectionProps = {
 /**
  * Helper function determing if user is on a break
  * @param query API query about user events
- * @returns Date of next event, if user is on a break or it is 15 minutes before a first event of the day
+ * @returns {DateTime | undefined} Next event, if user is on a break or it is 15 minutes before a first event of the day
  */
-const useIsOnBreak = (query: UserQuery): Date | undefined => {
+const useIsOnBreak = (query: UserQuery): DateTime | undefined => {
   if (!query.user.nextEvent) return undefined // if there is no next event return undefined (loading / ended studies)
-  const fifthteenMinutesInMillisec = 15 * 60 * 1000
-  const currentDate = new Date()
-  const nextEventStartingDate = new Date(query.user.nextEvent.startsAt)
-  let currentEventEndingDate: Date
+  const currentDate = DateTime.now()
+  const nextEventStartingDate = DateTime.fromISO(query.user.nextEvent.startsAt)
+  let currentEventEndingDate: DateTime
   if (query.user.nextEvent.previous)
     // if there is a previous lesson (you are on a break), assign the date to a variable
-    currentEventEndingDate = new Date(query.user.nextEvent.previous.endsAt)
+    currentEventEndingDate = DateTime.fromISO(
+      query.user.nextEvent.previous.endsAt
+    )
   else if (
     // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
-    nextEventStartingDate.getTime() - currentDate.getTime() <=
-    fifthteenMinutesInMillisec
+    nextEventStartingDate.diff(currentDate).as('minutes') <= 15
   )
     return nextEventStartingDate
   // otherwise do not display countdown
   else return undefined
   if (
     // if previous and next event happen on the same day and you are in between those events, you are on a break -> display countdown
-    currentEventEndingDate.getTime() < currentDate.getTime() &&
-    currentDate.getTime() < nextEventStartingDate.getTime() &&
-    currentEventEndingDate.getDate() == nextEventStartingDate.getDate()
+    currentEventEndingDate < currentDate &&
+    currentDate < nextEventStartingDate &&
+    currentEventEndingDate.hasSame(nextEventStartingDate, 'day')
   )
     return nextEventStartingDate
   else return undefined
