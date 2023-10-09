@@ -76,9 +76,11 @@ const useIsOnBreak = (query: UserQuery): DateTime | undefined => {
     currentEventEndingDate = DateTime.fromISO(
       query.user.nextEvent.previous.endsAt
     )
+  const diff = nextEventStartingDate.diff(now).as('minutes')
   if (
     // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
-    nextEventStartingDate.diff(now).as('minutes') <= 15
+    diff <= 15 &&
+    diff >= 0
   )
     return nextEventStartingDate
   if (
