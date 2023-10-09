@@ -65,34 +65,44 @@ type PrimarySectionProps = {
  * @param query API query about user events
  * @returns {DateTime | undefined} Next event, if user is on a break or it is 15 minutes before a first event of the day
  */
-const useIsOnBreak = (query: UserQuery): DateTime | undefined => {
-  if (!query.user.nextEvent) return undefined // if there is no next event return undefined (loading / ended studies)
+const useIsOnBreak = (
+  query: UserQuery,
+  nextEventStartingDate: DateTime
+): boolean => {
   const [now, setNow] = useState(DateTime.now())
   useInterval(() => setNow(DateTime.now()), 1000)
-  const nextEventStartingDate = DateTime.fromISO(query.user.nextEvent.startsAt)
-  let currentEventEndingDate: DateTime | undefined
-  if (query.user.nextEvent.previous)
-    // if there is a previous lesson (you are on a break), assign the date to a variable
-    currentEventEndingDate = DateTime.fromISO(
-      query.user.nextEvent.previous.endsAt
+  const isOnBreak = useMemo(() => {
+    if (!query.user.nextEvent) return false // if there is no next event return false (loading / ended studies)
+    if (query.user.currentEvent) return false // if there is current event return false (that means you are not on break)
+    let currentEventEndingDate: DateTime | undefined
+    if (query.user.nextEvent.previous)
+      // if there is a previous lesson (you are on a break), assign the date to a variable
+      currentEventEndingDate = DateTime.fromISO(
+        query.user.nextEvent.previous.endsAt
+      )
+    const diff = nextEventStartingDate.diff(now).as('minutes')
+    if (
+      // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
+      diff <= 15 &&
+      diff >= 0
     )
-  const diff = nextEventStartingDate.diff(now).as('minutes')
-  if (
-    // elsewhere you are starting your day, so also display countdown to first event 15 minutes before it
-    diff <= 15 &&
-    diff >= 0
-  )
-    return nextEventStartingDate
-  if (
-    currentEventEndingDate &&
-    // if previous and next event happen on the same day and you are in between those events, you are on a break -> display countdown
-    currentEventEndingDate < now &&
-    now < nextEventStartingDate &&
-    currentEventEndingDate.hasSame(nextEventStartingDate, 'day')
-  )
-    return nextEventStartingDate
-  // otherwise do not display countdown
-  else return undefined
+      return true
+    if (
+      currentEventEndingDate &&
+      // if previous and next event happen on the same day and you are in between those events, you are on a break -> display countdown
+      currentEventEndingDate < now &&
+      now < nextEventStartingDate &&
+      currentEventEndingDate.hasSame(nextEventStartingDate, 'day')
+    )
+      return true
+    // otherwise do not display countdown
+    else return false
+  }, [
+    query.user.nextEvent,
+    query.user.currentEvent,
+    query.user.nextEvent?.previous,
+  ])
+  return isOnBreak
 }
 
 function useIsVacation(query?: UserQuery) {
@@ -163,12 +173,15 @@ function PrimarySectionCurrentEvent(props: PrimarySectionProps) {
 
 function PrimarySectionNextEvent(props: PrimarySectionProps) {
   if (!props.query || !props.query.user.nextEvent) return null
-  const nextEventStartingDate = useIsOnBreak(props.query)
+  const nextEventStartingDate = DateTime.fromISO(
+    props.query.user.nextEvent.startsAt
+  )
+  const isOnBreak = useIsOnBreak(props.query, nextEventStartingDate)
   return (
     <div className="space-y-2">
       <h1 className="text-4xl font-bold">Kolejne zajęcia</h1>
       <PrimarySectionEvent simpleEvent={props.query.user.nextEvent} />
-      {nextEventStartingDate && (
+      {isOnBreak && (
         <>
           <p>Zaczną się za</p>
           <AnimatedCountdown target={nextEventStartingDate} />
