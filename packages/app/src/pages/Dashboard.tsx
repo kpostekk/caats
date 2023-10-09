@@ -63,7 +63,8 @@ type PrimarySectionProps = {
 /**
  * Helper function determing if user is on a break
  * @param query API query about user events
- * @returns {DateTime | undefined} Next event, if user is on a break or it is 15 minutes before a first event of the day
+ * @param nextEventStartingDate Next event's starting date
+ * @returns {boolean} if user is on a break or it is 15 minutes before a first event of the day
  */
 const useIsOnBreak = (
   query: UserQuery,
