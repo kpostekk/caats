@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { SimpleEventFragment } from '../../gql/graphql'
 import { TimelineEvent } from './TimelineEvent'
 import { TimelineLegends } from './TimelineLegens'
+import { TimelinePointer } from './TimelinePointer'
 
 export type TimelineProps = {
   targetDate: Date
@@ -65,6 +66,7 @@ export function Timeline(props: TimelineProps) {
           id={event.id}
         />
       ))}
+      <TimelinePointer beginDate={beginDate} endDate={endDate} scale={scale} />
     </div>
   )
 }
