@@ -1,11 +1,15 @@
 :80 {
 	handle /graphql {
-	    reverse_proxy {$NEST_ADDR}
+	  reverse_proxy {$NEST_ADDR}
+	}
+
+	handle /ics {
+		reverse_proxy {$NEST_ADDR}
 	}
 
 	handle {
-	    root * /caats/app/dist
-	    try_files {path} /index.html
-	    file_server
+	  root * /caats/app/dist
+	  try_files {path} /index.html
+	  file_server
 	}
 }
