@@ -18,12 +18,9 @@ services:
     restart: always
     environment:
       TZ: Europe/Warsaw
-      NEST_ADDR: http://nest:3000
-      CADDY_ADDR: "*:80"
+      NEST_ADDR: nest:3000
     depends_on:
       - database
-    ports:
-      - 80:80
   nest:
     image: ghcr.io/kpostekk/caats:latest
     build:

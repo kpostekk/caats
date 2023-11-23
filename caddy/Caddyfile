@@ -1,11 +1,11 @@
-{$CADDY_ADDR}
+:80 {
+	handle /graphql {
+	    reverse_proxy {$NEST_ADDR}
+	}
 
-handle /graphql {
-    reverse_proxy {$NEST_ADDR}
-}
-
-handle {
-    root * /caats/app/dist
-    try_files {path} /index.html
-    file_server
+	handle {
+	    root * /caats/app/dist
+	    try_files {path} /index.html
+	    file_server
+	}
 }
