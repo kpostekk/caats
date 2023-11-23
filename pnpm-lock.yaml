@@ -152,12 +152,12 @@ importers:
       vite:
         specifier: ^5.0.0
         version: 5.0.2
-      vite-plugin-graphql-codegen:
-        specifier: ^3.3.3
-        version: 3.3.3(@graphql-codegen/cli@5.0.0)(graphql@16.8.1)(vite@5.0.2)
       vite-plugin-pwa:
         specifier: ^0.17.0
         version: 0.17.0(vite@5.0.2)(workbox-build@7.0.0)(workbox-window@7.0.0)
+      workbox-window:
+        specifier: ^7.0.0
+        version: 7.0.0
 
   packages/nest:
     dependencies:
@@ -194,9 +194,6 @@ importers:
       '@nestjs/schedule':
         specifier: ^3.0.3
         version: 3.0.3(@nestjs/common@10.2.5)(@nestjs/core@10.2.5)(reflect-metadata@0.1.13)
-      '@nestjs/serve-static':
-        specifier: ^4.0.0
-        version: 4.0.0(@fastify/static@6.10.2)(@nestjs/common@10.2.5)(@nestjs/core@10.2.5)(fastify@4.24.3)
       '@ngneat/falso':
         specifier: ^6.3.2
         version: 6.4.0
@@ -6149,29 +6146,6 @@ packages:
     transitivePeerDependencies:
       - chokidar
     dev: true
-
-  /@nestjs/serve-static@4.0.0(@fastify/static@6.10.2)(@nestjs/common@10.2.5)(@nestjs/core@10.2.5)(fastify@4.24.3):
-    resolution: {integrity: sha512-8cTrNV2ngdHIjiLNsXePnw0+KY1ThrZGz/WeyAG5gIvmZNDbnZBOrPoYlKL+MOzlXlQStxR5jKLYmn+nJeoncQ==}
-    peerDependencies:
-      '@fastify/static': ^6.5.0
-      '@nestjs/common': ^9.0.0 || ^10.0.0
-      '@nestjs/core': ^9.0.0 || ^10.0.0
-      express: ^4.18.1
-      fastify: ^4.7.0
-    peerDependenciesMeta:
-      '@fastify/static':
-        optional: true
-      express:
-        optional: true
-      fastify:
-        optional: true
-    dependencies:
-      '@fastify/static': 6.10.2
-      '@nestjs/common': 10.2.5(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      '@nestjs/core': 10.2.5(@nestjs/common@10.2.5)(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      fastify: 4.24.3
-      path-to-regexp: 0.2.5
-    dev: false
 
   /@nestjs/testing@10.0.0(@nestjs/common@10.2.5)(@nestjs/core@10.2.5):
     resolution: {integrity: sha512-U5q3+svkddpdSk51ZFCEnFpQuWxAwE4ahsX77FrqqCAYidr7HUtL/BHYOVzI5H9vUH6BvJxMbfo3tiUXQl/2aA==}
@@ -15430,10 +15404,6 @@ packages:
   /path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
-  /path-to-regexp@0.2.5:
-    resolution: {integrity: sha512-l6qtdDPIkmAmzEO6egquYDfqQGPMRNGjYtrU13HAXb3YSRrt7HSb1sJY0pKp6o2bAa86tSB6iwaW2JbthPKr7Q==}
-    dev: false
-
   /path-to-regexp@3.2.0:
     resolution: {integrity: sha512-jczvQbCUS7XmS7o+y1aEO9OBVFeZBQ1MDSEqmO7xSoPgOPoowY/SxLpZ6Vh97/8qHZOteiCKb7gkG9gA2ZUxJA==}
 
@@ -18015,19 +17985,6 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-
-  /vite-plugin-graphql-codegen@3.3.3(@graphql-codegen/cli@5.0.0)(graphql@16.8.1)(vite@5.0.2):
-    resolution: {integrity: sha512-E+EVlfNX6IAblgOjy8J5qN0QG6f38ZT5+nRx0nEYSxxezDU2ZQMIW1dLCbLoxqYaUqrWbrT1k0iCkPzQuZYRLw==}
-    peerDependencies:
-      '@graphql-codegen/cli': ^1.0.0 || ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-      vite: ^2.7.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-    dependencies:
-      '@graphql-codegen/cli': 5.0.0(graphql@16.8.1)(typescript@5.3.2)
-      '@graphql-codegen/plugin-helpers': 5.0.1(graphql@16.8.1)
-      graphql: 16.8.1
-      vite: 5.0.2
-    dev: true
 
   /vite-plugin-pwa@0.17.0(vite@5.0.2)(workbox-build@7.0.0)(workbox-window@7.0.0):
     resolution: {integrity: sha512-cOyEG8EEc7JHmyMapTnjK2j0g2BIC3ErlmOHyGzVu8hqjyF9Jt6yWMmVNFtpA6v/NNyzP28ARf3vwzIAzR1kaw==}

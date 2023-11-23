@@ -8,9 +8,26 @@ services:
       POSTGRES_DB: caats
       TZ: Europe/Warsaw
   app:
+    image: ghcr.io/kpostekk/caats:latest-app
+    build:
+      target: app
+      dockerfile: Dockerfile
+      context: .
+      args:
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    restart: always
+    environment:
+      TZ: Europe/Warsaw
+      NEST_ADDR: http://nest:3000
+      CADDY_ADDR: "*:80"
+    depends_on:
+      - database
+    ports:
+      - 80:80
+  nest:
     image: ghcr.io/kpostekk/caats:latest
     build:
-      target: application
+      target: nest
       dockerfile: Dockerfile
       context: .
     restart: always
@@ -19,8 +36,13 @@ services:
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
       TZ: Europe/Warsaw
-    ports:
-      - 3000:3000
+    depends_on:
+      - database
+  nest-migrate:
+    image: ghcr.io/kpostekk/caats:latest
+    command: "pnpm prisma migrate deploy"
+    environment:
+      DATABASE_URL: postgres://cat:kittycatcat@database/caats
     depends_on:
       - database
   scrapy:
