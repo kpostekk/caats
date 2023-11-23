@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchInput } from '../components/SearchInput/SearchInput'
-import { ScheduleEvent } from '../gql/graphql'
+import { ScheduleEvent } from '../gql/react-query'
 import { GeneralizedSearchQuery } from '../gql/react-query'
 
 type ScheduleEventProps = {

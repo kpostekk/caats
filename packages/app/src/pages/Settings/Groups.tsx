@@ -90,7 +90,7 @@ export default function SettingsGroups() {
             })
           }
         >
-          {setGroupsMutation.isLoading ? (
+          {setGroupsMutation.isPending ? (
             <HiCog className="animate-spin" />
           ) : (
             'Zapisz'
@@ -173,7 +173,7 @@ export default function SettingsGroups() {
           })
         }
       >
-        {setGroupsMutation.isLoading ? (
+        {setGroupsMutation.isPending ? (
           <HiCog className="animate-spin" />
         ) : (
           'Zapisz'

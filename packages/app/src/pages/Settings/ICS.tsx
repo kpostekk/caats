@@ -11,7 +11,7 @@ export default function ICSSettings() {
       <p className="border-y-warning text-warning border-y-2 p-2 font-semibold italic">
         Work in progress
       </p>
-      {createSubscription.isLoading && (
+      {createSubscription.isPending && (
         <p className="italic">Tworzenie subskrypcji...</p>
       )}
       {createSubscription.data ? (

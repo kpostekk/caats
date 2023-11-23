@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ScheduleEvent } from '../../gql/graphql'
+import { ScheduleEvent } from '../../gql/react-query'
 
 export type ScheduleEventProps = {
   event: Pick<

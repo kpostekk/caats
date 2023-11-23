@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import { ScheduleEvent } from '../../gql/graphql'
+import { ScheduleEvent } from '../../gql/react-query'
 
 export type TimelineEventProps = {
   startsAt: Date

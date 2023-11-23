@@ -23,7 +23,7 @@ export function MutationResponse(props: MutationResponseProps) {
     )
   }
 
-  if (props.mutation.isLoading) {
+  if (props.mutation.isPending) {
     return (
       <div className="alert alert-info">
         <div>
