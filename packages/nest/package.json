@@ -39,7 +39,6 @@
     "ics": "^3.5.0",
     "joi": "^17.7.0",
     "luxon": "^3.1.1",
-    "mqemitter": "^5.0.0",
     "node-html-parser": "^6.1.4",
     "prisma": "^5.6.0",
     "reflect-metadata": "^0.1.13",
