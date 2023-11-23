@@ -78,10 +78,10 @@ export default function App() {
       <div className="navbar sticky top-0 z-50 bg-black text-white">
         <div className="navbar-start">
           <div className="dropdown dropdown-hover">
-            <button className="btn btn-ghost">
+            <label tabIndex={0} className="btn btn-ghost">
               <HiMenu />
-            </button>
-            <ul className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 text-black shadow-xl">
+            </label>
+            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box space-y-1 p-2 text-black shadow-xl">
               {isSuperuser && (
                 <>
                   <li>
