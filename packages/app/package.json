@@ -22,7 +22,7 @@
     "classnames": "^2.3.2",
     "framer-motion": "^9.0.2",
     "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0",
+    "graphql-request": "5.1.0",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -32,8 +32,9 @@
     "zustand": "^4.3.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "5.0.0",
-    "@graphql-codegen/client-preset": "1.2.3",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-codegen/typescript-react-query": "^6.0.0",
     "@storybook/addon-essentials": "7.0.0-beta.45",
     "@storybook/addon-interactions": "7.0.0-beta.45",
@@ -50,7 +51,7 @@
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.13",
-    "daisyui": "^2.46.0",
+    "daisyui": "^4.4.4",
     "eslint": "^8.42.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
@@ -68,7 +69,7 @@
     "vite-plugin-pwa": "^0.17.0"
   },
   "browserslist": [
-    "cover 90% in PL",
+    "cover 99% in PL",
     "not dead"
   ]
 }
