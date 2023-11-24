@@ -33,6 +33,8 @@ services:
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
       TZ: Europe/Warsaw
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_URL: http://meilisearch:7700
     depends_on:
       - database
   nest-migrate:
@@ -60,9 +62,7 @@ services:
     image: getmeili/meilisearch:latest
     restart: always
     environment:
-      MEILI_MASTER_KEY: meilimk_catz_ily!
-    ports:
-      - 7700:7700
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
     volumes:
       - meilisearch-data:/meili_data
 

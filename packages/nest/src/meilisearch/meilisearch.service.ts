@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { MeiliSearch } from 'meilisearch'
 import { TimetableEvent } from '@prisma/client'
+import { ConfigService } from '@nestjs/config'
 
 type ThinTimetableEvent = Pick<
   TimetableEvent,
@@ -17,10 +18,13 @@ export class MeilisearchService extends MeiliSearch implements OnModuleInit {
   private readonly logger = new Logger(MeilisearchService.name)
   private readonly eventIndex = this.index<ThinTimetableEvent>('events')
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    config: ConfigService,
+  ) {
     super({
-      host: 'http://localhost:7700',
-      apiKey: 'meilimk_catz_ily!',
+      host: config.getOrThrow('MEILI_URL'),
+      apiKey: config.getOrThrow('MEILI_MASTER_KEY'),
     })
   }
 
