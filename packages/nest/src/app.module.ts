@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 import { PubsubModule } from './pubsub/pubsub.module'
+import { MeilisearchModule } from './meilisearch/meilisearch.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -53,6 +54,7 @@ import { PubsubModule } from './pubsub/pubsub.module'
     BrowserModule,
     IcsModule,
     PubsubModule,
+    MeilisearchModule,
   ],
   providers: [AppResolver],
 })

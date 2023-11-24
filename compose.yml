@@ -37,12 +37,13 @@ services:
       - database
   nest-migrate:
     image: ghcr.io/kpostekk/caats:latest
-    command: "pnpm prisma migrate deploy"
+    command: 'pnpm prisma migrate deploy'
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
     depends_on:
       - database
   scrapy:
+    image: ghcr.io/kpostekk/caats:latest-scrapy
     build:
       target: scraper
       dockerfile: Dockerfile
@@ -50,6 +51,20 @@ services:
     restart: always
     depends_on:
       - app
-    command: node dist/index.js --api http://app:3000/graphql
     environment:
+      NEST_GRAPHQL: http://192.168.1.171:3000/graphql
+      SCRAPY_RATE: 30
       TZ: Europe/Warsaw
+      TOKEN: ${SCRAPY_TOKEN}
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    restart: always
+    environment:
+      MEILI_MASTER_KEY: meilimk_catz_ily!
+    ports:
+      - 7700:7700
+    volumes:
+      - meilisearch-data:/meili_data
+
+volumes:
+  meilisearch-data:
