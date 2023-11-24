@@ -17,38 +17,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    !process.env.SKIPCODEGEN &&
-      codegen({
-        config: {
-          overwrite: true,
-          silent: true,
-          schema: '../nest/src/**/*.gql',
-          documents: ['operations/*.gql'],
-          //emitLegacyCommonJSImports: false,
-          generates: {
-            'src/gql/': {
-              preset: 'client',
-              plugins: [],
-            },
-            'src/gql/react-query.ts': {
-              plugins: [
-                'typescript',
-                'typescript-operations',
-                'typescript-react-query',
-              ],
-              config: {
-                fetcher: 'graphql-request',
-                scalars: {
-                  DateTime: 'string',
-                  Date: 'string',
-                  Time: 'string',
-                  JSON: 'Record<string, unknown>',
-                },
-              },
-            },
-          },
-        },
-      }),
     pwa({
       injectRegister: 'inline',
       registerType: 'prompt',

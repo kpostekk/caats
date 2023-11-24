@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { HiChevronDown, HiCubeTransparent } from 'react-icons/hi'
 import { Link, useParams } from 'react-router-dom'
 import { useGqlClient } from '../components'
@@ -13,13 +13,17 @@ function useIsInUserGroups(groups: string[] | null | undefined) {
   const client = useGqlClient()
   const userQuery = useUserQuery(client, {})
 
-  if (!userQuery.data || !groups) return false
 
-  for (const theirGroup of groups) {
-    if (!userQuery.data.user.groups.includes(theirGroup)) return false
-  }
+  const includes = useMemo(() => {
+    if (!userQuery.data || !groups) return false
 
-  return true
+    for (const theirGroup of groups) {
+      if (userQuery.data.user.groups.includes(theirGroup)) return true
+    }
+    return false
+  }, [groups, userQuery.data])
+
+  return includes
 }
 
 function DataRow(props: DataRowProps) {

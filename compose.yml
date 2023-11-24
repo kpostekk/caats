@@ -8,9 +8,23 @@ services:
       POSTGRES_DB: caats
       TZ: Europe/Warsaw
   app:
+    image: ghcr.io/kpostekk/caats:latest-app
+    build:
+      target: app
+      dockerfile: Dockerfile
+      context: .
+      args:
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    restart: always
+    environment:
+      TZ: Europe/Warsaw
+      NEST_ADDR: nest:3000
+    depends_on:
+      - database
+  nest:
     image: ghcr.io/kpostekk/caats:latest
     build:
-      target: application
+      target: nest
       dockerfile: Dockerfile
       context: .
     restart: always
@@ -19,11 +33,19 @@ services:
     environment:
       DATABASE_URL: postgres://cat:kittycatcat@database/caats
       TZ: Europe/Warsaw
-    ports:
-      - 3000:3000
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_URL: http://meilisearch:7700
+    depends_on:
+      - database
+  nest-migrate:
+    image: ghcr.io/kpostekk/caats:latest
+    command: 'pnpm prisma migrate deploy'
+    environment:
+      DATABASE_URL: postgres://cat:kittycatcat@database/caats
     depends_on:
       - database
   scrapy:
+    image: ghcr.io/kpostekk/caats:latest-scrapy
     build:
       target: scraper
       dockerfile: Dockerfile
@@ -31,6 +53,18 @@ services:
     restart: always
     depends_on:
       - app
-    command: node dist/index.js --api http://app:3000/graphql
     environment:
+      NEST_GRAPHQL: http://192.168.1.171:3000/graphql
+      SCRAPY_RATE: 30
       TZ: Europe/Warsaw
+      TOKEN: ${SCRAPY_TOKEN}
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    restart: always
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+    volumes:
+      - meilisearch-data:/meili_data
+
+volumes:
+  meilisearch-data:

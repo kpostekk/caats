@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import { ScheduleEvent } from '../../gql/graphql'
+
+import { ScheduleEvent } from '../../gql/react-query'
 import { useState } from 'react'
 import { DateTime } from 'luxon'
 import { useInterval } from 'react-use'

@@ -1,9 +1,5 @@
-node_modules/
-packages/*/node_modules/
-compose.yml
-Dockerfile
-dist/
-.env
-README.md
-PRIVACY.md
-TOS.md
+node_modules
+**/node_modules
+.editorconfig
+**/*.env
+**/dist

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { LoginMutation } from '../gql/graphql'
+import { LoginMutation } from '../gql/react-query'
 
 export type AuthStore = {
   auth?: LoginMutation['authGoogle']

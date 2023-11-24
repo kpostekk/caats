@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { useMemo } from 'react'
-import { SimpleEventFragment } from '../../gql/graphql'
+import { SimpleEventFragment } from '../../gql/react-query'
 import { TimelineEvent } from './TimelineEvent'
 import { TimelineLegends } from './TimelineLegens'
 import { TimelinePointer } from './TimelinePointer'
