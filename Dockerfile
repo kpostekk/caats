@@ -53,16 +53,27 @@ COPY --from=app-build /build/packages/app/dist /caats/app/dist
 
 COPY ./caddy/Caddyfile /etc/caddy/Caddyfile
 
-FROM build AS scraper-build
+FROM build AS scrapy-build
 
 WORKDIR /build/packages/scrapy
 
 RUN pnpm build
+RUN pnpm deploy --filter @caats/scrapy --prod /prod/scrapy
 
 # -> Scrapy
-FROM node:21-slim AS scraper
+FROM base AS scraper
 
-COPY --from=scraper-build /build/packages/scrapy/dist /caats/scrapy/dist
+COPY --from=scrapy-build /prod/scrapy /caats/scrapy
+COPY --from=scrapy-build /build/packages/scrapy/dist /caats/scrapy/dist
+
+WORKDIR /caats/scrapy
+
+ENV NODE_ENV=production
+ENV NEST_GRAPHQL="http://nest:3000/graphql"
+ENV SCRAPY_RATE=90
+
+
+CMD ["pnpm", "scrapy", "steal", "--api", "${NEST_GRAPHQL}", "--rate", "${SCRAPY_RATE}"]
 
 
 
