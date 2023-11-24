@@ -3,7 +3,7 @@
 	  reverse_proxy {$NEST_ADDR}
 	}
 
-	handle /ics {
+	handle /ics/* {
 		reverse_proxy {$NEST_ADDR}
 	}
 
