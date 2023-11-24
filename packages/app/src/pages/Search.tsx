@@ -51,7 +51,7 @@ export default function Search() {
       <div className="flex justify-center">
         <SearchInput onChange={setData} />
       </div>
-      <div className="space-y-2">
+      <div className="divide-y-2">
         {data
           ? data.findByDescription.map((e, i) => (
               <SearchResult key={i + '_sr'} event={e} />
