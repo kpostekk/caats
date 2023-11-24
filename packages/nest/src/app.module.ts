@@ -19,6 +19,7 @@ import { MeilisearchModule } from './meilisearch/meilisearch.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       validationSchema: Joi.object({
         GOOGLE_CLIENT_ID: Joi.string().exist(),
         GOOGLE_SECRET: Joi.string().exist(),
