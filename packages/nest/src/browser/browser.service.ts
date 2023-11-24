@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common'
 import { TimetableEvent, User } from '@prisma/client'
 import { GqlScheduleInput, GqlScheduleTargets } from '../gql'
 import { PrismaService } from '../prisma/prisma.service'
+import { MeilisearchService } from '../meilisearch/meilisearch.service'
 
 type ScheduleFindOptions = GqlScheduleInput &
   GqlScheduleTargets & { user?: Pick<User, 'id'> }
 
 @Injectable()
 export class BrowserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly meili: MeilisearchService) {}
 
   private async returnGroups(options: ScheduleFindOptions) {
     if (options.user) {
@@ -132,41 +133,15 @@ export class BrowserService {
     })
   }
 
-  async findByDescription(fullQuery: string) {
-    const parsed = /^(?<q>[\p{L} ]+)(, ?(?<mod>[\p{L} ]+\p{N}*))*$/gmu
-    const results = parsed.exec(fullQuery)
-
-    if (!results) return []
-
-    const groups: Partial<{ q: string; mod: string }> = results.groups
-
-    if (!groups || !groups.q) return []
-
-    const events = await this.prisma.$queryRaw<{ id: number }[]>`
-      SELECT id
-      FROM (SELECT id,
-                   ARRAY [lower(code), lower(subject), lower(type), lower(room)] || string_to_array(lower(array_to_string((hosts), ' ')), ' ') || groups AS "combined",
-                    "endsAt"
-            FROM "TimetableEvent") AS QueryCompound
-      WHERE combined @> string_to_array(lower(${groups.q}), ' ')
-      AND "endsAt" > now()
-      ORDER BY "endsAt"
-      LIMIT 50
-    `
+  async findByDescription(query: string) {
+    const events = await this.meili.searchByQuery(query)
 
     return await this.prisma.timetableEvent.findMany({
       where: {
         id: {
-          in: events.map((e) => e.id),
+          in: events.hits.map((e) => e.id),
         },
       },
-      // include: {
-      //   source: {
-      //     include: {
-      //       task: true,
-      //     },
-      //   },
-      // },
     })
   }
 

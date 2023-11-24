@@ -9,6 +9,7 @@ type ThinTimetableEvent = Pick<
 > & {
   plDate: string
   enDate: string
+  timestamp: number
 }
 
 @Injectable()
@@ -23,11 +24,24 @@ export class MeilisearchService extends MeiliSearch implements OnModuleInit {
     })
   }
 
-  onModuleInit() {
-    this.rebuildIndex(
+  async onModuleInit() {
+    await this.rebuildIndex(
       new Date(new Date().getTime() - 7 * 24 * 60 * 1000), // starting 7 days ago
       50_000, // limit to 50k events
     )
+    await this.eventIndex.updateSearchableAttributes([
+      'code',
+      'subject',
+      'groups',
+      'hosts',
+      'type',
+      'startsAt',
+      'plDate',
+      'enDate',
+      'room',
+    ])
+    await this.eventIndex.updateFilterableAttributes(['timestamp'])
+    await this.eventIndex.updateSortableAttributes(['timestamp'])
   }
 
   async rebuildIndex(since = new Date(), limit = 1_000) {
@@ -65,6 +79,7 @@ export class MeilisearchService extends MeiliSearch implements OnModuleInit {
           dateStyle: 'full',
           timeStyle: 'short',
         }),
+        timestamp: new Date(e.startsAt).getTime(),
       })),
       {
         primaryKey: 'id',
@@ -84,12 +99,14 @@ export class MeilisearchService extends MeiliSearch implements OnModuleInit {
     return enqTask
   }
 
-  async search(query: string) {
+  async searchByQuery(query: string) {
     const response = await this.eventIndex.search(query, {
       limit: 25,
       showRankingScore: true,
+      filter: `timestamp >= ${new Date().getTime()}`,
+      sort: ['timestamp:asc'],
     })
 
-    console.log({ response, hits: response.hits })
+    return response
   }
 }

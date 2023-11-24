@@ -8,6 +8,7 @@ import { createHash, randomBytes } from 'crypto'
 import { randAnimal } from '@ngneat/falso'
 import { JwtService } from '@nestjs/jwt'
 import { PubsubService } from '../pubsub/pubsub.service'
+import { MeilisearchService } from '../meilisearch/meilisearch.service'
 // import { EmitterService } from '../emitter/emitter.service'
 
 @Injectable()
@@ -19,6 +20,7 @@ export class SupervisorService implements OnModuleInit {
     private readonly parser: ParserService,
     private readonly jwt: JwtService,
     private readonly pubsub: PubsubService,
+    private readonly meili: MeilisearchService,
   ) {}
 
   async onModuleInit() {
@@ -82,7 +84,7 @@ export class SupervisorService implements OnModuleInit {
    */
   private async processResult(
     result: string,
-    task: Pick<Task, 'id' | 'targetDate'>
+    task: Pick<Task, 'id' | 'targetDate'>,
   ) {
     const candidate = this.parser.htmlToRawObject(result)
 
@@ -140,11 +142,11 @@ export class SupervisorService implements OnModuleInit {
       candidate.ctl06_TypRezerwacjiLabel?.value === 'egzamin'
         ? this.parser.convertRawObjectReservationToEvent(
             newTaskResult.id,
-            candidate as Record<string, { value?: string; humanKey: string }>
+            candidate as Record<string, { value?: string; humanKey: string }>,
           )
         : this.parser.convertRawObjectToEvent(
             newTaskResult.id,
-            candidate as Record<string, { value?: string; humanKey: string }>
+            candidate as Record<string, { value?: string; humanKey: string }>,
           )
 
     await this.prisma.timetableEvent.create({
@@ -165,7 +167,7 @@ export class SupervisorService implements OnModuleInit {
     id: number,
     hash: string,
     results: string[],
-    scraperId?: string
+    scraperId?: string,
   ) {
     const task = await this.prisma.task.findFirstOrThrow({
       where: { id },
@@ -196,7 +198,7 @@ export class SupervisorService implements OnModuleInit {
       ).toFixed(2)} results per second.
           dropped: ${stats.dropped},
           replaced: ${stats.replaced},
-          inserted: ${stats.inserted}.`
+          inserted: ${stats.inserted}.`,
     )
 
     await this.prisma.$transaction([
@@ -211,6 +213,9 @@ export class SupervisorService implements OnModuleInit {
         data: { status: 'SUCCESS', finishedAt: new Date(), finalHash: hash },
       }),
     ])
+
+    // rebuild meili indexes
+    this.meili.rebuildIndex(task.targetDate, stats.inserted)
 
     if (!scraperId) return
     await this.prisma.task.update({

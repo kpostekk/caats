@@ -7,7 +7,8 @@ import { StoredTaskResolver } from './stored-task/stored-task.resolver'
 import { UserResolver } from './user/user.resolver'
 import { ScheduleEventResolver } from './schedule-event/schedule-event.resolver'
 import { ScraperResolver } from './scraper/scraper.resolver'
-import { EventSourceResolver } from './event-source/event-source.resolver';
+import { EventSourceResolver } from './event-source/event-source.resolver'
+import { MeilisearchModule } from '../meilisearch/meilisearch.module'
 
 @Module({
   providers: [
@@ -19,6 +20,6 @@ import { EventSourceResolver } from './event-source/event-source.resolver';
     ScraperResolver,
     EventSourceResolver,
   ],
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, MeilisearchModule],
 })
 export class BrowserModule {}
