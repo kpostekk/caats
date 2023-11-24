@@ -1,7 +1,5 @@
-import { Inject, Logger, Module, OnModuleInit } from '@nestjs/common'
-import { GraphQLModule, GraphQLSchemaHost } from '@nestjs/graphql'
-// import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius'
-import { join } from 'path'
+import { Module } from '@nestjs/common'
+import { GraphQLModule } from '@nestjs/graphql'
 import { AppResolver } from './app.resolver'
 import { PrismaModule } from './prisma/prisma.module'
 import { UsersModule } from './users/users.module'
@@ -16,7 +14,8 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 import { PubsubModule } from './pubsub/pubsub.module'
-import { MeilisearchModule } from './meilisearch/meilisearch.module';
+import { MeilisearchModule } from './meilisearch/meilisearch.module'
+
 @Module({
   imports: [
     ConfigModule.forRoot({
