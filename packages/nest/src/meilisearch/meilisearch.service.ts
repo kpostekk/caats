@@ -30,10 +30,10 @@ export class MeilisearchService extends MeiliSearch implements OnModuleInit {
       50_000, // limit to 50k events
     )
     await this.eventIndex.updateSearchableAttributes([
-      'code',
-      'subject',
       'groups',
       'hosts',
+      'code',
+      'subject',
       'type',
       'startsAt',
       'plDate',
