@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { SearchInput } from '../components/SearchInput/SearchInput'
 import { ScheduleEvent } from '../gql/react-query'
 import { GeneralizedSearchQuery } from '../gql/react-query'
@@ -43,13 +43,57 @@ function SearchResult({ event: e }: ScheduleEventProps) {
   )
 }
 
+function Examples(props: { value: string }) {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const handler = useCallback(() => {
+    setSearchParams({ q: props.value })
+  }, [props.value])
+
+  return <li className='hover:underline underline-offset-1 cursor-pointer' onClick={handler}>{props.value}</li>
+}
+
 export default function Search() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [data, setData] = useState<GeneralizedSearchQuery>()
+
+  const displayInfo = useMemo(() => {
+    if (data) return false
+
+    const now = new Date()
+    const expireAt = new Date('2024-01-01T00:00:00.000Z')
+
+    return now < expireAt
+  }, [data])
 
   return (
     <div className="container max-w-md space-y-2 p-2 md:px-0">
+      {displayInfo && (
+        <>
+          <p className="text-info border-y-info my-2 border-y-2 py-2 font-bold">
+            Silnik wyszukiwarki został przerobiony. Take a try {';)'}
+          </p>
+          <p className="opacity-80 font-bold">Oto przykładowe zapytania: </p>
+          <ul className="text-sm ml-4">
+            {/* <li>BYT Czwartek</li>
+            <li>ZSK 15:45</li>
+            <li>Pierzchała Środa</li>
+            <li>GRK Ćwiczenia Czwartek</li> */}
+            <Examples value="BYT Czwartek" />
+            <Examples value="ZSK 15:45" />
+            <Examples value="Pierzchała Środa" />
+            <Examples value="GRK Ćwiczenia Czwartek" />
+          </ul>
+        </>
+      )}
       <div className="flex justify-center">
-        <SearchInput onChange={setData} />
+        <SearchInput
+          value={searchParams.get('q') ?? ''}
+          onResults={setData}
+          onChange={(v) => {
+            setSearchParams({ q: v })
+          }}
+        />
       </div>
       <div className="divide-y-2">
         {data
